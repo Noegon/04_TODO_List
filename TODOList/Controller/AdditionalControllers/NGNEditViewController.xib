@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NGNEditViewController">
+            <connections>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cUl-Je-dm8">
+                    <rect key="frame" x="120" y="80" width="284" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="MAI-GV-HL6">
+                            <variation key="heightClass=compact" constant="30"/>
+                        </constraint>
+                    </constraints>
+                    <nil key="textColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3UW-MO-Crb">
+                    <rect key="frame" x="10" y="80.666666666666657" width="100" height="49.999999999999972"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="100" id="2mL-1W-TAZ"/>
+                        <constraint firstAttribute="height" constant="50" id="JNS-kq-a5p">
+                            <variation key="heightClass=compact" constant="30"/>
+                        </constraint>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                    <color key="textColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                    <variation key="heightClass=compact">
+                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                    </variation>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="23X-fI-AS4">
+                    <rect key="frame" x="10" y="140" width="394" height="48"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                    <state key="normal" title="Set Date">
+                        <color key="titleColor" red="0.22349777817726135" green="0.57795548439025879" blue="0.99893814325332642" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <variation key="heightClass=compact">
+                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                    </variation>
+                </button>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="TT5-Qp-2ed">
+                    <rect key="frame" x="10" y="198" width="394" height="528"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DSV-dU-8x3">
+                    <rect key="frame" x="0.0" y="36" width="414" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textAttributes key="titleTextAttributes">
+                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                        <color key="textColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    </textAttributes>
+                    <items>
+                        <navigationItem title="Edit" id="RK6-Ps-ahg">
+                            <barButtonItem key="backBarButtonItem" enabled="NO" systemItem="save" id="xzm-WZ-z9S">
+                                <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </barButtonItem>
+                        </navigationItem>
+                    </items>
+                </navigationBar>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="23X-fI-AS4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="5Ie-21-6CH"/>
+                <constraint firstItem="TT5-Qp-2ed" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="C5t-30-XFA"/>
+                <constraint firstAttribute="bottom" secondItem="TT5-Qp-2ed" secondAttribute="bottom" constant="10" id="Ea6-HE-p6P"/>
+                <constraint firstItem="3UW-MO-Crb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="SD7-FG-yp5"/>
+                <constraint firstAttribute="trailing" secondItem="cUl-Je-dm8" secondAttribute="trailing" constant="10" id="TWl-Ga-9Qu"/>
+                <constraint firstAttribute="trailing" secondItem="TT5-Qp-2ed" secondAttribute="trailing" constant="10" id="V4Y-Yf-WgZ"/>
+                <constraint firstItem="23X-fI-AS4" firstAttribute="top" secondItem="cUl-Je-dm8" secondAttribute="bottom" constant="10" id="jdU-bx-U72"/>
+                <constraint firstAttribute="trailing" secondItem="23X-fI-AS4" secondAttribute="trailing" constant="10" id="kNS-g0-uZK"/>
+                <constraint firstItem="TT5-Qp-2ed" firstAttribute="top" secondItem="23X-fI-AS4" secondAttribute="bottom" constant="10" id="psD-Qc-oRf"/>
+                <constraint firstItem="cUl-Je-dm8" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="80" id="s6Q-5x-W53"/>
+                <constraint firstItem="3UW-MO-Crb" firstAttribute="centerY" secondItem="cUl-Je-dm8" secondAttribute="centerY" id="uDD-I3-IoY"/>
+                <constraint firstItem="cUl-Je-dm8" firstAttribute="leading" secondItem="3UW-MO-Crb" secondAttribute="trailing" constant="10" id="zop-Ps-VwQ"/>
+            </constraints>
+            <point key="canvasLocation" x="35" y="53"/>
+        </view>
+    </objects>
+</document>

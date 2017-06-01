@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#pragma mark - controller constants
+static NSString *const NGNControllerTaskCellIdentifier = @"NGNTaskCellIdentifier";
+
 @interface NGNConstants : NSObject
 
 @end
