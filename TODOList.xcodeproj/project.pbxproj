@@ -8,30 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		EF81E72F1EE05694007007EE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E72E1EE05694007007EE /* main.m */; };
-		EF81E7321EE05694007007EE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E7311EE05694007007EE /* AppDelegate.m */; };
-		EF81E7351EE05694007007EE /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E7341EE05694007007EE /* FirstViewController.m */; };
-		EF81E7381EE05694007007EE /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E7371EE05694007007EE /* SecondViewController.m */; };
 		EF81E73B1EE05694007007EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF81E7391EE05694007007EE /* Main.storyboard */; };
 		EF81E73D1EE05694007007EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF81E73C1EE05694007007EE /* Assets.xcassets */; };
 		EF81E7401EE05694007007EE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF81E73E1EE05694007007EE /* LaunchScreen.storyboard */; };
 		EF81E74E1EE05767007007EE /* NGNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E74D1EE05767007007EE /* NGNConstants.m */; };
+		EFCD46821EE058C300606FAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD467D1EE058C300606FAB /* AppDelegate.m */; };
+		EFCD46831EE058C300606FAB /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD467F1EE058C300606FAB /* FirstViewController.m */; };
+		EFCD46841EE058C300606FAB /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD46811EE058C300606FAB /* SecondViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EF81E72A1EE05694007007EE /* TODOList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODOList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF81E72E1EE05694007007EE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		EF81E7301EE05694007007EE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		EF81E7311EE05694007007EE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		EF81E7331EE05694007007EE /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
-		EF81E7341EE05694007007EE /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
-		EF81E7361EE05694007007EE /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
-		EF81E7371EE05694007007EE /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		EF81E73A1EE05694007007EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EF81E73C1EE05694007007EE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF81E73F1EE05694007007EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EF81E7411EE05694007007EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EF81E74C1EE05767007007EE /* NGNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNConstants.h; path = Constants/NGNConstants.h; sourceTree = "<group>"; };
 		EF81E74D1EE05767007007EE /* NGNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNConstants.m; path = Constants/NGNConstants.m; sourceTree = "<group>"; };
+		EFCD467C1EE058C300606FAB /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Controller/AppDelegate.h; sourceTree = "<group>"; };
+		EFCD467D1EE058C300606FAB /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Controller/AppDelegate.m; sourceTree = "<group>"; };
+		EFCD467E1EE058C300606FAB /* FirstViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FirstViewController.h; path = Controller/FirstViewController.h; sourceTree = "<group>"; };
+		EFCD467F1EE058C300606FAB /* FirstViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FirstViewController.m; path = Controller/FirstViewController.m; sourceTree = "<group>"; };
+		EFCD46801EE058C300606FAB /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecondViewController.h; path = Controller/SecondViewController.h; sourceTree = "<group>"; };
+		EFCD46811EE058C300606FAB /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecondViewController.m; path = Controller/SecondViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,12 +96,12 @@
 		EF81E7481EE056E3007007EE /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				EF81E7301EE05694007007EE /* AppDelegate.h */,
-				EF81E7311EE05694007007EE /* AppDelegate.m */,
-				EF81E7331EE05694007007EE /* FirstViewController.h */,
-				EF81E7341EE05694007007EE /* FirstViewController.m */,
-				EF81E7361EE05694007007EE /* SecondViewController.h */,
-				EF81E7371EE05694007007EE /* SecondViewController.m */,
+				EFCD467C1EE058C300606FAB /* AppDelegate.h */,
+				EFCD467D1EE058C300606FAB /* AppDelegate.m */,
+				EFCD467E1EE058C300606FAB /* FirstViewController.h */,
+				EFCD467F1EE058C300606FAB /* FirstViewController.m */,
+				EFCD46801EE058C300606FAB /* SecondViewController.h */,
+				EFCD46811EE058C300606FAB /* SecondViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -202,10 +202,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF81E7381EE05694007007EE /* SecondViewController.m in Sources */,
-				EF81E7321EE05694007007EE /* AppDelegate.m in Sources */,
+				EFCD46831EE058C300606FAB /* FirstViewController.m in Sources */,
+				EFCD46821EE058C300606FAB /* AppDelegate.m in Sources */,
+				EFCD46841EE058C300606FAB /* SecondViewController.m in Sources */,
 				EF81E74E1EE05767007007EE /* NGNConstants.m in Sources */,
-				EF81E7351EE05694007007EE /* FirstViewController.m in Sources */,
 				EF81E72F1EE05694007007EE /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,6 +365,7 @@
 				EF81E7461EE05694007007EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
