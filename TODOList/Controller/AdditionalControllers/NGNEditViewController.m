@@ -42,7 +42,7 @@
                                                                       style:UIBarButtonItemStylePlain
                                                                      target:self
                                                                      action:@selector(saveBarButtonTapped:)];
-    if ([self.taskNameInsertTextField.text isEqualToString:@""]) {
+    if (!self.taskNameInsertTextField.text) {
         saveBarButton.enabled = NO;
     }
     self.navigationItem.rightBarButtonItem = saveBarButton;
@@ -105,7 +105,7 @@
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
-    if ([sender.text isEqualToString:@""]) {
+    if (![sender.text length]) {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
     else {
