@@ -17,6 +17,12 @@ static NSString *const NGNControllerSaveButtonTitle = @"Save";
 static NSString *const NGNControllerEditButtonTitle = @"Edit";
 static NSString *const NGNControllerDoneButtonTitle = @"Done";
 
+#pragma mark - segues identifiers
+static NSString *const NGNControllerSegueShowTaskDetail = @"ShowTaskDetail";
+
+#pragma mark - notification names
+static NSString *const NGNNotificationNameTaskChange = @"TaskChangeNotification";
+
 @interface NGNConstants : NSObject
 
 @end

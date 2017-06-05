@@ -16,7 +16,7 @@
 
 static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
-@interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate, NGNEditViewControllerDelegate>
+@interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) NGNTaskService *taskService;
 
@@ -28,6 +28,21 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+//    [[NSNotificationCenter defaultCenter]addObserver:self
+//                                            selector:@selector(recieveNotification:)
+//                                                name:NGNNotificationNameTaskChange
+//                                              object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      NSDictionary *userInfo = notification.userInfo;
+                                                      NGNTask *task = userInfo[@"task"];
+                                                      [self.taskService updateTask:task];
+                                                      [self.tableView reloadData];
+                                                  }];
     
     //Tasks for testing application
     NGNTask *task1 = [NGNTask taskWithId:@"1" name:@"Make calculator 3.0"];
@@ -100,29 +115,17 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    NGNTaskDetailsViewController *controller = (NGNTaskDetailsViewController *)segue.destinationViewController;
-    if ([controller isKindOfClass:[NGNTaskDetailsViewController class]]) {
-        NGNTask *entringTask = [self.taskService taskByName:[(UITableViewCell *)sender textLabel].text];
-        controller.entringTask = entringTask;
-        entringTask = nil;
+    NGNTaskDetailsViewController *taskDetailsViewController = (NGNTaskDetailsViewController *)segue.destinationViewController;
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskDetail]) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        NGNTask *task = self.taskService.taskList[indexPath.row];
+        taskDetailsViewController.entringTask = task;
     }
-    // Pass the selected object to the new view controller.
 }
-
 
 - (IBAction)addButtonTapped:(UIBarButtonItem *)sender {
     NGNEditViewController *editViewController = [[NGNEditViewController alloc] init];
-//    [self.navigationController pushViewController:editViewController animated:YES];
-    editViewController.delegate = self;
     [self showViewController:editViewController sender:sender];
-    editViewController = nil;
-}
-
-#pragma mark - delegate methods
-- (void)editViewController:(NGNEditViewController *)editViewController
-              didSavedTask:(NGNTask *)task {
-    [self.taskService updateTask:task];
-    [self.tableView reloadData];
 }
 
 @end

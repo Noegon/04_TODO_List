@@ -12,7 +12,7 @@
 #import "NGNConstants.h"
 #import "NGNTask.h"
 
-@interface NGNEditViewController () <NGNDatePickingViewControllerDelegate>
+@interface NGNEditViewController ()
 
 @property (strong, nonatomic) IBOutlet UITextField *taskNameInsertTextField;
 @property (strong, nonatomic) IBOutlet UITextView *notesInsertTextView;
@@ -42,36 +42,60 @@
                                                                       style:UIBarButtonItemStylePlain
                                                                      target:self
                                                                      action:@selector(saveBarButtonTapped:)];
-    if ([self.taskNameInsertTextField.text isEqualToString:@""]) {
+    if (!self.taskNameInsertTextField.text) {
         saveBarButton.enabled = NO;
     }
     self.navigationItem.rightBarButtonItem = saveBarButton;
     saveBarButton = nil;
     
-    if (![NGNDateFormatHelper dateFromString:self.setDateButton.titleLabel.text]) {
-        self.setDateButton.titleLabel.text = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
+    if (!self.entringTask) {
+        NSString *stringfiedTodayDate = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
+        [self.setDateButton setTitle:stringfiedTodayDate forState:UIControlStateNormal];
+        self.notesInsertTextView.text = @"insert something here";
     }
+    else {
+        NSString *stringfiedTaskDate = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.startedAt];
+        self.taskNameInsertTextField.text = self.entringTask.name;
+        [self.setDateButton setTitle:stringfiedTaskDate forState:UIControlStateNormal];
+        self.notesInsertTextView.text = self.entringTask.notes;
+    }
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserverForName:NGNNotificationNameTaskChange
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification) {
+                        NSDictionary *userInfo = notification.userInfo;
+                        NGNTask *task = userInfo[@"task"];
+                        [self.setDateButton setTitle:
+                         [NGNDateFormatHelper formattedStringFromDate:task.startedAt] forState:UIControlStateNormal];
+                    }];
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
-    // here we creating or updating task in taskList and sending changes to InboxViewController
-    id<NGNEditViewControllerDelegate> strongDelegate = self.delegate;
-    if ([strongDelegate respondsToSelector:@selector(editViewController:didSavedTask:)]) {
+    NGNTask *newTask;
+    if (!self.entringTask) {
         NSString *newTaskId = [NSString stringWithFormat:@"%d", (rand() % INT_MAX)];
-        NGNTask *newTask = [[NGNTask alloc]initWithId:newTaskId
-                                                 name:self.taskNameInsertTextField.text
-                                            startDate:[NGNDateFormatHelper dateFromString:self.setDateButton.titleLabel.text]
-                                                notes:self.notesInsertTextView.text];
-        [strongDelegate editViewController:self didSavedTask:newTask];
+        newTask = [[NGNTask alloc]initWithId:newTaskId
+                                        name:self.taskNameInsertTextField.text
+                                   startDate:[NGNDateFormatHelper dateFromString:self.setDateButton.titleLabel.text]
+                                       notes:self.notesInsertTextView.text];
     }
-    strongDelegate = nil;
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    else {
+        newTask = self.entringTask;
+        newTask.name = self.taskNameInsertTextField.text;
+        newTask.notes = self.notesInsertTextView.text;
+    }
+    NSDictionary *userInfo = @{@"task": newTask};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+                                                        object:nil
+                                                      userInfo:userInfo];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)setDateButtonTapped:(UIButton *)sender {
-    //here we change title on setDateButton by datePicker from NGNDatePickingViewController
     NGNDatePickingViewController *datePickingViewController = [[NGNDatePickingViewController alloc]init];
-    datePickingViewController.delegate = self;
+    datePickingViewController.entringTask = self.entringTask;
     [self showViewController:datePickingViewController sender:sender];
 }
 
@@ -81,19 +105,12 @@
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
-    if ([sender.text isEqualToString:@""]) {
+    if (![sender.text length]) {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
     else {
         self.navigationItem.rightBarButtonItem.enabled = YES;
     }
-}
-
-#pragma mark - delegate methods
-
-- (void)datePickingViewController:(NGNDatePickingViewController *)datePickingViewController
-                   didChangedDate:(NSDate *)date {
-    self.setDateButton.titleLabel.text = [NGNDateFormatHelper formattedStringFromDate:date];
 }
 
 @end

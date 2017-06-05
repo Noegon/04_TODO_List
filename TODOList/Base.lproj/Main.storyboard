@@ -74,7 +74,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="b3k-6z-1Eq" kind="show" id="960-gi-JLN"/>
+                                    <segue destination="b3k-6z-1Eq" kind="show" identifier="ShowTaskDetail" id="960-gi-JLN"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
