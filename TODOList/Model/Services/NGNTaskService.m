@@ -11,7 +11,7 @@
 
 @interface NGNTaskService ()
 
-@property (strong, nonatomic, readwrite) NSMutableArray<NGNTask *> *taskList;
+@property (strong, nonatomic, readwrite) NSMutableArray<NGNTask *> *privateTaskList;
 
 @end
 
@@ -19,9 +19,13 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _taskList = [[NSMutableArray alloc]init];
+        _privateTaskList = [[NSMutableArray alloc]init];
     }
     return self;
+}
+
+- (NSMutableArray *)taskList {
+    return [self.privateTaskList mutableCopy];
 }
 
 - (NGNTask *)taskById:(NSString *)taskId {
@@ -29,24 +33,18 @@
     return [[self.taskList filteredArrayUsingPredicate:predicate]firstObject];
 }
 
-- (NGNTask *)taskByName:(NSString *)taskName {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains %@", taskName];
-    return [[self.taskList filteredArrayUsingPredicate:predicate]firstObject];
-}
-
 - (void)addTask:(NGNTask *)task {
-    [(NSMutableArray *)self.taskList addObject:task];
+    [self.privateTaskList addObject:task];
 }
 
 - (void)removeTask:(NGNTask *)task {
-    [(NSMutableArray *)self.taskList removeObject:task];
+    [self.privateTaskList removeObject:task];
 }
 
 - (void)updateTask:(NGNTask *)task {
     NGNTask *oldTask = [self taskById:task.taskId];
     if (oldTask) {
-        [(NSMutableArray *)self.taskList insertObject:task
-                                              atIndex:[self.taskList indexOfObject:oldTask]];
+        self.privateTaskList[[self.taskList indexOfObject:oldTask]] = task;
     }
     else {
         [self addTask:task];

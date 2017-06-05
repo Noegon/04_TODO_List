@@ -9,18 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @class NGNTask;
-@class NGNEditViewController;
-
-@protocol NGNEditViewControllerDelegate <NSObject>
-
-@optional
-- (void)editViewController:(NGNEditViewController *)editViewController
-              didSavedTask:(NGNTask *)task;
-
-@end
 
 @interface NGNEditViewController : UIViewController
 
-@property (nonatomic, weak) id<NGNEditViewControllerDelegate> delegate;
+@property (strong, nonatomic) NGNTask *entringTask;
 
 @end

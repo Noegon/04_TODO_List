@@ -8,18 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class NGNDatePickingViewController;
-
-@protocol NGNDatePickingViewControllerDelegate <NSObject>
-
-@optional
-- (void)datePickingViewController:(NGNDatePickingViewController *)datePickingViewController
-                     didChangedDate:(NSDate *)date;
-
-@end
+@class NGNTask;
 
 @interface NGNDatePickingViewController : UIViewController
 
-@property (nonatomic, weak) id<NGNDatePickingViewControllerDelegate> delegate;
+@property (strong, nonatomic) NGNTask *entringTask;
 
 @end

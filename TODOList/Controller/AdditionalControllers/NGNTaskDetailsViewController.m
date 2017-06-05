@@ -33,30 +33,51 @@
     [super viewDidLoad];
     
     if (self.entringTask) {
-        self.taskIdLabel.text = self.entringTask.taskId;
-        self.taskNameLabel.text = self.entringTask.name;
-        self.startDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.startedAt];
-        self.notesLabel.text = self.entringTask.notes;
-        if (self.entringTask.isCompleted) {
-            self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.finishedAt];
-            self.doneButton.enabled = NO;
-        }
+        [self renewInformation];
     }
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserverForName:NGNNotificationNameTaskChange
+     object:nil
+     queue:[NSOperationQueue mainQueue]
+     usingBlock:^(NSNotification *notification) {
+         NSDictionary *userInfo = notification.userInfo;
+         NGNTask *task = userInfo[@"task"];
+         if ([task isEqual:self.entringTask]) {
+             self.entringTask = task;
+             [self renewInformation];
+         }
+     }];
 }
 
 - (IBAction)doneButtonTapped:(UIButton *)sender {
     self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
     self.entringTask.finishedAt = [NSDate date];
+    NSDictionary *userInfo = @{@"task": self.entringTask};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+                                                        object:nil
+                                                      userInfo:userInfo];
     self.entringTask.completed = YES;
+    self.doneButton.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
     NGNEditViewController *editViewController = [[NGNEditViewController alloc] init];
-    if (self.entringTask) {
-//        editViewController.n
-    }
+    editViewController.entringTask = self.entringTask;
     [self showViewController:editViewController sender:sender];
-    editViewController = nil;
+}
+
+- (void)renewInformation {
+    self.taskIdLabel.text = self.entringTask.taskId;
+    self.taskNameLabel.text = self.entringTask.name;
+    self.startDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.startedAt];
+    self.notesLabel.text = self.entringTask.notes;
+    if (self.entringTask.isCompleted) {
+        self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.finishedAt];
+        self.doneButton.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
 }
 
 

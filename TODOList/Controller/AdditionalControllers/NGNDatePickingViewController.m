@@ -8,6 +8,7 @@
 
 #import "NGNDatePickingViewController.h"
 #import "NGNConstants.h"
+#import "NGNTask.h"
 
 @interface NGNDatePickingViewController ()
 
@@ -52,12 +53,14 @@
 
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
 //#warning uncompleted definition of "doneButtonTapped" method!!!
-    // here we changing date and sending to delegate changed value
-    id<NGNDatePickingViewControllerDelegate> strongDelegate = self.delegate;
-    if ([strongDelegate respondsToSelector:@selector(datePickingViewController:didChangedDate:)]) {
-        [strongDelegate datePickingViewController:self didChangedDate:self.datePicker.date];
+    if (!self.entringTask) {
+        self.entringTask = [[NGNTask alloc]init];
     }
-    strongDelegate = nil;
+    self.entringTask.startedAt = self.datePicker.date;
+    NSDictionary *userInfo = @{@"task": self.entringTask};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+                                                        object:nil
+                                                      userInfo:userInfo];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
