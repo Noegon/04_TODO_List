@@ -10,8 +10,9 @@
 #import "NGNDatePickingViewController.h"
 #import "NGNDateFormatHelper.h"
 #import "NGNConstants.h"
+#import "NGNTask.h"
 
-@interface NGNEditViewController ()
+@interface NGNEditViewController () <NGNDatePickingViewControllerDelegate>
 
 @property (strong, nonatomic) IBOutlet UITextField *taskNameInsertTextField;
 @property (strong, nonatomic) IBOutlet UITextView *notesInsertTextView;
@@ -28,6 +29,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    srand((unsigned int)time(NULL));
     
     // taskNameInsertTextField configured
     [self.taskNameInsertTextField becomeFirstResponder];
@@ -45,28 +47,32 @@
     }
     self.navigationItem.rightBarButtonItem = saveBarButton;
     saveBarButton = nil;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
-    // setDate button configured
-    if ([self.setDateButton.titleLabel.text isEqualToString:@"Set Date"]) {
-        NSString *tmpDateString = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
-        NSLog(@"%@", tmpDateString);
-        self.setDateButton.titleLabel.text = tmpDateString;
+    if (![NGNDateFormatHelper dateFromString:self.setDateButton.titleLabel.text]) {
+        self.setDateButton.titleLabel.text = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
     }
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
-#warning uncompleted declaration of "saveBarButtonTapped" method!!!
+    // here we creating or updating task in taskList and sending changes to InboxViewController
+    id<NGNEditViewControllerDelegate> strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(editViewController:didSavedTask:)]) {
+        NSString *newTaskId = [NSString stringWithFormat:@"%d", (rand() % INT_MAX)];
+        NGNTask *newTask = [[NGNTask alloc]initWithId:newTaskId
+                                                 name:self.taskNameInsertTextField.text
+                                            startDate:[NGNDateFormatHelper dateFromString:self.setDateButton.titleLabel.text]
+                                                notes:self.notesInsertTextView.text];
+        [strongDelegate editViewController:self didSavedTask:newTask];
+    }
+    strongDelegate = nil;
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (IBAction)setDateButtonTapped:(UIButton *)sender {
-#warning uncompleted declaration of "setDateButtonTapped" method!!!
-    NGNDatePickingViewController *datePicingViewController = [[NGNDatePickingViewController alloc]init];
-    [self showViewController:datePicingViewController sender:sender];
+    //here we change title on setDateButton by datePicker from NGNDatePickingViewController
+    NGNDatePickingViewController *datePickingViewController = [[NGNDatePickingViewController alloc]init];
+    datePickingViewController.delegate = self;
+    [self showViewController:datePickingViewController sender:sender];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -82,4 +88,12 @@
         self.navigationItem.rightBarButtonItem.enabled = YES;
     }
 }
+
+#pragma mark - delegate methods
+
+- (void)datePickingViewController:(NGNDatePickingViewController *)datePickingViewController
+                   didChangedDate:(NSDate *)date {
+    self.setDateButton.titleLabel.text = [NGNDateFormatHelper formattedStringFromDate:date];
+}
+
 @end

@@ -14,11 +14,20 @@
     return [[self alloc]initWithId:taskId name:name];
 }
 
++ (instancetype)taskWithId:(NSString *)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
+    return [[self alloc]initWithId:taskId name:name startDate:startDate notes:notes];
+}
+
 - (instancetype)initWithId:(NSString *)taskId name:(NSString *)name {
+    return [self initWithId:taskId name:name startDate:[NSDate date] notes:@""];
+}
+
+- (instancetype)initWithId:(NSString *)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
     if (self = [super init]) {
         _taskId = taskId;
         _name = name;
-        _startedAt = [NSDate date];
+        _startedAt = startDate;
+        _notes = notes;
     }
     return self;
 }

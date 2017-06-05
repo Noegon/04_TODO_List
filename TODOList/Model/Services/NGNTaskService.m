@@ -29,6 +29,11 @@
     return [[self.taskList filteredArrayUsingPredicate:predicate]firstObject];
 }
 
+- (NGNTask *)taskByName:(NSString *)taskName {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains %@", taskName];
+    return [[self.taskList filteredArrayUsingPredicate:predicate]firstObject];
+}
+
 - (void)addTask:(NGNTask *)task {
     [(NSMutableArray *)self.taskList addObject:task];
 }
@@ -38,7 +43,14 @@
 }
 
 - (void)updateTask:(NGNTask *)task {
-    //???
+    NGNTask *oldTask = [self taskById:task.taskId];
+    if (oldTask) {
+        [(NSMutableArray *)self.taskList insertObject:task
+                                              atIndex:[self.taskList indexOfObject:oldTask]];
+    }
+    else {
+        [self addTask:task];
+    }
 }
 
 - (void)removeTaskById:(NSString *)taskId {

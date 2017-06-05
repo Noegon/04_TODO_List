@@ -8,13 +8,15 @@
 
 #import "NGNInboxViewController.h"
 #import "NGNEditViewController.h"
+#import "NGNTaskDetailsViewController.h"
+#import "NGNDateFormatHelper.h"
 #import "NGNTask.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 
 static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
-@interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate, NGNEditViewControllerDelegate>
 
 @property (strong, nonatomic) NGNTaskService *taskService;
 
@@ -93,21 +95,34 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
+    NGNTaskDetailsViewController *controller = (NGNTaskDetailsViewController *)segue.destinationViewController;
+    if ([controller isKindOfClass:[NGNTaskDetailsViewController class]]) {
+        NGNTask *entringTask = [self.taskService taskByName:[(UITableViewCell *)sender textLabel].text];
+        controller.entringTask = entringTask;
+        entringTask = nil;
+    }
     // Pass the selected object to the new view controller.
 }
-*/
+
 
 - (IBAction)addButtonTapped:(UIBarButtonItem *)sender {
     NGNEditViewController *editViewController = [[NGNEditViewController alloc] init];
 //    [self.navigationController pushViewController:editViewController animated:YES];
+    editViewController.delegate = self;
     [self showViewController:editViewController sender:sender];
     editViewController = nil;
+}
+
+#pragma mark - delegate methods
+- (void)editViewController:(NGNEditViewController *)editViewController
+              didSavedTask:(NGNTask *)task {
+    [self.taskService updateTask:task];
+    [self.tableView reloadData];
 }
 
 @end

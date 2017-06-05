@@ -14,6 +14,7 @@
 @property (strong, nonatomic, readonly) NSArray *taskList;
 
 - (NGNTask *)taskById:(NSString *)taskId;
+- (NGNTask *)taskByName:(NSString *)taskName;
 - (void)addTask:(NGNTask *)task;
 - (void)removeTask:(NGNTask *)task;
 - (void)updateTask:(NGNTask *)task;

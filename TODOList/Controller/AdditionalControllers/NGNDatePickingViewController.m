@@ -51,9 +51,13 @@
 */
 
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
-#warning uncompleted definition of "doneButtonTapped" method!!!
-    //stub
-    NSLog(@"%@", self.datePicker.date);
+//#warning uncompleted definition of "doneButtonTapped" method!!!
+    // here we changing date and sending to delegate changed value
+    id<NGNDatePickingViewControllerDelegate> strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(datePickingViewController:didChangedDate:)]) {
+        [strongDelegate datePickingViewController:self didChangedDate:self.datePicker.date];
+    }
+    strongDelegate = nil;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
