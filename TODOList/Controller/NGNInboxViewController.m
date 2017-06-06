@@ -63,14 +63,15 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //#warning Incomplete implementation, return the number of rows
-    return [self.taskService.taskList count];
+    return [[self.taskService activeTasksList] count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
-    NGNTask *task = self.taskService.taskList[indexPath.row];
+//    NGNTask *task = self.taskService.taskList[indexPath.row];
+    NGNTask *task = [self.taskService activeTasksList][indexPath.row];
     taskCell.textLabel.text = task.name;
     return taskCell;
 }

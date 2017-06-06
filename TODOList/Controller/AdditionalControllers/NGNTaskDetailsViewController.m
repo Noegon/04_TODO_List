@@ -53,6 +53,7 @@
 - (IBAction)doneButtonTapped:(UIButton *)sender {
     self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
     self.entringTask.finishedAt = [NSDate date];
+    self.entringTask.completed = YES;
     NSDictionary *userInfo = @{@"task": self.entringTask};
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
                                                         object:nil

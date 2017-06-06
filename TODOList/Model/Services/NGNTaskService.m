@@ -56,4 +56,10 @@
     [self removeTask:taskToRemove];
 }
 
+- (NSArray *)activeTasksList {
+    NSArray *activeTasks = [self.taskList filteredArrayUsingPredicate:
+                            [NSPredicate predicateWithFormat:@"SELF.isCompleted == NO"]];
+    return activeTasks;
+}
+
 @end
