@@ -8,56 +8,40 @@
 
 #import "NGNTaskService.h"
 #import "NGNTask.h"
+#import "NGNTaskList.h"
 
 @interface NGNTaskService ()
-
-@property (strong, nonatomic, readwrite) NSMutableArray<NGNTask *> *privateTaskList;
 
 @end
 
 @implementation NGNTaskService
 
-- (instancetype)init {
-    if (self = [super init]) {
-        _privateTaskList = [[NSMutableArray alloc]init];
-    }
-    return self;
++ (instancetype)sharedInstance {
+    static NGNTaskService *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+#warning hardcoded test datasource
+        sharedInstance = [[NGNTaskService alloc] init];
+        NGNTask *task1 = [NGNTask taskWithId:1 name:@"Make calculator 3.0"];
+        NGNTask *task2 = [NGNTask taskWithId:2 name:@"Make TODO List 0.1"];
+        NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
+        NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
+        [taskList addEntity:task1];
+        [taskList addEntity:task2];
+        [taskList addEntity:task3];
+        [sharedInstance addEntity:taskList];
+        
+    });
+    return sharedInstance;
 }
 
-- (NSMutableArray *)taskList {
-    return [self.privateTaskList mutableCopy];
+- (NSArray *)allTasks {
+    NSArray *unitedArray = [self.entityCollection valueForKeyPath:@"@unionOfArrays.self.entityCollection"];
+    return unitedArray;
 }
 
-- (NGNTask *)taskById:(NSString *)taskId {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.taskId contains[cd] %@", taskId];
-    return [[self.taskList filteredArrayUsingPredicate:predicate]firstObject];
-}
-
-- (void)addTask:(NGNTask *)task {
-    [self.privateTaskList addObject:task];
-}
-
-- (void)removeTask:(NGNTask *)task {
-    [self.privateTaskList removeObject:task];
-}
-
-- (void)updateTask:(NGNTask *)task {
-    NGNTask *oldTask = [self taskById:task.taskId];
-    if (oldTask) {
-        self.privateTaskList[[self.taskList indexOfObject:oldTask]] = task;
-    }
-    else {
-        [self addTask:task];
-    }
-}
-
-- (void)removeTaskById:(NSString *)taskId {
-    NGNTask *taskToRemove = [self taskById:taskId];
-    [self removeTask:taskToRemove];
-}
-
-- (NSArray *)activeTasksList {
-    NSArray *activeTasks = [self.taskList filteredArrayUsingPredicate:
+- (NSArray *)allActiveTasks {
+    NSArray *activeTasks = [[self allTasks] filteredArrayUsingPredicate:
                             [NSPredicate predicateWithFormat:@"SELF.isCompleted == NO"]];
     return activeTasks;
 }

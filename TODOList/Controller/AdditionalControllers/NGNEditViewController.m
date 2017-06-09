@@ -8,7 +8,7 @@
 
 #import "NGNEditViewController.h"
 #import "NGNDatePickingViewController.h"
-#import "NGNDateFormatHelper.h"
+#import "NSDate+NGNDateToStringConverter.h"
 #import "NGNConstants.h"
 #import "NGNTask.h"
 
@@ -49,12 +49,12 @@
     saveBarButton = nil;
     
     if (!self.entringTask) {
-        NSString *stringfiedTodayDate = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
+        NSString *stringfiedTodayDate = [NSDate ngn_formattedStringFromDate:[NSDate date]];
         [self.setDateButton setTitle:stringfiedTodayDate forState:UIControlStateNormal];
         self.notesInsertTextView.text = @"insert something here";
     }
     else {
-        NSString *stringfiedTaskDate = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.startedAt];
+        NSString *stringfiedTaskDate = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
         self.taskNameInsertTextField.text = self.entringTask.name;
         [self.setDateButton setTitle:stringfiedTaskDate forState:UIControlStateNormal];
         self.notesInsertTextView.text = self.entringTask.notes;
@@ -65,20 +65,20 @@
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification) {
-                        NSDictionary *userInfo = notification.userInfo;
-                        NGNTask *task = userInfo[@"task"];
-                        [self.setDateButton setTitle:
-                         [NGNDateFormatHelper formattedStringFromDate:task.startedAt] forState:UIControlStateNormal];
-                    }];
+        NSDictionary *userInfo = notification.userInfo;
+        NGNTask *task = userInfo[@"task"];
+        [self.setDateButton setTitle:
+        [NSDate ngn_formattedStringFromDate:task.startedAt] forState:UIControlStateNormal];
+    }];
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
     NGNTask *newTask;
     if (!self.entringTask) {
-        NSString *newTaskId = [NSString stringWithFormat:@"%d", (rand() % INT_MAX)];
+        NSInteger newTaskId = (rand() % INT_MAX);
         newTask = [[NGNTask alloc]initWithId:newTaskId
                                         name:self.taskNameInsertTextField.text
-                                   startDate:[NGNDateFormatHelper dateFromString:self.setDateButton.titleLabel.text]
+                                   startDate:[NSDate ngn_dateFromString:self.setDateButton.titleLabel.text]
                                        notes:self.notesInsertTextView.text];
     }
     else {
@@ -105,12 +105,7 @@
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
-    if (![sender.text length]) {
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-    }
-    else {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    }
+    self.navigationItem.rightBarButtonItem.enabled = [sender.text length] ? YES : NO; //but I dont like ternary opereator anyway)
 }
 
 @end

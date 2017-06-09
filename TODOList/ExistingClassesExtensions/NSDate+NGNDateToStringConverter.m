@@ -1,23 +1,23 @@
 //
-//  NGNDateFormatHelper.m
+//  NSDate+NGNDateToStringConverter.m
 //  TODOList
 //
-//  Created by Alex on 04.06.17.
+//  Created by Alex on 07.06.17.
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
-#import "NGNDateFormatHelper.h"
+#import "NSDate+NGNDateToStringConverter.h"
 #import "NGNConstants.h"
 
-@implementation NGNDateFormatHelper
+@implementation NSDate (NGNDateToStringConverter)
 
-+ (NSDate *)dateFromString:(NSString *)dateFormattedString {
++ (NSDate *)ngn_dateFromString:(NSString *)dateFormattedString {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:NGNControllerDateFormat];
     return [formatter dateFromString:dateFormattedString];
 }
 
-+ (NSString *)formattedStringFromDate:(NSDate *)date {
++ (NSString *)ngn_formattedStringFromDate:(NSDate *)date {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:NGNControllerDateFormat];
     return [formatter stringFromDate:date];

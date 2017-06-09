@@ -9,8 +9,9 @@
 #import "NGNInboxViewController.h"
 #import "NGNEditViewController.h"
 #import "NGNTaskDetailsViewController.h"
-#import "NGNDateFormatHelper.h"
+#import "NSDate+NGNDateToStringConverter.h"
 #import "NGNTask.h"
+#import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 
@@ -18,7 +19,7 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 @interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) NGNTaskService *taskService;
+@property (strong, nonatomic) NGNTaskList *taskList;
 
 - (IBAction)addButtonTapped:(UIBarButtonItem *)sender;
 
@@ -26,32 +27,37 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 @implementation NGNInboxViewController
 
+-(instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        _taskList = [[NGNTaskList alloc]initWithId:2 name:@"Common task list"];
+        [[NGNTaskService sharedInstance]addEntity:self.taskList];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-//    [[NSNotificationCenter defaultCenter]addObserver:self
-//                                            selector:@selector(recieveNotification:)
-//                                                name:NGNNotificationNameTaskChange
-//                                              object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
-                                                      NSDictionary *userInfo = notification.userInfo;
-                                                      NGNTask *task = userInfo[@"task"];
-                                                      [self.taskService updateTask:task];
-                                                      [self.tableView reloadData];
-                                                  }];
-    
-    //Tasks for testing application
-    NGNTask *task1 = [NGNTask taskWithId:@"1" name:@"Make calculator 3.0"];
-    NGNTask *task2 = [NGNTask taskWithId:@"2" name:@"Make TODO List 0.1"];
-    NGNTask *task3 = [NGNTask taskWithId:@"3" name:@"Make somthing useful"];
-    self.taskService = [[NGNTaskService alloc]init];
-    [self.taskService addTask:task1];
-    [self.taskService addTask:task2];
-    [self.taskService addTask:task3];
+        NSDictionary *userInfo = notification.userInfo;
+        NGNTask *task = userInfo[@"task"];
+        if ([self.taskList entityById:task.entityId]) {
+            [self.taskList updateEntity:task];
+                                                      }
+        [[NGNTaskService sharedInstance]updateEntity:self.taskList];
+        [self.tableView reloadData];
+    }];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    for (NGNTask *task in self.taskList.entityCollection) {
+        if (![task.name length]) {
+            [self.taskList removeEntity:task];
+        }
+    }
 }
 
 #pragma mark - Table view data source
@@ -63,7 +69,7 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //#warning Incomplete implementation, return the number of rows
-    return [[self.taskService activeTasksList] count];
+    return [[[NGNTaskService sharedInstance]allActiveTasks] count];
 }
 
 
@@ -71,7 +77,7 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
 //    NGNTask *task = self.taskService.taskList[indexPath.row];
-    NGNTask *task = [self.taskService activeTasksList][indexPath.row];
+    NGNTask *task = [[NGNTaskService sharedInstance]allActiveTasks][indexPath.row];
     taskCell.textLabel.text = task.name;
     return taskCell;
 }
@@ -119,13 +125,16 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
     NGNTaskDetailsViewController *taskDetailsViewController = (NGNTaskDetailsViewController *)segue.destinationViewController;
     if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskDetail]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTask *task = self.taskService.taskList[indexPath.row];
+        NGNTask *task = [[NGNTaskService sharedInstance]allActiveTasks][indexPath.row];
         taskDetailsViewController.entringTask = task;
     }
 }
 
 - (IBAction)addButtonTapped:(UIBarButtonItem *)sender {
+    NGNTask *task = [NGNTask taskWithId:0 name:nil];
+    [self.taskList addEntity:task];
     NGNEditViewController *editViewController = [[NGNEditViewController alloc] init];
+    editViewController.entringTask = task;
     [self showViewController:editViewController sender:sender];
 }
 

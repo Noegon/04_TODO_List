@@ -8,7 +8,7 @@
 
 #import "NGNTaskDetailsViewController.h"
 #import "NGNEditViewController.h"
-#import "NGNDateFormatHelper.h"
+#import "NSDate+NGNDateToStringConverter.h"
 #import "NGNTask.h"
 #import "NGNConstants.h"
 
@@ -51,7 +51,7 @@
 }
 
 - (IBAction)doneButtonTapped:(UIButton *)sender {
-    self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
+    self.finishDateLabel.text = [NSDate ngn_formattedStringFromDate:[NSDate date]];
     self.entringTask.finishedAt = [NSDate date];
     self.entringTask.completed = YES;
     NSDictionary *userInfo = @{@"task": self.entringTask};
@@ -70,12 +70,12 @@
 }
 
 - (void)renewInformation {
-    self.taskIdLabel.text = self.entringTask.taskId;
+    self.taskIdLabel.text = [NSString stringWithFormat:@"%ld", self.entringTask.entityId];
     self.taskNameLabel.text = self.entringTask.name;
-    self.startDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.startedAt];
+    self.startDateLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
     self.notesLabel.text = self.entringTask.notes;
     if (self.entringTask.isCompleted) {
-        self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.finishedAt];
+        self.finishDateLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.finishedAt];
         self.doneButton.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
