@@ -11,11 +11,11 @@
 @implementation NGNTask
 
 + (instancetype)taskWithId:(NSString *)taskId name:(NSString *)name {
-    return [[self alloc]initWithId:taskId name:name];
+    return [[self alloc] initWithId:taskId name:name];
 }
 
 + (instancetype)taskWithId:(NSString *)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
-    return [[self alloc]initWithId:taskId name:name startDate:startDate notes:notes];
+    return [[self alloc] initWithId:taskId name:name startDate:startDate notes:notes];
 }
 
 - (instancetype)initWithId:(NSString *)taskId name:(NSString *)name {
@@ -32,8 +32,7 @@
     return self;
 }
 
-- (BOOL)isEqual:(id)other
-{
+- (BOOL)isEqual:(id)other {
     NGNTask *tmpOther = (NGNTask *)other;
     if (other == self) {
         return YES;
@@ -44,8 +43,7 @@
     }
 }
 
-- (NSUInteger)hash
-{
+- (NSUInteger)hash {
     return [self.taskId hash];
 }
 

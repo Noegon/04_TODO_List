@@ -65,11 +65,11 @@
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification) {
-                        NSDictionary *userInfo = notification.userInfo;
-                        NGNTask *task = userInfo[@"task"];
-                        [self.setDateButton setTitle:
-                         [NGNDateFormatHelper formattedStringFromDate:task.startedAt] forState:UIControlStateNormal];
-                    }];
+        NSDictionary *userInfo = notification.userInfo;
+        NGNTask *task = userInfo[@"task"];
+        [self.setDateButton setTitle:
+        [NGNDateFormatHelper formattedStringFromDate:task.startedAt] forState:UIControlStateNormal];
+    }];
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
@@ -105,12 +105,7 @@
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
-    if (![sender.text length]) {
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-    }
-    else {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    }
+    self.navigationItem.rightBarButtonItem.enabled = [sender.text length] ? YES : NO;
 }
 
 @end
