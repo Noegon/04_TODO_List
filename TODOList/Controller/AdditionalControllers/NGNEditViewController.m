@@ -105,7 +105,7 @@
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
-    self.navigationItem.rightBarButtonItem.enabled = [sender.text length] ? YES : NO; //but I dont like ternary opereator anyway)
+    self.navigationItem.rightBarButtonItem.enabled = [sender.text length] ? YES : NO;
 }
 
 @end

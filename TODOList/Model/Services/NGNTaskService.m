@@ -26,10 +26,18 @@
         NGNTask *task2 = [NGNTask taskWithId:2 name:@"Make TODO List 0.1"];
         NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
         NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
+        NGNTask *task4 = [NGNTask taskWithId:4 name:@"Buy milk"];
+        NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"];
+        NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
+                                                           name:@"Commodities"
+                                                   creationDate:[NSDate dateWithTimeIntervalSinceNow:1000000]];
         [taskList addEntity:task1];
         [taskList addEntity:task2];
         [taskList addEntity:task3];
+        [taskList2 addEntity:task4];
+        [taskList2 addEntity:task5];
         [sharedInstance addEntity:taskList];
+        [sharedInstance addEntity:taskList2];
         
     });
     return sharedInstance;

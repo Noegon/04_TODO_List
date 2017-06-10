@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSDate *creationDate;
 
 - (instancetype)initWithId:(NSInteger)entityId name:(NSString *)name;
+- (instancetype)initWithId:(NSInteger)entityId name:(NSString *)name creationDate:(NSDate *)creationDate;
 
 - (NSArray *)activeTasksList;
 

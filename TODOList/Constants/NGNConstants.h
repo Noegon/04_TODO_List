@@ -10,6 +10,7 @@
 
 #pragma mark - controller constants
 static NSString *const NGNControllerTaskCellIdentifier = @"NGNTaskCell";
+static NSString *const NGNControllerTaskCollectionCellIdentifier = @"NGNTaskCollectionCell";
 static NSString *const NGNControllerDateFormat = @"dd/LL/yyyy";
 
 #pragma mark - some view titles

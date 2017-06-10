@@ -57,4 +57,8 @@
     [self removeEntity:entityToRemove];
 }
 
+- (void)sortEntityCollectionUsingComparator:(NSComparator NS_NOESCAPE)cmptr {
+    [_privateEntityCollection sortUsingComparator:cmptr];
+}
+
 @end

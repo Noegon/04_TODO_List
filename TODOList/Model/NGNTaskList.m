@@ -15,20 +15,21 @@
 
 @implementation NGNTaskList
 
-- (instancetype)initWithId:(NSInteger)entityId name:(NSString *)name {
+- (instancetype)initWithId:(NSInteger)entityId name:(NSString *)name creationDate:(NSDate *)creationDate {
     if (self = [super init]) {
         _entityId = entityId;
         _name = name;
-        _creationDate = [NSDate date];
+        _creationDate = creationDate;
     }
     return self;
 }
 
+- (instancetype)initWithId:(NSInteger)entityId name:(NSString *)name {
+    return [self initWithId:entityId name:name creationDate:[NSDate date]];
+}
+
 - (instancetype)init {
-    if (self = [super init]) {
-        _creationDate = [NSDate date];
-    }
-    return self;
+    return [self initWithId:0 name:nil];
 }
 
 - (NSArray *)activeTasksList {

@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Projects View Controller-->
+        <!--Projects-->
         <scene sceneID="p7o-7M-tHk">
             <objects>
                 <tableViewController id="bnJ-d2-WmC" customClass="NGNProjectsViewController" sceneMemberID="viewController">
@@ -18,18 +18,94 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NGNTaskCollectionCell" textLabel="PgS-Al-rSJ" detailTextLabel="tyR-XC-27i" style="IBUITableViewCellStyleValue1" id="jD7-fx-KMC">
+                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jD7-fx-KMC" id="tqH-k9-859">
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PgS-Al-rSJ">
+                                            <rect key="frame" x="14.999999999999996" y="7" width="47.666666666666664" height="30"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tyR-XC-27i">
+                                            <rect key="frame" x="335" y="14.999999999999998" width="44" height="20.333333333333332"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="MLy-fy-evY" kind="show" id="ocV-db-gJV"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="bnJ-d2-WmC" id="cJR-jN-6sr"/>
                             <outlet property="delegate" destination="bnJ-d2-WmC" id="Ewz-oc-jkm"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="UMm-XQ-pyO"/>
+                    <navigationItem key="navigationItem" title="Projects" id="UMm-XQ-pyO">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="SH5-WV-PLi"/>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h04-dE-iR4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1385" y="130"/>
         </scene>
-        <!--Search View Controller-->
+        <!--Tasc collection details-->
+        <scene sceneID="gNg-TE-saA">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yIh-ue-Su8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="MLy-fy-evY" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="xAA-yt-3ce">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="CTA-vK-naB" style="IBUITableViewCellStyleDefault" id="FCv-4Y-zjW">
+                                <rect key="frame" x="0.0" y="55" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FCv-4Y-zjW" id="dQW-cZ-uGz">
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CTA-vK-naB">
+                                            <rect key="frame" x="15" y="0.0" width="364" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="b3k-6z-1Eq" kind="show" id="Psw-kp-jMe"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="MLy-fy-evY" id="9zV-Kg-qqr"/>
+                            <outlet property="delegate" destination="MLy-fy-evY" id="OVe-OT-RlO"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Tasc collection details" id="5Ur-xr-2Yh">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="IHJ-Mc-lO4"/>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="2239" y="130"/>
+        </scene>
+        <!--Search-->
         <scene sceneID="KTp-g5-A11">
             <objects>
                 <tableViewController id="NNt-sD-l66" customClass="NGNSearchViewController" sceneMemberID="viewController">
@@ -37,14 +113,61 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" showsSearchResultsButton="YES" showsCancelButton="YES" id="5ur-uM-MLE">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits" keyboardAppearance="light"/>
+                            <connections>
+                                <outlet property="delegate" destination="NNt-sD-l66" id="q8C-nD-WaY"/>
+                            </connections>
+                        </searchBar>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="xke-5o-BwK" style="IBUITableViewCellStyleDefault" id="2Ih-WP-Y1a">
+                                <rect key="frame" x="0.0" y="72" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Ih-WP-Y1a" id="Xre-Ee-vdr">
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xke-5o-BwK">
+                                            <rect key="frame" x="15" y="0.0" width="364" height="43.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="NNt-sD-l66" id="PR3-RM-hTq"/>
                             <outlet property="delegate" destination="NNt-sD-l66" id="gz0-mc-TG2"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="akW-oS-kTb"/>
+                    <navigationItem key="navigationItem" title="Search" id="v0U-Pb-7CJ"/>
+                    <connections>
+                        <outlet property="searchDisplayController" destination="NC5-TD-kmg" id="nbJ-Cj-4Xb"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="N9z-sh-u6h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="fBG-Yb-TdL">
+                    <connections>
+                        <outlet property="delegate" destination="NNt-sD-l66" id="Hzl-GX-jmn"/>
+                        <outlet property="searchContentsController" destination="NNt-sD-l66" id="guW-zT-P1a"/>
+                        <outlet property="searchResultsDataSource" destination="NNt-sD-l66" id="EN8-ZP-g3I"/>
+                        <outlet property="searchResultsDelegate" destination="NNt-sD-l66" id="czM-Zz-1ih"/>
+                    </connections>
+                </searchDisplayController>
+                <searchDisplayController id="NC5-TD-kmg">
+                    <connections>
+                        <outlet property="delegate" destination="NNt-sD-l66" id="MYZ-fq-6jq"/>
+                        <outlet property="searchBar" destination="5ur-uM-MLE" id="Ov8-xY-JgO"/>
+                        <outlet property="searchContentsController" destination="NNt-sD-l66" id="sAV-HA-ace"/>
+                        <outlet property="searchResultsDataSource" destination="NNt-sD-l66" id="Fa8-bL-xVt"/>
+                        <outlet property="searchResultsDelegate" destination="NNt-sD-l66" id="vFs-ey-eh8"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="1385" y="884"/>
         </scene>
@@ -52,21 +175,22 @@
         <scene sceneID="IqL-cv-PSU">
             <objects>
                 <tableViewController id="yxI-q1-gO3" customClass="NGNInboxViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="dXP-YE-dNU">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="dXP-YE-dNU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NGNTaskCell" textLabel="sPM-YS-PdP" style="IBUITableViewCellStyleDefault" id="4Ae-Pf-XCu">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NGNTaskCell" textLabel="sPM-YS-PdP" style="IBUITableViewCellStyleDefault" id="4Ae-Pf-XCu">
+                                <rect key="frame" x="0.0" y="55" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Ae-Pf-XCu" id="caU-qV-Mm7">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sPM-YS-PdP">
-                                            <rect key="frame" x="15" y="0.0" width="384" height="43.666666666666664"/>
+                                            <rect key="frame" x="15" y="0.0" width="364" height="43.666666666666664"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <gestureRecognizers/>
                                             <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -84,11 +208,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Inbox" id="axE-GV-PuS">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Bbz-Tx-V9g">
-                            <connections>
-                                <action selector="addButtonTapped:" destination="yxI-q1-gO3" id="Bd5-Lw-tS6"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="iconmonstr-filter-3-32" id="Bbz-Tx-V9g"/>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I1H-yO-g7w" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -99,7 +219,7 @@
         <scene sceneID="Wa6-dQ-IZV">
             <objects>
                 <tableViewController id="b3k-6z-1Eq" customClass="NGNTaskDetailsViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="dld-Fz-My1">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="dld-Fz-My1">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -293,7 +413,7 @@
         <scene sceneID="4Ig-dr-soy">
             <objects>
                 <navigationController title="Inbox" automaticallyAdjustsScrollViewInsets="NO" id="mDg-7M-1ho" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Inbox" image="first" selectedImage="first" id="2Ap-W6-omJ"/>
+                    <tabBarItem key="tabBarItem" title="Inbox" image="folder-32" selectedImage="folder-32" id="2Ap-W6-omJ"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="fvT-TM-vnA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -315,11 +435,14 @@
         <scene sceneID="TLQ-dk-1HG">
             <objects>
                 <navigationController title="Projects" automaticallyAdjustsScrollViewInsets="NO" id="VSJ-yC-BXs" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Projects" image="first" selectedImage="first" id="Icn-Ig-U9H"/>
+                    <tabBarItem key="tabBarItem" title="Projects" image="my_files-32" selectedImage="my_files-32" id="Icn-Ig-U9H"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="q5i-cm-i4Z">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="q5i-cm-i4Z">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.085386164489999999" green="0.48004096750000003" blue="0.9989228845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -357,9 +480,12 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="pwf-04-koe" userLabel="Search" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" selectedImage="first" systemItem="search" id="ib6-07-6DT"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="bkM-cD-OnM">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="bkM-cD-OnM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.085386164489999999" green="0.48004096750000003" blue="0.9989228845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -393,7 +519,7 @@
         <scene sceneID="S2n-aF-0TW">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Imp-su-Nz0" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Today" image="first" selectedImage="first" id="I0a-Lw-GpJ"/>
+                    <tabBarItem key="tabBarItem" title="Today" image="clock-32" selectedImage="clock-32" id="I0a-Lw-GpJ"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="aem-9g-moW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -410,6 +536,13 @@
         </scene>
     </scenes>
     <resources>
+        <image name="clock-32" width="32" height="32"/>
         <image name="first" width="30" height="30"/>
+        <image name="folder-32" width="32" height="32"/>
+        <image name="iconmonstr-filter-3-32" width="32" height="32"/>
+        <image name="my_files-32" width="32" height="32"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="960-gi-JLN"/>
+    </inferredMetricsTieBreakers>
 </document>

@@ -20,5 +20,6 @@
 - (void)removeEntity:(id<NGNStoreable>)entity;
 - (void)updateEntity:(id<NGNStoreable>)entity;
 - (void)removeEntityById:(NSInteger)entityId;
+- (void)sortEntityCollectionUsingComparator:(NSComparator NS_NOESCAPE)cmptr;
 
 @end
