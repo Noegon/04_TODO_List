@@ -14,6 +14,8 @@
 @property (strong, nonatomic) NSDate *startedAt;
 @property (strong, nonatomic) NSDate *finishedAt;
 @property (copy, nonatomic) NSString *notes;
+@property (assign, nonatomic) BOOL shouldRemindOnDay;
+@property (assign, nonatomic) NSInteger priority;
 @property (assign, nonatomic, getter=isCompleted) BOOL completed;
 
 + (instancetype)taskWithId:(NSInteger)taskId name:(NSString *)name;

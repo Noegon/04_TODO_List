@@ -7,8 +7,8 @@
 //
 
 #import "NGNTaskDetailsViewController.h"
-#import "NGNEditViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
+#import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
 #import "NGNConstants.h"
 
@@ -20,9 +20,9 @@
 @property (strong, nonatomic) IBOutlet UILabel *finishDateLabel;
 @property (strong, nonatomic) IBOutlet UILabel *notesLabel;
 @property (strong, nonatomic) IBOutlet UIButton *doneButton;
+@property (strong, nonatomic) IBOutlet UILabel *priorityLabel;
 
 - (IBAction)doneButtonTapped:(UIButton *)sender;
-- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
 
 
 @end
@@ -63,17 +63,14 @@
     self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
-- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
-    NGNEditViewController *editViewController = [[NGNEditViewController alloc] init];
-    editViewController.entringTask = self.entringTask;
-    [self showViewController:editViewController sender:sender];
-}
-
 - (void)renewInformation {
     self.taskIdLabel.text = [NSString stringWithFormat:@"%ld", self.entringTask.entityId];
     self.taskNameLabel.text = self.entringTask.name;
     self.startDateLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
     self.notesLabel.text = self.entringTask.notes;
+    self.priorityLabel.text = !self.entringTask.priority ?
+                                                 @"None" :
+                                                 [NSString stringWithFormat:@"%ld", self.entringTask.priority];
     if (self.entringTask.isCompleted) {
         self.finishDateLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.finishedAt];
         self.doneButton.enabled = NO;
@@ -81,17 +78,23 @@
     }
 }
 
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
+        NGNEditTaskViewController *editTaskViewController = [segue destinationViewController];
+        editTaskViewController.entringTask = self.entringTask;
+    }
+}
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//#warning Incomplete implementation, return the number of sections
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//#warning Incomplete implementation, return the number of rows
-    return 6;
+    return 7;
 }
 
 /*
@@ -135,16 +138,6 @@
  - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
  // Return NO if you do not want the item to be re-orderable.
  return YES;
- }
- */
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
  }
  */
 

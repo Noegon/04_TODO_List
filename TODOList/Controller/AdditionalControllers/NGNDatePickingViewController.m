@@ -52,7 +52,6 @@
 */
 
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
-//#warning uncompleted definition of "doneButtonTapped" method!!!
     if (!self.entringTask) {
         self.entringTask = [[NGNTask alloc]init];
     }
