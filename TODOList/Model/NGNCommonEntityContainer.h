@@ -17,9 +17,12 @@
 
 - (id<NGNStoreable>)entityById:(NSInteger)entityId;
 - (void)addEntity:(id<NGNStoreable>)entity;
+- (void)pushEntity:(id<NGNStoreable>)entity;
 - (void)removeEntity:(id<NGNStoreable>)entity;
 - (void)updateEntity:(id<NGNStoreable>)entity;
 - (void)removeEntityById:(NSInteger)entityId;
+- (void)relocateEntityAtIndex:(NSInteger)fromIndex withEntityAtIndex:(NSInteger)toIndex;
+- (void)insertEntity:(id<NGNStoreable>)entity atIndex:(NSUInteger)index;
 - (void)sortEntityCollectionUsingComparator:(NSComparator NS_NOESCAPE)cmptr;
 
 @end

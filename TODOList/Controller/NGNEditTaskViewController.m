@@ -40,7 +40,9 @@
     [self.taskNameInsertTextField becomeFirstResponder];
     
     // navigation bar title is set
-    self.navigationItem.title = @"Edit task";
+    if (![self.navigationItem.title isEqualToString:@"Add task"]) {
+        self.navigationItem.title = @"Edit task";
+    }
     
     // save bar button is set and configured
     UIBarButtonItem *saveBarButton =
@@ -55,20 +57,18 @@
     saveBarButton = nil;
     
     if (!self.entringTask) {
-        NSString *stringfiedTodayDate = [NSDate ngn_formattedStringFromDate:[NSDate date]];
-        self.dateTableCell.textLabel.text = stringfiedTodayDate;
-        self.notesInsertTextView.text = @"insert something here";
+        NSInteger newTaskId = (rand() % INT_MAX);
+        self.entringTask = [[NGNTask alloc] initWithId:newTaskId name:@"None"];
     }
-    else {
-        NSString *stringfiedTaskDate = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
-        self.taskNameInsertTextField.text = self.entringTask.name;
-        self.dateTableCell.textLabel.text = stringfiedTaskDate;
-        self.notesInsertTextView.text = self.entringTask.notes;
-        self.priorityTableCell.detailTextLabel.text =
-            !self.entringTask.priority ? @"None" :
-            [NSString stringWithFormat:@"%ld", self.entringTask.priority];
-        self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
-    }
+    
+    NSString *stringfiedTaskDate = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
+    self.taskNameInsertTextField.text = self.entringTask.name;
+    self.dateTableCell.textLabel.text = stringfiedTaskDate;
+    self.notesInsertTextView.text = self.entringTask.notes;
+    self.priorityTableCell.detailTextLabel.text =
+        !self.entringTask.priority ? @"None" :
+        [NSString stringWithFormat:@"%ld", self.entringTask.priority];
+    self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
     
     [[NSNotificationCenter defaultCenter]
      addObserverForName:NGNNotificationNameTaskChange
@@ -78,7 +78,7 @@
          NSDictionary *userInfo = notification.userInfo;
          NGNTask *task = userInfo[@"task"];
          self.dateTableCell.textLabel.text =
-          [NSDate ngn_formattedStringFromDate:task.startedAt];
+            [NSDate ngn_formattedStringFromDate:task.startedAt];
          self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", task.priority];
      }];
     
@@ -97,21 +97,19 @@
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
-    NGNTask *newTask;
-    if (!self.entringTask) {
-        NSInteger newTaskId = (rand() % INT_MAX);
-        newTask = [[NGNTask alloc]initWithId:newTaskId
-                                        name:self.taskNameInsertTextField.text
-                                   startDate:[NSDate ngn_dateFromString:self.dateTableCell.textLabel.text]
-                                       notes:self.notesInsertTextView.text];
+    self.entringTask.name = self.taskNameInsertTextField.text;
+    self.entringTask.startedAt = [NSDate ngn_dateFromString:self.dateTableCell.textLabel.text];
+    self.entringTask.notes = self.notesInsertTextView.text;
+    NSDictionary *userInfo = @{@"task": self.entringTask};
+    NSString *notificationName;
+    
+    if ([self.navigationItem.title containsString:@"Add"]) {
+        notificationName = NGNNotificationNameTaskAdd;
+    } else {
+        notificationName = NGNNotificationNameTaskChange;
     }
-    else {
-        newTask = self.entringTask;
-        newTask.name = self.taskNameInsertTextField.text;
-        newTask.notes = self.notesInsertTextView.text;
-    }
-    NSDictionary *userInfo = @{@"task": newTask};
-    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
                                                         object:nil
                                                       userInfo:userInfo];
     [self.navigationController popViewControllerAnimated:YES];
@@ -139,14 +137,14 @@
 }
 
 - (void)showPriorityPicker {
-    [self performSegueWithIdentifier:NGNControllerSegueShowsPrioritiesModal sender:nil];
+    [self performSegueWithIdentifier:NGNControllerSegueShowPrioritiesModal sender:nil];
 }
 
  #pragma mark - Navigation
  
 //  In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:NGNControllerSegueShowsPrioritiesModal]) {
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowPrioritiesModal]) {
         NGNPriorityViewController *priorityViewController = [segue destinationViewController];
         //transparent background
         priorityViewController.providesPresentationContextTransitionStyle = YES;

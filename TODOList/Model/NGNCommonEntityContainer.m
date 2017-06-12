@@ -38,6 +38,10 @@
     [self.privateEntityCollection addObject:entity];
 }
 
+- (void)pushEntity:(id<NGNStoreable>)entity {
+    [self.privateEntityCollection insertObject:entity atIndex:0];
+}
+
 - (void)removeEntity:(NGNStoredEntity *)entity {
     [self.privateEntityCollection removeObject:entity];
 }
@@ -47,14 +51,19 @@
     if (oldEntity) {
         self.privateEntityCollection[[self.entityCollection indexOfObject:oldEntity]] = entity;
     }
-    else {
-        [self addEntity:entity];
-    }
 }
 
 - (void)removeEntityById:(NSInteger)entityId {
     NGNStoredEntity *entityToRemove = [self entityById:entityId];
     [self removeEntity:entityToRemove];
+}
+
+- (void)relocateEntityAtIndex:(NSInteger)fromIndex withEntityAtIndex:(NSInteger)toIndex {
+    [self.privateEntityCollection exchangeObjectAtIndex:fromIndex withObjectAtIndex:fromIndex];
+}
+
+- (void)insertEntity:(id<NGNStoreable>)entity atIndex:(NSUInteger)index {
+    [self.privateEntityCollection insertObject:entity atIndex:index];
 }
 
 - (void)sortEntityCollectionUsingComparator:(NSComparator NS_NOESCAPE)cmptr {

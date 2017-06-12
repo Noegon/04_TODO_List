@@ -15,13 +15,13 @@
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 
-static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
-
 @interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) NGNTaskList *taskList;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 
+- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
+- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;
 - (void)segmentedControlSelectionChange;
 
 @end
@@ -45,16 +45,36 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
-        NSDictionary *userInfo = notification.userInfo;
-        NGNTask *task = userInfo[@"task"];
-        for (NGNTaskList *list in [NGNTaskService sharedInstance].entityCollection) {
-            if ([list entityById:task.entityId]) {
-                [list updateEntity:task];
-            }
-        }
-        [[NGNTaskService sharedInstance]updateEntity:self.taskList];
-        [self.tableView reloadData];
-    }];
+                                                      NSDictionary *userInfo = notification.userInfo;
+                                                      NGNTask *task = userInfo[@"task"];
+                                                      for (NGNTaskList *list in [NGNTaskService sharedInstance].entityCollection) {
+                                                          if ([list entityById:task.entityId]) {
+                                                              [list updateEntity:task];
+                                                          }
+                                                      }
+                                                      [self.tableView reloadData];
+                                                  }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      [self.tableView reloadData];
+                                                  }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      [self.tableView reloadData];
+                                                  }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      [self.tableView reloadData];
+                                                  }];
     
     [self.tableView setEditing:NO animated:YES];
     
@@ -74,16 +94,6 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
                     forControlEvents:UIControlEventValueChanged];
     
     [self segmentedControlSelectionChange];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    for (NGNTask *task in self.taskList.entityCollection) {
-        if (![task.name length]) {
-            [self.taskList removeEntity:task];
-        }
-    }
 }
 
 #pragma mark - Table view data source
@@ -115,28 +125,30 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
     return taskCell;
 }
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
-           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(self.tableView.editing == YES) {
-        return UITableViewCellEditingStyleInsert;
-    } else {
-        return UITableViewCellEditingStyleDelete;
-    }
-}
-
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        NGNTask *currentTask = currentTaskList.entityCollection[indexPath.row];
+        [currentTaskList removeEntity:currentTask];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        
-        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
         NSInteger newTaskId = (rand() % INT_MAX);
         NGNTask *currentTask = [[NGNTask alloc] initWithId:newTaskId name:@"None"];
-        [currentTaskList addEntity:currentTask];
-        [self.tableView reloadData];
+        [currentTaskList pushEntity:currentTask];
+        [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    [self.tableView reloadData];
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView
+           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) {
+        return UITableViewCellEditingStyleInsert;
+    } else {
+        return UITableViewCellEditingStyleDelete;
     }
 }
 
@@ -149,25 +161,31 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
  */
 
 
-
-/*
 // Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
+                                                  toIndexPath:(NSIndexPath *)toIndexPath {
+#warning doesn't works relocation in borders of the same taskList!!!
+    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[fromIndexPath.section];
+    NGNTaskList *destinationTaskList = [NGNTaskService sharedInstance].entityCollection[toIndexPath.section];
+    if (currentTaskList == destinationTaskList) {
+        [currentTaskList relocateEntityAtIndex:fromIndexPath.row withEntityAtIndex:toIndexPath.row];
+    } else {
+        [destinationTaskList insertEntity:currentTaskList.entityCollection[fromIndexPath.row]
+                                  atIndex:toIndexPath.row];
+        [currentTaskList removeEntity:currentTaskList.entityCollection[fromIndexPath.row]];
+    }
+    [self.tableView reloadData];
 }
-*/
 
-/*
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the item to be re-orderable.
     return YES;
 }
-*/
 
 #pragma mark - section handling
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     NGNTaskList *list = [NGNTaskService sharedInstance].entityCollection[section];
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         return [NSDate ngn_formattedStringFromDate:list.creationDate];
@@ -191,6 +209,26 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 #pragma mark - additional handling methods
 
+- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
+    UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(doneBarButtonTapped:)];
+    self.navigationItem.leftBarButtonItem = doneBarButton;
+    [self.tableView setEditing:YES];
+    doneBarButton = nil;
+}
+
+- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
+    UIBarButtonItem *editBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerEditButtonTitle
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(editBarButtonTapped:)];
+    self.navigationItem.leftBarButtonItem = editBarButton;
+    [self.tableView setEditing:NO];
+    editBarButton = nil;
+}
+
 - (void)segmentedControlSelectionChange {
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         [[NGNTaskService sharedInstance] sortEntityCollectionUsingComparator:
@@ -208,23 +246,23 @@ static NSString *const NGNTaskCellIdentifier = @"NGNTaskCell";
 
 #pragma mark - gestures handling
 
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
-{
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
         return;
     }
     if (![gestureRecognizer.view isKindOfClass:[UITableViewCell class]]){
-        NSLog(@"view isnn't tableViewCell");
+        NSLog(@"view isn't tableViewCell");
         return;
     }
     // get the cell at indexPath (the one you long pressed)
     UITableViewCell* cell = (UITableViewCell *)gestureRecognizer.view;
     // do stuff with the cell
     NSLog(@"%@, editingStyle: %ld", cell.textLabel.text, (long)cell.editingStyle);
-    if(self.tableView.editing == YES) {
-        [self.tableView setEditing:NO animated:YES];
+    
+    if (self.tableView.isEditing) {
+        [self doneBarButtonTapped:nil];
     } else {
-        [self.tableView setEditing:YES animated:YES];
+        [self editBarButtonTapped:nil];
     }
 }
 

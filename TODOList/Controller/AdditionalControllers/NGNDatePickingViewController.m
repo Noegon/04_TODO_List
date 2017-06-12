@@ -26,7 +26,7 @@
     // navigation bar title is set
     self.navigationItem.title = @"Date picking";
     
-    // save bar button is set and configured
+    // done bar button is set and configured
     UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
                                                                       style:UIBarButtonItemStylePlain
                                                                      target:self

@@ -20,6 +20,8 @@
 		EF8930B11EED472E001E49AC /* NGNEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930B01EED472E001E49AC /* NGNEditTaskViewController.m */; };
 		EF8930B41EED527B001E49AC /* NGNTaskDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930B31EED527B001E49AC /* NGNTaskDetailsViewController.m */; };
 		EF8930BD1EED955E001E49AC /* NGNPriorityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930BC1EED955E001E49AC /* NGNPriorityViewController.m */; };
+		EF8930C01EEDEF52001E49AC /* NGNTaskListDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930BF1EEDEF52001E49AC /* NGNTaskListDetailsViewController.m */; };
+		EF8930C31EEEABC0001E49AC /* NGNAddProjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930C21EEEABC0001E49AC /* NGNAddProjectViewController.m */; };
 		EF97DDCB1EE4B4B50007EBDB /* NGNDatePickingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF97DDC91EE4B4B50007EBDB /* NGNDatePickingViewController.m */; };
 		EF97DDCC1EE4B4B50007EBDB /* NGNDatePickingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF97DDCA1EE4B4B50007EBDB /* NGNDatePickingViewController.xib */; };
 		EFCD46821EE058C300606FAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD467D1EE058C300606FAB /* AppDelegate.m */; };
@@ -57,6 +59,10 @@
 		EF8930B31EED527B001E49AC /* NGNTaskDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskDetailsViewController.m; path = Controller/NGNTaskDetailsViewController.m; sourceTree = "<group>"; };
 		EF8930BB1EED955E001E49AC /* NGNPriorityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNPriorityViewController.h; path = Controller/NGNPriorityViewController.h; sourceTree = "<group>"; };
 		EF8930BC1EED955E001E49AC /* NGNPriorityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNPriorityViewController.m; path = Controller/NGNPriorityViewController.m; sourceTree = "<group>"; };
+		EF8930BE1EEDEF52001E49AC /* NGNTaskListDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskListDetailsViewController.h; path = Controller/NGNTaskListDetailsViewController.h; sourceTree = "<group>"; };
+		EF8930BF1EEDEF52001E49AC /* NGNTaskListDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskListDetailsViewController.m; path = Controller/NGNTaskListDetailsViewController.m; sourceTree = "<group>"; };
+		EF8930C11EEEABC0001E49AC /* NGNAddProjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNAddProjectViewController.h; path = Controller/NGNAddProjectViewController.h; sourceTree = "<group>"; };
+		EF8930C21EEEABC0001E49AC /* NGNAddProjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNAddProjectViewController.m; path = Controller/NGNAddProjectViewController.m; sourceTree = "<group>"; };
 		EF97DDC81EE4B4B50007EBDB /* NGNDatePickingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNDatePickingViewController.h; path = Controller/AdditionalControllers/NGNDatePickingViewController.h; sourceTree = "<group>"; };
 		EF97DDC91EE4B4B50007EBDB /* NGNDatePickingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNDatePickingViewController.m; path = Controller/AdditionalControllers/NGNDatePickingViewController.m; sourceTree = "<group>"; };
 		EF97DDCA1EE4B4B50007EBDB /* NGNDatePickingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NGNDatePickingViewController.xib; path = Controller/AdditionalControllers/NGNDatePickingViewController.xib; sourceTree = "<group>"; };
@@ -175,6 +181,10 @@
 				EF8930B31EED527B001E49AC /* NGNTaskDetailsViewController.m */,
 				EF8930BB1EED955E001E49AC /* NGNPriorityViewController.h */,
 				EF8930BC1EED955E001E49AC /* NGNPriorityViewController.m */,
+				EF8930BE1EEDEF52001E49AC /* NGNTaskListDetailsViewController.h */,
+				EF8930BF1EEDEF52001E49AC /* NGNTaskListDetailsViewController.m */,
+				EF8930C11EEEABC0001E49AC /* NGNAddProjectViewController.h */,
+				EF8930C21EEEABC0001E49AC /* NGNAddProjectViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -298,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF8930B41EED527B001E49AC /* NGNTaskDetailsViewController.m in Sources */,
+				EF8930C01EEDEF52001E49AC /* NGNTaskListDetailsViewController.m in Sources */,
 				EF6B907B1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m in Sources */,
 				EFCD46A31EE0C3CB00606FAB /* NGNTodayTasksViewController.m in Sources */,
 				EFCD46821EE058C300606FAB /* AppDelegate.m in Sources */,
@@ -305,6 +316,7 @@
 				EFCD46941EE0C2C800606FAB /* NGNTaskService.m in Sources */,
 				EFCD46971EE0C37300606FAB /* NGNTask.m in Sources */,
 				EF8930B11EED472E001E49AC /* NGNEditTaskViewController.m in Sources */,
+				EF8930C31EEEABC0001E49AC /* NGNAddProjectViewController.m in Sources */,
 				EF97DDCB1EE4B4B50007EBDB /* NGNDatePickingViewController.m in Sources */,
 				EFCD46A21EE0C3CB00606FAB /* NGNSearchViewController.m in Sources */,
 				EF8930BD1EED955E001E49AC /* NGNPriorityViewController.m in Sources */,

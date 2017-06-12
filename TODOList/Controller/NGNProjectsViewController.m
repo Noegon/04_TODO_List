@@ -7,8 +7,22 @@
 //
 
 #import "NGNProjectsViewController.h"
+#import "NGNTaskListDetailsViewController.h"
+#import "NSDate+NGNDateToStringConverter.h"
+#import "NGNEditTaskViewController.h"
+#import "NGNTask.h"
+#import "NGNTaskList.h"
+#import "NGNTaskService.h"
+#import "NGNConstants.h"
+
+static NSString *const NGNTaskListCellIdentifier = @"NGNTaskListCell";
 
 @interface NGNProjectsViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (strong, nonatomic) NGNTaskList *taskList;
+
+- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
+- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;
 
 @end
 
@@ -17,82 +31,132 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    srand((unsigned int)time(NULL));
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      NSDictionary *userInfo = notification.userInfo;
+                                                      NGNTaskList *taskList = userInfo[@"taskList"];
+                                                      [[NGNTaskService sharedInstance] updateEntity:taskList];
+                                                      [self.tableView reloadData];
+                                                  }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      NSDictionary *userInfo = notification.userInfo;
+                                                      NGNTaskList *taskList = userInfo[@"taskList"];
+                                                      [[NGNTaskService sharedInstance] addEntity:taskList];
+                                                      [self.tableView reloadData];
+                                                  }];
+    
+    [self.tableView setEditing:NO animated:YES];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    for (NGNTask *task in self.taskList.entityCollection) {
+        if (![task.name length]) {
+            [self.taskList removeEntity:task];
+        }
+    }
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
-    return 0;
+    return [[NGNTaskService sharedInstance] entityCollection].count;
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskListCellIdentifier
+                                                                forIndexPath:indexPath];
+    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.row];
+    taskCell.textLabel.text = currentTaskList.name;
+    taskCell.detailTextLabel.text = [NSString stringWithFormat:@"(%ld)", [currentTaskList entityCollection].count];
+    return taskCell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
 // Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+                                            forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
+        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.row];
+        [[NGNTaskService sharedInstance] removeEntity:currentTaskList];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        // notification to delete all information about deleted project
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
+                                                            object:nil
+                                                          userInfo:nil];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    }
 }
-*/
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView
+           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
 
 /*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ */
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowAddProject]) {
+//        NGNTaskDetailsViewController *taskDetailsViewController = (NGNTaskDetailsViewController *)segue.destinationViewController;
+//        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+//        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.row];
+//        NGNTask *task = [currentTaskList activeTasksList][indexPath.row];
+//        taskDetailsViewController.entringTask = task;
+    }
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskListDetail]) {
+        NGNTaskListDetailsViewController *taskListDetailsViewController = segue.destinationViewController;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.row];
+        taskListDetailsViewController.entringTaskList = currentTaskList;
+    }
 }
-*/
+
+#pragma mark - additional handling methods
+
+- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
+    UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(doneBarButtonTapped:)];
+    self.navigationItem.leftBarButtonItem = doneBarButton;
+    [self.tableView setEditing:YES];
+    doneBarButton = nil;
+}
+
+- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
+    UIBarButtonItem *editBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerEditButtonTitle
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(editBarButtonTapped:)];
+    self.navigationItem.leftBarButtonItem = editBarButton;
+    [self.tableView setEditing:NO];
+    editBarButton = nil;
+}
 
 @end
