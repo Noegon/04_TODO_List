@@ -1,5 +1,5 @@
 //
-//  FirstViewController.h
+//  NGNInboxViewController.h
 //  TODOList
 //
 //  Created by Alex on 01.06.17.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FirstViewController : UIViewController
-
+@interface NGNInboxViewController : UITableViewController
 
 @end
-
