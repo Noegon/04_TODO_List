@@ -14,8 +14,12 @@
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNDeletionConfirmViewController.h"
 
-@interface NGNInboxViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface NGNInboxViewController () <UITableViewDataSource,
+                                      UITableViewDelegate,
+                                      UIGestureRecognizerDelegate,
+                                      NGNDeletionConfirmViewControllerDelegate>
 
 @property (strong, nonatomic) NGNTaskList *taskList;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
@@ -48,7 +52,7 @@
                                                       [self.tableView reloadData];
                                                   }];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
@@ -62,14 +66,14 @@
                                                       [self.tableView reloadData];
                                                   }];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
+    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
@@ -145,16 +149,17 @@
     NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
     NGNTask *currentTask;
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        if (self.segmentedControl.selectedSegmentIndex == 0) {
-            NSMutableArray *currentTaskArray =
-                [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][indexPath.section];
-            currentTask = currentTaskArray[indexPath.row];
-            [[NGNTaskService sharedInstance] removeTask:currentTask];
-        } else {
-            currentTask = currentTaskList.entityCollection[indexPath.row];
-            [currentTaskList removeEntity:currentTask];
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        }
+        NGNDeletionConfirmViewController *deleteController = [[NGNDeletionConfirmViewController alloc] init];
+        deleteController.delegate = self;
+        deleteController.entringTableView = tableView;
+        deleteController.entringIndexPath = indexPath;
+        
+        //set transparent background
+        deleteController.providesPresentationContextTransitionStyle = YES;
+        deleteController.definesPresentationContext = YES;
+        [deleteController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+        
+        [self presentViewController:deleteController animated:YES completion:nil];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         NSInteger newTaskId = (rand() % INT_MAX);
@@ -205,7 +210,8 @@
     UITableViewRowAction *deleteAction =
         [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Delete"
                                          handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){
-        [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
+            [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete
+                                            forRowAtIndexPath:indexPath];
     }];
     deleteAction.backgroundColor = [UIColor redColor];
     
@@ -362,6 +368,26 @@
         [self doneBarButtonTapped:nil];
     } else {
         [self editBarButtonTapped:nil];
+    }
+}
+
+#pragma mark - delegate methods
+
+- (void)deletionController:(NGNDeletionConfirmViewController *)deletionController
+              didSendResult:(BOOL)result toTableView:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath {
+    if (result) {
+        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+        NGNTask *currentTask;
+        if (self.segmentedControl.selectedSegmentIndex == 0) {
+            NSMutableArray *currentTaskArray =
+            [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][indexPath.section];
+            currentTask = currentTaskArray[indexPath.row];
+            [[NGNTaskService sharedInstance] removeTask:currentTask];
+        } else {
+            currentTask = currentTaskList.entityCollection[indexPath.row];
+            [currentTaskList removeEntity:currentTask];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
     }
 }
 
