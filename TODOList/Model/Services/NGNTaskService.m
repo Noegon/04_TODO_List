@@ -61,6 +61,12 @@
     return activeTasks;
 }
 
+- (NSArray *)allCompletedTasks {
+    NSArray *completedTasks = [[self allTasks] filteredArrayUsingPredicate:
+                               [NSPredicate predicateWithFormat:@"SELF.isCompleted == YES"]];
+    return completedTasks;
+}
+
 - (NSMutableArray *)allActiveTasksGroupedByStartDate {
     NSMutableArray *groupedByStartDateTasks = [[NSMutableArray alloc] init];
     NSArray *stringfiedDatesArray =
@@ -81,6 +87,25 @@
             [list removeEntity:taskToRemove];
         }
     }
+}
+
+- (void)updateTask:(NGNTask *)taskToUpdate {
+    for (NGNTaskList *list in self.entityCollection) {
+        if ([list entityById:taskToUpdate.entityId]) {
+            [list updateEntity:taskToUpdate];
+        }
+    }
+}
+
+- (NGNTaskList *)taskListByTaskId:(NSInteger)taskId {
+    for (NGNTaskList *curentList in self.entityCollection) {
+        NSArray *activeTasks = [[curentList entityCollection] filteredArrayUsingPredicate:
+                                [NSPredicate predicateWithFormat:@"SELF.entityId == %@", taskId]];
+        if ([activeTasks count]) {
+            return curentList;
+        }
+    }
+    return nil;
 }
 
 @end
