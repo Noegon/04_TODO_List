@@ -59,7 +59,9 @@
 }
 
 - (void)relocateEntityAtIndex:(NSInteger)fromIndex withEntityAtIndex:(NSInteger)toIndex {
-    [self.privateEntityCollection exchangeObjectAtIndex:fromIndex withObjectAtIndex:fromIndex];
+    NSMutableArray *testArray = [self.privateEntityCollection mutableCopy];
+    [testArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
+    self.privateEntityCollection = testArray;
 }
 
 - (void)insertEntity:(id<NGNStoreable>)entity atIndex:(NSUInteger)index {

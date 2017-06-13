@@ -9,6 +9,7 @@
 #import "NGNTaskService.h"
 #import "NGNTask.h"
 #import "NGNTaskList.h"
+#import "NSDate+NGNDateToStringConverter.h"
 
 @interface NGNTaskService ()
 
@@ -23,10 +24,16 @@
 #warning hardcoded test datasource
         sharedInstance = [[NGNTaskService alloc] init];
         NGNTask *task1 = [NGNTask taskWithId:1 name:@"Make calculator 3.0"];
-        NGNTask *task2 = [NGNTask taskWithId:2 name:@"Make TODO List 0.1"];
+        NGNTask *task2 = [NGNTask taskWithId:2
+                                        name:@"Make TODO List 0.1"
+                                   startDate:[NSDate ngn_dateFromString:@"17/07/2009"]
+                                       notes:@""];
         NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
         NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
-        NGNTask *task4 = [NGNTask taskWithId:4 name:@"Buy milk"];
+        NGNTask *task4 = [NGNTask taskWithId:4
+                                        name:@"Buy milk"
+                                   startDate:[NSDate ngn_dateFromString:@"09/07/2017"]
+                                       notes:@""];
         NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"];
         NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
                                                            name:@"Commodities"
@@ -52,6 +59,28 @@
     NSArray *activeTasks = [[self allTasks] filteredArrayUsingPredicate:
                             [NSPredicate predicateWithFormat:@"SELF.isCompleted == NO"]];
     return activeTasks;
+}
+
+- (NSMutableArray *)allActiveTasksGroupedByStartDate {
+    NSMutableArray *groupedByStartDateTasks = [[NSMutableArray alloc] init];
+    NSArray *stringfiedDatesArray =
+        [[self allActiveTasks] valueForKeyPath:@"@distinctUnionOfObjects.startedAt.description"];
+    for (int i = 0; i < stringfiedDatesArray.count; i++) {
+        NSPredicate *predicate =
+            [NSPredicate predicateWithFormat:@"SELF.startedAt.description contains[cd] %@", stringfiedDatesArray[i]];
+        NSArray<id<NGNStoreable>> *currentStartDateTasks =
+            [[self allActiveTasks] filteredArrayUsingPredicate:predicate];
+        [groupedByStartDateTasks addObject:[currentStartDateTasks mutableCopy]];
+    }
+    return [groupedByStartDateTasks mutableCopy];
+}
+
+- (void)removeTask:(NGNTask *)taskToRemove {
+    for (NGNTaskList *list in self.entityCollection) {
+        if ([list entityById:taskToRemove.entityId]) {
+            [list removeEntity:taskToRemove];
+        }
+    }
 }
 
 @end

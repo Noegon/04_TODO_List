@@ -116,16 +116,16 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yIh-ue-Su8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2238" y="-77"/>
+            <point key="canvasLocation" x="2861" y="-4"/>
         </scene>
         <!--Search-->
         <scene sceneID="KTp-g5-A11">
             <objects>
                 <tableViewController id="NNt-sD-l66" customClass="NGNSearchViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="29k-Mo-G1R">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="29k-Mo-G1R">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <searchBar key="tableHeaderView" contentMode="redraw" showsSearchResultsButton="YES" showsCancelButton="YES" id="5ur-uM-MLE">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -135,8 +135,8 @@
                             </connections>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="xke-5o-BwK" style="IBUITableViewCellStyleDefault" id="2Ih-WP-Y1a">
-                                <rect key="frame" x="0.0" y="72" width="414" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NGNTaskCell" textLabel="xke-5o-BwK" style="IBUITableViewCellStyleDefault" id="2Ih-WP-Y1a">
+                                <rect key="frame" x="0.0" y="99" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Ih-WP-Y1a" id="Xre-Ee-vdr">
                                     <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
@@ -151,6 +151,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="b3k-6z-1Eq" kind="show" identifier="ShowTaskDetail" id="VoM-iE-nk4"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -450,7 +453,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eWK-44-KLM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2238" y="-758"/>
+            <point key="canvasLocation" x="2861" y="-758"/>
         </scene>
         <!--Edit Task View Controller-->
         <scene sceneID="5lQ-kx-KUQ">
@@ -619,7 +622,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8DI-DB-OKh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3125" y="-758"/>
+            <point key="canvasLocation" x="3745" y="-758"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="33O-Ql-XEA">
@@ -763,7 +766,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yHD-pC-qnb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4065" y="-758"/>
+            <point key="canvasLocation" x="4545" y="-758"/>
         </scene>
         <!--Add project-->
         <scene sceneID="HdE-lm-aUe">
@@ -822,7 +825,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YNq-Yc-sxB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2238" y="602"/>
+            <point key="canvasLocation" x="2861" y="713"/>
         </scene>
         <!--Inbox-->
         <scene sceneID="4Ig-dr-soy">
@@ -911,20 +914,42 @@
             </objects>
             <point key="canvasLocation" x="445" y="1253"/>
         </scene>
-        <!--Today Tasks View Controller-->
+        <!--Today-->
         <scene sceneID="V7v-sa-3IU">
             <objects>
                 <tableViewController id="5Df-dZ-7xS" customClass="NGNTodayTasksViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="JFY-mJ-m6K">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="JFY-mJ-m6K">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NGNTaskCell" textLabel="W0u-29-vpK" style="IBUITableViewCellStyleDefault" id="gKj-6t-zQj">
+                                <rect key="frame" x="0.0" y="55" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gKj-6t-zQj" id="yUZ-T9-HQ6">
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="W0u-29-vpK">
+                                            <rect key="frame" x="15" y="0.0" width="364" height="43.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="b3k-6z-1Eq" kind="show" identifier="ShowTaskDetail" id="hUD-4J-zod"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="5Df-dZ-7xS" id="DU2-B1-NGJ"/>
                             <outlet property="delegate" destination="5Df-dZ-7xS" id="XD0-SR-XrT"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="7yt-jk-iRd"/>
+                    <navigationItem key="navigationItem" title="Today" id="aIz-WT-3m6"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DEB-tC-Wbj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -958,7 +983,7 @@
         <image name="my_files-32" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="VBi-j5-dQ8"/>
+        <segue reference="hUD-4J-zod"/>
         <segue reference="0xI-kD-sbQ"/>
     </inferredMetricsTieBreakers>
 </document>

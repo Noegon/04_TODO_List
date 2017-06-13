@@ -18,5 +18,7 @@
 
 - (NSArray *)allTasks;
 - (NSArray *)allActiveTasks;
+- (NSMutableArray *)allActiveTasksGroupedByStartDate;
+- (void)removeTask:(NGNTask *)taskToRemove;
 
 @end

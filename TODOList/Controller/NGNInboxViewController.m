@@ -99,10 +99,18 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.segmentedControl.selectedSegmentIndex == 0) {
+        NSArray *datesArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate];
+        return [datesArray count];
+    }
     return [[NGNTaskService sharedInstance] entityCollection].count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.segmentedControl.selectedSegmentIndex == 0) {
+        NSArray *datesArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate];
+        return [datesArray[section] count];
+    }
     NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[section];
     return [currentTaskList activeTasksList].count;
 }
@@ -111,32 +119,47 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
-    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
-    NGNTask *currentTask = [currentTaskList activeTasksList][indexPath.row];
-    if ([currentTaskList entityById:currentTask.entityId]) {
-        taskCell.textLabel.text = currentTask.name;
-        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
-                                                             initWithTarget:self
-                                                             action:@selector(handleLongPress:)];
-        longPressRecognizer.delegate = self;
-        longPressRecognizer.delaysTouchesBegan = YES;
-        [taskCell setGestureRecognizers:@[longPressRecognizer]];
+    NGNTask *currentTask;
+    if (self.segmentedControl.selectedSegmentIndex == 0) {
+        NSArray *taskArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][indexPath.section];
+        currentTask = taskArray[indexPath.row];
+    } else {
+        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+        currentTask = [currentTaskList activeTasksList][indexPath.row];
     }
+    
+    taskCell.textLabel.text = currentTask.name;
+    UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
+                                                         initWithTarget:self
+                                                         action:@selector(handleLongPress:)];
+    longPressRecognizer.delegate = self;
+    longPressRecognizer.delaysTouchesBegan = YES;
+    [taskCell setGestureRecognizers:@[longPressRecognizer]];
+    
     return taskCell;
 }
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
+#warning - behavior is incorrect when date select in segment control!!!
     NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+    NGNTask *currentTask;
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NGNTask *currentTask = currentTaskList.entityCollection[indexPath.row];
-        [currentTaskList removeEntity:currentTask];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        if (self.segmentedControl.selectedSegmentIndex == 0) {
+            NSMutableArray *currentTaskArray =
+                [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][indexPath.section];
+            currentTask = currentTaskArray[indexPath.row];
+            [[NGNTaskService sharedInstance] removeTask:currentTask];
+        } else {
+            currentTask = currentTaskList.entityCollection[indexPath.row];
+            [currentTaskList removeEntity:currentTask];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         NSInteger newTaskId = (rand() % INT_MAX);
-        NGNTask *currentTask = [[NGNTask alloc] initWithId:newTaskId name:@"None"];
+        currentTask = [[NGNTask alloc] initWithId:newTaskId name:@"None"];
         [currentTaskList pushEntity:currentTask];
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
@@ -145,51 +168,96 @@
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0) {
-        return UITableViewCellEditingStyleInsert;
-    } else {
-        return UITableViewCellEditingStyleDelete;
-    }
+    return UITableViewCellEditingStyleDelete;
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
+// Override to insert some additional functionality to cell when you swipe left
+-(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewRowAction *editAction =
+        [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+                                           title:@"Done"
+                                         handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        NGNTask *currentTask;
+        if (self.segmentedControl.selectedSegmentIndex == 0) {
+            NSMutableArray *currentTaskArray =
+                [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][indexPath.section];
+            currentTask = currentTaskArray[indexPath.row];
+        } else {
+            NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+            currentTask = currentTaskList.entityCollection[indexPath.row];
+        }
+        currentTask.completed = YES;
+        [self.tableView reloadData];
+    }];
+    editAction.backgroundColor = [UIColor grayColor];
+    
+    UITableViewRowAction *deleteAction =
+        [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Delete"
+                                         handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){
+        [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
+    }];
+    deleteAction.backgroundColor = [UIColor redColor];
+    
+    UITableViewRowAction *insertAction =
+        [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Insert"
+                                     handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){
+        [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleInsert forRowAtIndexPath:indexPath];
+    }];
+    insertAction.backgroundColor = [UIColor greenColor];
+    
+    if (self.segmentedControl.selectedSegmentIndex == 0) {
+        return @[deleteAction,editAction];
+    }
+    return @[deleteAction,editAction, insertAction];
+}
 
 
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
                                                   toIndexPath:(NSIndexPath *)toIndexPath {
-#warning doesn't works relocation in borders of the same taskList!!!
-    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[fromIndexPath.section];
-    NGNTaskList *destinationTaskList = [NGNTaskService sharedInstance].entityCollection[toIndexPath.section];
-    if (currentTaskList == destinationTaskList) {
-        [currentTaskList relocateEntityAtIndex:fromIndexPath.row withEntityAtIndex:toIndexPath.row];
+    if (self.segmentedControl.selectedSegmentIndex == 0) {
+        NSMutableArray *currentTaskArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][fromIndexPath.section];
+        NSMutableArray *destinationTaskArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][toIndexPath.section];
+        if ([currentTaskArray isEqual:destinationTaskArray]) {
+            [currentTaskArray exchangeObjectAtIndex:fromIndexPath.row withObjectAtIndex:toIndexPath.row];
+        } else {
+            NGNTask *fromTask = currentTaskArray[fromIndexPath.row];
+            NGNTask *toTask = destinationTaskArray[toIndexPath.row];
+            fromTask.startedAt = toTask.startedAt;
+            [destinationTaskArray insertObject:fromTask atIndex:toIndexPath.row];
+            [currentTaskArray removeObject:fromTask];
+        }
     } else {
-        [destinationTaskList insertEntity:currentTaskList.entityCollection[fromIndexPath.row]
-                                  atIndex:toIndexPath.row];
-        [currentTaskList removeEntity:currentTaskList.entityCollection[fromIndexPath.row]];
+        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[fromIndexPath.section];
+        NGNTaskList *destinationTaskList = [NGNTaskService sharedInstance].entityCollection[toIndexPath.section];
+        if (currentTaskList == destinationTaskList) {
+            [currentTaskList relocateEntityAtIndex:fromIndexPath.row withEntityAtIndex:toIndexPath.row];
+        } else {
+            [destinationTaskList insertEntity:currentTaskList.entityCollection[fromIndexPath.row]
+                                      atIndex:toIndexPath.row];
+            [currentTaskList removeEntity:currentTaskList.entityCollection[fromIndexPath.row]];
+        }
     }
-    [self.tableView reloadData];
 }
 
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
     return YES;
 }
 
 #pragma mark - section handling
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NGNTaskList *list = [NGNTaskService sharedInstance].entityCollection[section];
     if (self.segmentedControl.selectedSegmentIndex == 0) {
-        return [NSDate ngn_formattedStringFromDate:list.creationDate];
+        NSArray *taskListsArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][section];
+        NGNTask *currentTask;
+        if ([taskListsArray count]) {
+            currentTask = [taskListsArray firstObject];
+        }
+        return [NSDate ngn_formattedStringFromDate:currentTask.startedAt];
     }
+    NGNTaskList *list = [NGNTaskService sharedInstance].entityCollection[section];
     return list.name;
 }
 
@@ -201,8 +269,14 @@
     NGNTaskDetailsViewController *taskDetailsViewController = (NGNTaskDetailsViewController *)segue.destinationViewController;
     if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskDetail]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
-        NGNTask *task = [currentTaskList activeTasksList][indexPath.row];
+        NGNTask *task;
+        if (self.segmentedControl.selectedSegmentIndex == 0) {
+            NSArray *taskListsArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate][indexPath.section];
+            task = taskListsArray[indexPath.row];
+        } else {
+            NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+            task = [currentTaskList activeTasksList][indexPath.row];
+        }
         taskDetailsViewController.entringTask = task;
     }
 }
@@ -210,20 +284,22 @@
 #pragma mark - additional handling methods
 
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
-    UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(doneBarButtonTapped:)];
+    UIBarButtonItem *doneBarButton =
+        [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(doneBarButtonTapped:)];
     self.navigationItem.leftBarButtonItem = doneBarButton;
     [self.tableView setEditing:YES];
     doneBarButton = nil;
 }
 
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
-    UIBarButtonItem *editBarButton = [[UIBarButtonItem alloc] initWithTitle:NGNControllerEditButtonTitle
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(editBarButtonTapped:)];
+    UIBarButtonItem *editBarButton =
+        [[UIBarButtonItem alloc] initWithTitle:NGNControllerEditButtonTitle
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(editBarButtonTapped:)];
     self.navigationItem.leftBarButtonItem = editBarButton;
     [self.tableView setEditing:NO];
     editBarButton = nil;
@@ -231,10 +307,16 @@
 
 - (void)segmentedControlSelectionChange {
     if (self.segmentedControl.selectedSegmentIndex == 0) {
-        [[NGNTaskService sharedInstance] sortEntityCollectionUsingComparator:
-         ^(NGNTaskList *list1, NGNTaskList *list2) {
-             return [list1.creationDate compare: list2.creationDate];
+        [[[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate] sortUsingComparator:
+         ^(NSMutableArray *list1, NSMutableArray *list2) {
+             if ([list1 count] && [list2 count]) {
+                 NGNTask *firstTask = [list1 firstObject];
+                 NGNTask *secondTask = [list2 firstObject];
+                 return [firstTask.startedAt compare: secondTask.startedAt];
+             }
+             return NSOrderedSame;
          }];
+
     } else if (self.segmentedControl.selectedSegmentIndex == 1) {
         [[NGNTaskService sharedInstance] sortEntityCollectionUsingComparator:
          ^(NGNTaskList *list1, NGNTaskList *list2) {
