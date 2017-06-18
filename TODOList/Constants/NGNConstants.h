@@ -15,11 +15,13 @@ typedef enum {
     NGNNonePriority, NGNLowPriority, NGNMediumPriority, NGNHighPriority
 } const NGNPriorities;
 
+#pragma mark - model constants
+static NSString *const NGNModelDateFormatForComparison = @"yyyy-LL-dd";
+
 #pragma mark - controller constants
 static NSString *const NGNControllerTaskCellIdentifier = @"NGNTaskCell";
 static NSString *const NGNControllerTaskListCellIdentifier = @"NGNTaskListCell";
-static NSString *const NGNControllerDateFormat = @"dd.LL.yyyy";
-static NSString *const NGNControllerDateFormatForComparison = @"yyyy-LL-dd";
+static NSString *const NGNControllerShowingDateFormat = @"dd.LL.yyyy";
 static double const NGNControllerTableSectionHeaderHeight = 22.;
 static double const NGNControllerTableRowHeight = 70.;
 static double const NGNControllerTableHeaderHeight = 60.;

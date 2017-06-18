@@ -15,7 +15,9 @@
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 
-@interface NGNTodayTasksViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface NGNTodayTasksViewController () <UITableViewDataSource,
+                                           UITableViewDelegate,
+                                           UIGestureRecognizerDelegate>
 
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;

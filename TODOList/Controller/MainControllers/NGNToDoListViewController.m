@@ -15,9 +15,8 @@
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 
-static NSString *const NGNTaskListCellIdentifier = @"NGNTaskListCell";
-
 @interface NGNToDoListViewController () <UITableViewDataSource, UITableViewDelegate>
+
 
 #pragma mark - additional handling methods
 - (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
@@ -100,6 +99,12 @@ static NSString *const NGNTaskListCellIdentifier = @"NGNTaskListCell";
         }
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        NGNTaskList *addingTaskList = [[NGNTaskList alloc] initWithId:foo4random() name:@"None"];
+        [[NGNTaskService sharedInstance] addEntity:addingTaskList];
+        NSDictionary *userInfo = @{@"taskList": addingTaskList};
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd
+                                                            object:nil
+                                                          userInfo:userInfo];
     }
 }
 
@@ -119,7 +124,6 @@ static NSString *const NGNTaskListCellIdentifier = @"NGNTaskListCell";
 -(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     //edit row action (edit project name)
-    
     UITableViewRowAction *editAction =
     [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
                                        title:NGNControllerEditButtonTitle
@@ -213,5 +217,25 @@ static NSString *const NGNTaskListCellIdentifier = @"NGNTaskListCell";
     }
     return currentTaskList;
 }
+
+//- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
+//    [super editBarButtonTapped:sender];
+//    [self.tableView setEditing:NO];
+////    self.wholeTableEditable = YES;
+////    [self.tableView setEditing:YES];
+//    self.wholeTableEditable = NO;
+//    [self.tableView setEditing:NO];
+//    UITableViewCell *testCell = [self.tableView.visibleCells filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.text contains[cd] %@", @"Add project"]].firstObject;
+//    [testCell setEditing:NO animated:YES];
+//}
+
+//- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
+//    [super doneBarButtonTapped:sender];
+//    self.wholeTableEditable = NO;
+//    [self.tableView setEditing:NO];
+//    UITableViewCell *testCell = [self.tableView.visibleCells filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.text contains[cd] %@", @"Add project"]].firstObject;
+//    [testCell setEditing:YES animated:YES];
+////    NSLog(@"%@", testCell);
+//}
 
 @end

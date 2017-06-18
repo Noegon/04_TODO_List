@@ -92,7 +92,7 @@
     [self.segmentedControl addTarget:self
                               action:@selector(segmentedControlSelectionChange)
                     forControlEvents:UIControlEventValueChanged];
-    self.dateSortedTaskListsArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate];
+    self.dateSortedTaskListsArray = [[[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate] mutableCopy];
     [self segmentedControlSelectionChange];
     self.ascendingSortDirection = YES;
 }
@@ -240,7 +240,7 @@
         if ([taskListsArray count] != 0) {
             currentTask = [taskListsArray firstObject];
         }
-        text = [NSDate ngn_formattedStringFromDate:currentTask.startedAt withFormat:NGNControllerDateFormat];
+        text = [NSDate ngn_formattedStringFromDate:currentTask.startedAt withFormat:NGNControllerShowingDateFormat];
     } else {
         NGNTaskList *list = [NGNTaskService sharedInstance].entityCollection[section];
         text = list.name;
@@ -313,7 +313,7 @@
 
 // method helps to reload data on controller with renewed data from model
 - (void)refreshData {
-    self.dateSortedTaskListsArray = [[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate];
+    self.dateSortedTaskListsArray = [[[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate] mutableCopy];
     [self segmentedControlSelectionChange];
     [self.tableView reloadData];
 }

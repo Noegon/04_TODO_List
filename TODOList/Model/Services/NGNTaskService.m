@@ -41,7 +41,7 @@
         NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
                                                            name:@"Commodities"
                                                    creationDate:[NSDate dateWithTimeIntervalSinceNow:150000000]];
-        NGNTaskList *taskList3 = [[NGNTaskList alloc]initWithId:999 name:@"Common task list"];
+        NGNTaskList *taskList3 = [[NGNTaskList alloc]initWithId:999 name:@"Inbox"];
         [taskList addEntity:task1];
         [taskList addEntity:task2];
         [taskList addEntity:task3];
@@ -72,12 +72,12 @@
     return completedTasks;
 }
 
-- (NSMutableArray *)allActiveTasksGroupedByStartDate {
+- (NSArray *)allActiveTasksGroupedByStartDate {
     NSMutableArray *groupedByStartDateTasks = [[NSMutableArray alloc] init];
     NSMutableArray *stringfiedDatesArray = [[NSMutableArray alloc] init];
     for (NGNTask *task in [self allActiveTasks]) {
         [stringfiedDatesArray addObject:[NSDate ngn_formattedStringFromDate:task.startedAt
-                                                                 withFormat:NGNControllerDateFormatForComparison]];
+                                                                 withFormat:NGNModelDateFormatForComparison]];
     }
     stringfiedDatesArray = [stringfiedDatesArray valueForKeyPath:@"@distinctUnionOfObjects.self"];
     for (int i = 0; i < stringfiedDatesArray.count; i++) {
@@ -88,6 +88,11 @@
         [groupedByStartDateTasks addObject:[currentStartDateTasks mutableCopy]];
     }
     return groupedByStartDateTasks;
+}
+
+- (NSArray *)allActiveTaskLists {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.entityCollection.count != 0"];
+    return [self.entityCollection filteredArrayUsingPredicate:predicate];
 }
 
 - (void)removeTask:(NGNTask *)taskToRemove {
