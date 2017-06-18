@@ -58,6 +58,13 @@
     return [self.entringTaskList entityCollection].count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 22.;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 70.;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
@@ -98,9 +105,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark - section handling
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-//    NGNTaskList *currentList = [NGNTaskService sharedInstance].entityCollection[section];
-    return [self entringTaskList].name;
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] init];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, CGRectGetWidth(self.view.frame), 22)];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor grayColor];
+    label.text = [self entringTaskList].name;
+    
+    [view addSubview:label];
+    
+    return view;
 }
 
 
@@ -108,18 +122,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskDetail]) {
-        NGNTaskDetailsViewController *taskDetailsViewController = segue.destinationViewController;
+    NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         NGNTask *task = self.entringTaskList.entityCollection[indexPath.row];
-        taskDetailsViewController.entringTask = task;
-        taskDetailsViewController.entringTaskList = self.entringTaskList;
+        editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
-        NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
         editTaskViewController.navigationItem.title = @"Add task";
-        editTaskViewController.entringTaskList = self.entringTaskList;
     }
+    editTaskViewController.entringTaskList = self.entringTaskList;
 }
 
 #pragma mark - gestures handling

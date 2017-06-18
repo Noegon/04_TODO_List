@@ -19,7 +19,8 @@
 - (NSArray *)allTasks;
 - (NSArray *)allActiveTasks;
 - (NSArray *)allCompletedTasks;
-- (NSMutableArray *)allActiveTasksGroupedByStartDate;
+- (NSArray *)allActiveTasksGroupedByStartDate;
+- (NSArray *)allActiveTaskLists;
 - (void)removeTask:(NGNTask *)taskToRemove;
 - (void)updateTask:(NGNTask *)taskToUpdate;
 - (NGNTaskList *)taskListByTaskId:(NSInteger)taskId;

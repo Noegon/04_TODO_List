@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NGNAbstractTableViewController.h"
 
-@interface NGNProjectsViewController : UITableViewController
+@interface NGNToDoListViewController : NGNAbstractTableViewController
 
 @end

@@ -8,7 +8,6 @@
 
 #import "NGNEditTaskViewController.h"
 #import "NGNDatePickingViewController.h"
-#import "NGNPriorityViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNConstants.h"
 #import "NGNTask.h"
@@ -35,7 +34,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    srand((unsigned int)time(NULL));
     
     // taskNameInsertTextField configured
     [self.taskNameInsertTextField becomeFirstResponder];
@@ -58,7 +56,7 @@
     saveBarButton = nil;
     
     if (!self.entringTask) {
-        NSInteger newTaskId = (rand() % INT_MAX);
+        NSInteger newTaskId = foo4random();
         self.entringTask = [[NGNTask alloc] initWithId:newTaskId name:@"None"];
     }
     
@@ -87,14 +85,15 @@
     UITapGestureRecognizer *tapOutOfTextFields = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];
     
-    UITapGestureRecognizer *tapOnDateCell = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                    action:@selector(showDatePicker)];
     UITapGestureRecognizer *tapOnPriorityCell = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                         action:@selector(showPriorityPicker)];
     
+    UITapGestureRecognizer *tapOnDatePickingCell = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                        action:@selector(showDatePicker)];
+    
     [self.view addGestureRecognizer:tapOutOfTextFields];
-    [self.dateTableCell addGestureRecognizer:tapOnDateCell];
     [self.priorityTableCell addGestureRecognizer:tapOnPriorityCell];
+    [self.dateTableCell addGestureRecognizer:tapOnDatePickingCell];
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
@@ -134,28 +133,75 @@
     [self.notesInsertTextView resignFirstResponder];
 }
 
-- (void)showDatePicker {
-    NGNDatePickingViewController *datePickingViewController = [[NGNDatePickingViewController alloc]init];
-    datePickingViewController.entringTask = self.entringTask;
-    [self showViewController:datePickingViewController sender:nil];
+- (void)showPriorityPicker {
+    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:@"Select priority"
+                                                                                 message:nil
+                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    [alertViewController addAction:cancelAction];
+    
+    UIAlertAction *nonePriorityAction = [UIAlertAction actionWithTitle:@"None"
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNNonePriority;
+        self.priorityTableCell.detailTextLabel.text = @"None";
+    }];
+    [alertViewController addAction:nonePriorityAction];
+    
+    UIAlertAction *lowPriorityAction = [UIAlertAction actionWithTitle:@"Low"
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNLowPriority;
+        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNLowPriority];
+    }];
+    [alertViewController addAction:lowPriorityAction];
+    
+    UIAlertAction *mediumPriorityAction = [UIAlertAction actionWithTitle:@"Medium"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNMediumPriority;
+        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNMediumPriority];
+    }];
+    [alertViewController addAction:mediumPriorityAction];
+    
+    UIAlertAction *highPriorityAction = [UIAlertAction actionWithTitle:@"Medium"
+                                                                   style:UIAlertActionStyleDefault
+                                                                 handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNHighPriority;
+        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNHighPriority];
+    }];
+    [alertViewController addAction:highPriorityAction];
+    
+    NSDictionary *userInfo = @{@"task": self.entringTask,
+                               @"taskList": self.entringTaskList};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+                                                        object:nil
+                                                      userInfo:userInfo];
+    [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
-- (void)showPriorityPicker {
-    [self performSegueWithIdentifier:NGNControllerSegueShowPrioritiesModal sender:nil];
+- (void)showDatePicker {
+//    NGNDatePickingViewController *datePickingViewController = [[NGNDatePickingViewController alloc] init];
+    [self performSegueWithIdentifier:NGNControllerSegueShowDatePicking sender:self.dateTableCell];
 }
 
  #pragma mark - Navigation
- 
-//  In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:NGNControllerSegueShowPrioritiesModal]) {
-        NGNPriorityViewController *priorityViewController = [segue destinationViewController];
-        //transparent background
-        priorityViewController.providesPresentationContextTransitionStyle = YES;
-        priorityViewController.definesPresentationContext = YES;
-        [priorityViewController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+
+- (IBAction)unwindToEditViewController:(UIStoryboardSegue *)unwindSegue {
+    NGNDatePickingViewController *datePickingViewController = unwindSegue.sourceViewController;
+    if ([unwindSegue.identifier isEqualToString:NGNControllerSegueUnwindToEditWithDone]) {
         
-        priorityViewController.entringTask = self.entringTask;
+        self.entringTask.startedAt = datePickingViewController.datePicker.date;
+        self.dateTableCell.textLabel.text = [NSDate ngn_formattedStringFromDate:datePickingViewController.datePicker.date];
+        NSDictionary *userInfo = @{@"task": self.entringTask,
+                                   @"taskList": self.entringTaskList};
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+                                                            object:nil
+                                                          userInfo:userInfo];
+    }
+    if ([unwindSegue.identifier isEqualToString:NGNControllerSegueUnwindToEditWithCancel]) {
+        [datePickingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
