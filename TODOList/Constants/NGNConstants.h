@@ -19,8 +19,11 @@ typedef enum {
 static NSString *const NGNModelDateFormatForComparison = @"yyyy-LL-dd";
 
 #pragma mark - controller constants
+//cell identifiers
 static NSString *const NGNControllerTaskCellIdentifier = @"NGNTaskCell";
 static NSString *const NGNControllerTaskListCellIdentifier = @"NGNTaskListCell";
+static NSString *const NGNControllerAddProjectCellIdentifier = @"NGNAddProjectCell";
+
 static NSString *const NGNControllerShowingDateFormat = @"dd.LL.yyyy";
 static double const NGNControllerTableSectionHeaderHeight = 22.;
 static double const NGNControllerTableRowHeight = 70.;

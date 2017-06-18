@@ -47,6 +47,40 @@
                                     <segue destination="MLy-fy-evY" kind="show" identifier="ShowTaskListDetail" id="ocV-db-gJV"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NGNAddProjectCell" id="1Hh-Y2-Eg0" customClass="NGNAddProjectTableViewCell">
+                                <rect key="frame" x="0.0" y="72" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Hh-Y2-Eg0" id="5b0-Jh-klw">
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gFT-fh-BRG">
+                                            <rect key="frame" x="5" y="0.0" width="40" height="43.666666666666664"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="40" id="zF5-1T-0Wl"/>
+                                            </constraints>
+                                            <state key="normal" image="iconmonstr-plus-5-24_green">
+                                                <color key="titleColor" red="0.43104028700000002" green="0.45602798459999999" blue="0.89997416730000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add project" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IOd-qr-rsi">
+                                            <rect key="frame" x="55" y="8" width="318" height="27.666666666666664"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="gFT-fh-BRG" firstAttribute="top" secondItem="5b0-Jh-klw" secondAttribute="top" id="GYf-di-VKi"/>
+                                        <constraint firstItem="IOd-qr-rsi" firstAttribute="top" secondItem="5b0-Jh-klw" secondAttribute="topMargin" id="I1W-6c-ocg"/>
+                                        <constraint firstItem="gFT-fh-BRG" firstAttribute="leading" secondItem="5b0-Jh-klw" secondAttribute="leading" constant="5" id="J1r-5g-x5E"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="IOd-qr-rsi" secondAttribute="trailing" id="Q00-hc-YHG"/>
+                                        <constraint firstAttribute="bottom" secondItem="gFT-fh-BRG" secondAttribute="bottom" id="adb-vH-DvV"/>
+                                        <constraint firstItem="IOd-qr-rsi" firstAttribute="leading" secondItem="gFT-fh-BRG" secondAttribute="trailing" constant="10" id="lYr-gh-H8S"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="IOd-qr-rsi" secondAttribute="bottom" id="qXA-kW-xiJ"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="bnJ-d2-WmC" id="cJR-jN-6sr"/>
@@ -675,6 +709,7 @@
         <image name="clock-32" width="32" height="32"/>
         <image name="first" width="30" height="30"/>
         <image name="folder-32" width="32" height="32"/>
+        <image name="iconmonstr-plus-5-24_green" width="24" height="24"/>
         <image name="iconmonstr-sort-27-32" width="32" height="32"/>
         <image name="my_files-32" width="32" height="32"/>
     </resources>

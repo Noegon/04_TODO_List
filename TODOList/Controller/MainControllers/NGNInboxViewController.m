@@ -104,7 +104,7 @@
         NSArray *datesArray = self.dateSortedTaskListsArray;
         return [datesArray count];
     }
-    return [[NGNTaskService sharedInstance] entityCollection].count;
+    return [[NGNTaskService sharedInstance] allActiveTaskLists].count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -112,11 +112,12 @@
         NSArray *datesArray = self.dateSortedTaskListsArray;
         return [datesArray[section] count];
     }
-    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[section];
+    NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][section];
     return [currentTaskList activeTasksList].count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
     NGNTask *currentTask = [self actualTaskWithIndexPath:indexPath];
@@ -202,8 +203,8 @@
             fromTask.startedAt = toTask.startedAt;
         }
     } else {
-        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[fromIndexPath.section];
-        NGNTaskList *destinationTaskList = [NGNTaskService sharedInstance].entityCollection[toIndexPath.section];
+        NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:fromIndexPath];
+        NGNTaskList *destinationTaskList = [self actualTaskListWithIndexPath:toIndexPath];
         if (currentTaskList == destinationTaskList) {
             [currentTaskList relocateEntityAtIndex:fromIndexPath.row withEntityAtIndex:toIndexPath.row];
         } else {
@@ -242,7 +243,7 @@
         }
         text = [NSDate ngn_formattedStringFromDate:currentTask.startedAt withFormat:NGNControllerShowingDateFormat];
     } else {
-        NGNTaskList *list = [NGNTaskService sharedInstance].entityCollection[section];
+        NGNTaskList *list = [[NGNTaskService sharedInstance] allActiveTaskLists][section];
         text = list.name;
     }
     label.text = text;
@@ -289,7 +290,7 @@
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         actualTask = self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
     } else {
-        NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+        NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][indexPath.section];
         actualTask = [currentTaskList activeTasksList][indexPath.row];
     }
     return actualTask;
@@ -301,7 +302,7 @@
         NGNTask *actualTask = self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
         actualTaskList = [[NGNTaskService sharedInstance] taskListByTaskId:actualTask.entityId];
     } else {
-        actualTaskList = [NGNTaskService sharedInstance].entityCollection[indexPath.section];
+        actualTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][indexPath.section];
     }
     return actualTaskList;
 }

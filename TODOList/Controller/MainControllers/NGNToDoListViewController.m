@@ -20,6 +20,7 @@
 
 #pragma mark - additional handling methods
 - (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
+- (void)addTaskList;
 
 @end
 
@@ -67,15 +68,23 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskListCellIdentifier
-                                                                forIndexPath:indexPath];
     NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
+    UITableViewCell *taskCell;
     if (currentTaskList) {
+         taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskListCellIdentifier
+                                                    forIndexPath:indexPath];
+
         taskCell.textLabel.text = currentTaskList.name;
         taskCell.detailTextLabel.text = [NSString stringWithFormat:@"(%ld)", [currentTaskList entityCollection].count];
     } else {
-        taskCell.textLabel.text = @"Add project";
-        taskCell.detailTextLabel.text = @"";
+        taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerAddProjectCellIdentifier
+                                                   forIndexPath:indexPath];
+        UITapGestureRecognizer *tapGestureRecognizer =
+            [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                    action:@selector(addTaskList)];
+        [taskCell addGestureRecognizer:tapGestureRecognizer];
+//        taskCell.textLabel.text = @"Add project";
+//        taskCell.detailTextLabel.text = @"";
     }
     if (indexPath.section != 0) {
         if (indexPath.row == 0) {
@@ -98,13 +107,7 @@
                                                  withStoreableItem:currentTaskList];
         }
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        NGNTaskList *addingTaskList = [[NGNTaskList alloc] initWithId:foo4random() name:@"None"];
-        [[NGNTaskService sharedInstance] addEntity:addingTaskList];
-        NSDictionary *userInfo = @{@"taskList": addingTaskList};
-        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd
-                                                            object:nil
-                                                          userInfo:userInfo];
+        [self addTaskList];
     }
 }
 
@@ -113,8 +116,6 @@
     if (indexPath.section != 0) {
         if (indexPath.row != 0) {
             return UITableViewCellEditingStyleDelete;
-        } else {
-            return UITableViewCellEditingStyleInsert;
         }
     }
     return UITableViewCellEditingStyleNone;
@@ -218,24 +219,13 @@
     return currentTaskList;
 }
 
-//- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
-//    [super editBarButtonTapped:sender];
-//    [self.tableView setEditing:NO];
-////    self.wholeTableEditable = YES;
-////    [self.tableView setEditing:YES];
-//    self.wholeTableEditable = NO;
-//    [self.tableView setEditing:NO];
-//    UITableViewCell *testCell = [self.tableView.visibleCells filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.text contains[cd] %@", @"Add project"]].firstObject;
-//    [testCell setEditing:NO animated:YES];
-//}
-
-//- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
-//    [super doneBarButtonTapped:sender];
-//    self.wholeTableEditable = NO;
-//    [self.tableView setEditing:NO];
-//    UITableViewCell *testCell = [self.tableView.visibleCells filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.text contains[cd] %@", @"Add project"]].firstObject;
-//    [testCell setEditing:YES animated:YES];
-////    NSLog(@"%@", testCell);
-//}
+- (void)addTaskList {
+    NGNTaskList *addingTaskList = [[NGNTaskList alloc] initWithId:foo4random() name:@"None"];
+    [[NGNTaskService sharedInstance] addEntity:addingTaskList];
+    NSDictionary *userInfo = @{@"taskList": addingTaskList};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd
+                                                        object:nil
+                                                      userInfo:userInfo];
+}
 
 @end
