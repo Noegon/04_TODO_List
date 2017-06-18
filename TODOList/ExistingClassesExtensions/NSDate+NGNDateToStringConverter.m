@@ -7,20 +7,48 @@
 //
 
 #import "NSDate+NGNDateToStringConverter.h"
+#import "NGNTaskService.h"
 #import "NGNConstants.h"
 
 @implementation NSDate (NGNDateToStringConverter)
 
 + (NSDate *)ngn_dateFromString:(NSString *)dateFormattedString {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:NGNControllerDateFormat];
+//    [formatter setDateFormat:NGNControllerDateFormat];
+    formatter.dateStyle = NSDateFormatterMediumStyle;
+    formatter.timeStyle = NSDateFormatterShortStyle;
+    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     return [formatter dateFromString:dateFormattedString];
 }
 
 + (NSString *)ngn_formattedStringFromDate:(NSDate *)date {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:NGNControllerDateFormat];
+//    [formatter setDateFormat:NGNControllerDateFormat];
+    formatter.dateStyle = NSDateFormatterMediumStyle;
+    formatter.timeStyle = NSDateFormatterShortStyle;
+    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     return [formatter stringFromDate:date];
+}
+
++ (NSString *)ngn_formattedStringFromDate:(NSDate *)date withFormat:(NSString *)format {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:format];
+    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    return [formatter stringFromDate:date];
+}
+
++ (NSComparisonResult)ngn_compareDateWithoutTimePortion:(NSDate *)date1 date:(NSDate *)date2 {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger comps = (NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear);
+    
+    NSDateComponents *date1Components = [calendar components:comps
+                                                    fromDate: date1];
+    NSDateComponents *date2Components = [calendar components:comps
+                                                    fromDate: date2];
+    
+    date1 = [calendar dateFromComponents:date1Components];
+    date2 = [calendar dateFromComponents:date2Components];
+    return [date1 compare:date2];
 }
 
 @end

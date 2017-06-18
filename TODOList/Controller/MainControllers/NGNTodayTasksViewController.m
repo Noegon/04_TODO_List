@@ -40,10 +40,9 @@
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
-                                                      NSDictionary *userInfo = notification.userInfo;
                                                       NGNTaskList *commonTaskList =
                                                         [[NGNTaskService sharedInstance] entityById:999];
-                                                      userInfo = @{@"taskList": commonTaskList};
+                                                      NSDictionary *userInfo = @{@"taskList": commonTaskList};
                                                       [[NSNotificationCenter defaultCenter]
                                                        postNotificationName:NGNNotificationNameTaskListChange
                                                        object:nil
@@ -70,11 +69,26 @@
 
 #pragma mark - section handling
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] init];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0,
+                                                               CGRectGetWidth(self.view.frame),
+                                                               NGNControllerTableSectionHeaderHeight)];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor grayColor];
+    
+    NSString *text;
     if (section == 0) {
-        return @"Active";
+        text = NGNControllerActiveTasksSectionTitle;
+    } else {
+        text = NGNControllerCompletedTasksSectionTitle;
     }
-    return @"Completed";
+    label.text = text;
+    
+    [view addSubview:label];
+    
+    return view;
 }
 
 #pragma mark - Table view data source
@@ -84,21 +98,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        return [[NGNTaskService sharedInstance] allActiveTasks].count;
-    }
-    return [[NGNTaskService sharedInstance] allCompletedTasks].count;
+    return [self todayTasksListForSection:section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
-    NGNTask *currentTask;
-    if (indexPath.section == 0) {
-        currentTask = [[NGNTaskService sharedInstance] allActiveTasks][indexPath.row];
-    } else {
-        currentTask = [[NGNTaskService sharedInstance] allCompletedTasks][indexPath.row];
-    }
+    
+    NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
     
     taskCell.textLabel.text = currentTask.name;
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
@@ -114,19 +121,11 @@
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
-    NGNTask *currentTask;
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        if (indexPath.section == 0) {
-            currentTask = [[NGNTaskService sharedInstance] allActiveTasks][indexPath.row];
-        } else {
-            currentTask = [[NGNTaskService sharedInstance] allCompletedTasks][indexPath.row];
-        }
-        [[NGNTaskService sharedInstance] removeTask:currentTask];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
-                                                        object:nil
-                                                      userInfo:nil];
+    
+    NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
+    [self performTaskDeleteConfirmationDialogueAtTableView:tableView
+                                               atIndexPath:indexPath
+                                         withStoreableItem:currentTask];
 }
 
 // Override to insert some additional functionality to cell when you swipe left
@@ -135,14 +134,9 @@
     //edit row action (done - complete task)
     UITableViewRowAction *editAction =
     [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                       title:@"Done"
+                                       title:NGNControllerDoneButtonTitle
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        NGNTask *currentTask;
-        if (indexPath.section == 0) {
-            currentTask = [[NGNTaskService sharedInstance] allActiveTasks][indexPath.row];
-        } else {
-            currentTask = [[NGNTaskService sharedInstance] allCompletedTasks][indexPath.row];
-        }
+        NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
         currentTask.finishedAt = [NSDate date];
         currentTask.completed = YES;
         [self.tableView reloadData];
@@ -156,10 +150,10 @@
     
     //delete row action
     UITableViewRowAction *deleteAction =
-    [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Delete"
+    [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:NGNControllerDeleteButtonTitle
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){
-                                         [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
-                                     }];
+        [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
+    }];
     deleteAction.backgroundColor = [UIColor redColor];
 
     return @[deleteAction,editAction];
@@ -171,24 +165,16 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
-    if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskDetail]) {
-        NGNTaskDetailsViewController *taskDetailsViewController = segue.destinationViewController;
+    NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NSArray *currentTaskList;
-        if (indexPath.section == 0) {
-            currentTaskList = [[NGNTaskService sharedInstance] allActiveTasks];
-        } else {
-            currentTaskList = [[NGNTaskService sharedInstance] allCompletedTasks];
-        }
-        NGNTask *task = currentTaskList[indexPath.row];
-        taskDetailsViewController.entringTask = task;
-        taskDetailsViewController.entringTaskList = commonTaskList;
+        NGNTask *task = [self todayTasksListForSection:indexPath.section][indexPath.row];
+        editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
-        NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
-        editTaskViewController.navigationItem.title = @"Add task";
-        editTaskViewController.entringTaskList = commonTaskList;
+        editTaskViewController.navigationItem.title = NGNControllerAddTaskNavigationItemTitle;
     }
+    editTaskViewController.entringTaskList = commonTaskList;
 }
 
 #pragma mark - additional handling methods
@@ -215,26 +201,24 @@
     editBarButton = nil;
 }
 
-#pragma mark - gestures handling
-
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
-    if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
-        return;
-    }
-    if (![gestureRecognizer.view isKindOfClass:[UITableViewCell class]]){
-        NSLog(@"view isn't tableViewCell");
-        return;
-    }
-    // get the cell at indexPath (the one you long pressed)
-    UITableViewCell* cell = (UITableViewCell *)gestureRecognizer.view;
-    // do stuff with the cell
-    NSLog(@"%@, editingStyle: %ld", cell.textLabel.text, (long)cell.editingStyle);
+- (NSArray *)todayTasksListForSection:(NSInteger)section {
+    NSMutableArray *todayTasks = [[NSMutableArray alloc] init];
     
-    if (self.tableView.isEditing) {
-        [self doneBarButtonTapped:nil];
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    if (section == 0) {
+        for (NGNTask *task in [[NGNTaskService sharedInstance] allActiveTasks]) {
+            if ([calendar isDateInToday:task.startedAt]) {
+                [todayTasks addObject:task];
+            }
+        }
     } else {
-        [self editBarButtonTapped:nil];
+        for (NGNTask *task in [[NGNTaskService sharedInstance] allCompletedTasks]) {
+            if ([calendar isDateInToday:task.startedAt]) {
+                [todayTasks addObject:task];
+            }
+        }
     }
+    return [todayTasks copy];
 }
 
 @end

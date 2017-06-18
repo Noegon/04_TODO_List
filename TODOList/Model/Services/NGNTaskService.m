@@ -10,6 +10,7 @@
 #import "NGNTask.h"
 #import "NGNTaskList.h"
 #import "NSDate+NGNDateToStringConverter.h"
+#import "NGNConstants.h"
 
 @interface NGNTaskService ()
 
@@ -26,18 +27,21 @@
         NGNTask *task1 = [NGNTask taskWithId:1 name:@"Make calculator 3.0"];
         NGNTask *task2 = [NGNTask taskWithId:2
                                         name:@"Make TODO List 0.1"
-                                   startDate:[NSDate ngn_dateFromString:@"17/07/2009"]
+                                   startDate:[NSDate ngn_dateFromString:@"Jul 17, 2009, 00:00 PM"]
                                        notes:@""];
         NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
         NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
         NGNTask *task4 = [NGNTask taskWithId:4
                                         name:@"Buy milk"
-                                   startDate:[NSDate ngn_dateFromString:@"09/07/2017"]
+                                   startDate:[NSDate ngn_dateFromString:@"Jul 09, 2017, 00:00 PM"]
                                        notes:@""];
-        NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"];
+        NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"
+                                          startDate:[NSDate ngn_dateFromString:@"Jul 10, 2017, 00:00 PM"]
+                                              notes:@""];
         NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
                                                            name:@"Commodities"
-                                                   creationDate:[NSDate dateWithTimeIntervalSinceNow:1000000]];
+                                                   creationDate:[NSDate dateWithTimeIntervalSinceNow:150000000]];
+        NGNTaskList *taskList3 = [[NGNTaskList alloc]initWithId:999 name:@"Common task list"];
         [taskList addEntity:task1];
         [taskList addEntity:task2];
         [taskList addEntity:task3];
@@ -45,6 +49,7 @@
         [taskList2 addEntity:task5];
         [sharedInstance addEntity:taskList];
         [sharedInstance addEntity:taskList2];
+        [sharedInstance addEntity:taskList3];
         
     });
     return sharedInstance;
@@ -69,8 +74,12 @@
 
 - (NSMutableArray *)allActiveTasksGroupedByStartDate {
     NSMutableArray *groupedByStartDateTasks = [[NSMutableArray alloc] init];
-    NSArray *stringfiedDatesArray =
-        [[self allActiveTasks] valueForKeyPath:@"@distinctUnionOfObjects.startedAt.description"];
+    NSMutableArray *stringfiedDatesArray = [[NSMutableArray alloc] init];
+    for (NGNTask *task in [self allActiveTasks]) {
+        [stringfiedDatesArray addObject:[NSDate ngn_formattedStringFromDate:task.startedAt
+                                                                 withFormat:NGNControllerDateFormatForComparison]];
+    }
+    stringfiedDatesArray = [stringfiedDatesArray valueForKeyPath:@"@distinctUnionOfObjects.self"];
     for (int i = 0; i < stringfiedDatesArray.count; i++) {
         NSPredicate *predicate =
             [NSPredicate predicateWithFormat:@"SELF.startedAt.description contains[cd] %@", stringfiedDatesArray[i]];
@@ -78,7 +87,7 @@
             [[self allActiveTasks] filteredArrayUsingPredicate:predicate];
         [groupedByStartDateTasks addObject:[currentStartDateTasks mutableCopy]];
     }
-    return [groupedByStartDateTasks mutableCopy];
+    return groupedByStartDateTasks;
 }
 
 - (void)removeTask:(NGNTask *)taskToRemove {

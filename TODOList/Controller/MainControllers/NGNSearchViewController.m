@@ -8,7 +8,7 @@
 
 #import "NGNSearchViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
-#import "NGNTaskDetailsViewController.h"
+#import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
@@ -36,8 +36,8 @@
     self.searchController.searchResultsUpdater = self;
     self.searchController.searchBar.delegate = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
-//    self.searchController.searchBar.showsScopeBar = YES; // never do this!
-    self.searchController.searchBar.scopeButtonTitles = @[@"Active tasks", @"Completed tasks"];
+    self.searchController.searchBar.scopeButtonTitles = @[NGNControllerActiveTasksSearchBarScopeTitle,
+                                                          NGNControllerCompletedTasksSearchBarScopeTitle];
     [self.searchController.searchBar setBackgroundColor:[UIColor whiteColor]];
     self.searchController.searchBar.selectedScopeButtonIndex = 0;
     self.tableView.tableHeaderView = self.searchController.searchBar;
@@ -71,13 +71,13 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskDetail]) {
-        NGNTaskDetailsViewController *taskDetailsViewController = segue.destinationViewController;
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
+        NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         NGNTask *task = self.searchResultTasks[indexPath.row];;
         NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] taskListByTaskId:task.entityId];
-        taskDetailsViewController.entringTask = task;
-        taskDetailsViewController.entringTaskList = currentTaskList;
+        editTaskViewController.entringTask = task;
+        editTaskViewController.entringTaskList = currentTaskList;
     }
 }
 
