@@ -258,7 +258,7 @@
         <!--Edit Task View Controller-->
         <scene sceneID="5lQ-kx-KUQ">
             <objects>
-                <tableViewController id="4i5-1h-4eC" customClass="NGNEditTaskViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="EditTask" id="4i5-1h-4eC" customClass="NGNEditTaskViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="Y1m-UQ-jol">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

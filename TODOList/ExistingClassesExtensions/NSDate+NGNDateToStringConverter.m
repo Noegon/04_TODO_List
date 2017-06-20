@@ -14,26 +14,24 @@
 
 + (NSDate *)ngn_dateFromString:(NSString *)dateFormattedString {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:NGNControllerDateFormat];
     formatter.dateStyle = NSDateFormatterMediumStyle;
     formatter.timeStyle = NSDateFormatterShortStyle;
-    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    formatter.timeZone = [NSTimeZone systemTimeZone];
     return [formatter dateFromString:dateFormattedString];
 }
 
 + (NSString *)ngn_formattedStringFromDate:(NSDate *)date {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:NGNControllerDateFormat];
     formatter.dateStyle = NSDateFormatterMediumStyle;
     formatter.timeStyle = NSDateFormatterShortStyle;
-    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    formatter.timeZone = [NSTimeZone systemTimeZone];
     return [formatter stringFromDate:date];
 }
 
 + (NSString *)ngn_formattedStringFromDate:(NSDate *)date withFormat:(NSString *)format {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:format];
-    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    formatter.timeZone = [NSTimeZone systemTimeZone];
     return [formatter stringFromDate:date];
 }
 

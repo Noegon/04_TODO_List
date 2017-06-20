@@ -75,7 +75,7 @@
         NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         NGNTask *task = self.searchResultTasks[indexPath.row];;
-        NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] taskListByTaskId:task.entityId];
+        NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:task.entityId];
         editTaskViewController.entringTask = task;
         editTaskViewController.entringTaskList = currentTaskList;
     }

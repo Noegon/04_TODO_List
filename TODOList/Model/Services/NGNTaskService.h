@@ -23,6 +23,5 @@
 - (NSArray *)allActiveTaskLists;
 - (void)removeTask:(NGNTask *)taskToRemove;
 - (void)updateTask:(NGNTask *)taskToUpdate;
-- (NGNTaskList *)taskListByTaskId:(NSInteger)taskId;
 
 @end

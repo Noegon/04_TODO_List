@@ -6,12 +6,15 @@
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
+#import <UserNotifications/UserNotifications.h>
+
 #import "NGNEditTaskViewController.h"
 #import "NGNDatePickingViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNConstants.h"
 #import "NGNTask.h"
 #import "NGNTaskList.h"
+#import "NGNTaskService.h"
 
 @interface NGNEditTaskViewController ()
 
@@ -112,9 +115,67 @@
         [self.entringTaskList updateEntity:self.entringTask];
     }
     
+    //notifications
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
                                                         object:nil
                                                       userInfo:userInfo];
+    
+    //local notifications
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
+        NSString *notificationID =
+            [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
+        if (self.entringTask.shouldRemindOnDay) {
+            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            
+            [calendar setTimeZone:[NSTimeZone localTimeZone]];
+            
+            NSDateComponents *components =
+                [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour |
+                                     NSCalendarUnitMinute | NSCalendarUnitSecond|NSCalendarUnitTimeZone
+                            fromDate:[self.entringTask.startedAt dateByAddingTimeInterval:0]];
+            
+            UNMutableNotificationContent *objNotificationContent = [[UNMutableNotificationContent alloc] init];
+            objNotificationContent.title = [NSString localizedUserNotificationStringForKey:@"Task is started!" arguments:nil];
+            objNotificationContent.body = [NSString localizedUserNotificationStringForKey:self.entringTask.name
+                                                                                arguments:nil];
+            objNotificationContent.sound = [UNNotificationSound defaultSound];
+            // update application icon badge number
+            objNotificationContent.badge = @([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
+            objNotificationContent.userInfo = @{@"taskId": @(self.entringTask.entityId),
+                                                @"taskListId": @(self.entringTaskList.entityId)};
+            
+            UNCalendarNotificationTrigger *trigger =
+                [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:NO];
+            
+            
+            UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:notificationID
+                                                                                  content:objNotificationContent
+                                                                                  trigger:trigger];
+            UNUserNotificationCenter *userCenter = [UNUserNotificationCenter currentNotificationCenter];
+            [userCenter addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+                if (!error) {
+                    NSLog(@"Local Notification succeeded");
+                }
+                else {
+                    NSLog(@"Local Notification failed");
+                }
+            }];
+        } else {
+            [[UNUserNotificationCenter currentNotificationCenter]
+             removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
+        }
+        [[UNUserNotificationCenter currentNotificationCenter]
+            getPendingNotificationRequestsWithCompletionHandler:^(NSArray *requests){
+                for (UNNotificationRequest *request in requests) {
+                    NSNumber *tasklistId = request.content.userInfo[@"taskListId"];
+                    NGNTaskList *list = [[NGNTaskService sharedInstance] entityById: tasklistId.integerValue];
+                    NSNumber *taskId = request.content.userInfo[@"taskId"];
+                    NGNTask *task = [list entityById: taskId.integerValue];
+                    NSLog(@"%@", task);
+                }
+        }];
+    }
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

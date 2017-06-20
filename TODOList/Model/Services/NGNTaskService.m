@@ -113,15 +113,4 @@
     }
 }
 
-- (NGNTaskList *)taskListByTaskId:(NSInteger)taskId {
-    for (NGNTaskList *currentList in self.entityCollection) {
-        NSArray *activeTasks = [[currentList entityCollection] filteredArrayUsingPredicate:
-                                [NSPredicate predicateWithFormat:@"SELF.entityId == %d", taskId]];
-        if ([activeTasks count]) {
-            return currentList;
-        }
-    }
-    return nil;
-}
-
 @end

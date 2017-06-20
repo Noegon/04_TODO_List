@@ -44,7 +44,7 @@
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
-    
+
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
@@ -93,8 +93,8 @@
                               action:@selector(segmentedControlSelectionChange)
                     forControlEvents:UIControlEventValueChanged];
     self.dateSortedTaskListsArray = [[[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate] mutableCopy];
-    [self segmentedControlSelectionChange];
     self.ascendingSortDirection = YES;
+    [self segmentedControlSelectionChange];
 }
 
 #pragma mark - Table view data source
@@ -300,7 +300,7 @@
     NGNTaskList *actualTaskList;
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         NGNTask *actualTask = self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
-        actualTaskList = [[NGNTaskService sharedInstance] taskListByTaskId:actualTask.entityId];
+        actualTaskList = [[NGNTaskService sharedInstance] entityById:actualTask.entityId];
     } else {
         actualTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][indexPath.section];
     }

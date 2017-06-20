@@ -9,6 +9,12 @@
 #import <Foundation/Foundation.h>
 
 #define foo4random() (arc4random() % ((unsigned)RAND_MAX + 1))
+//checking system version
+#define SYSTEM_VERSION_EQUAL_TO(v)([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
 #pragma mark - model priorities
 typedef enum {
@@ -75,6 +81,9 @@ static NSString *const NGNControllerSegueShowDatePicking = @"ShowDatePicking";
 static NSString *const NGNControllerSegueShowAddProject = @"ShowAddProject";
 static NSString *const NGNControllerSegueShowAddTask = @"ShowAddTask";
 
+#pragma mark - controllers identifiers
+static NSString *const NGNControllerIdentifierEditTask = @"EditTask";
+
 #pragma mark - unwind segues identifiers
 static NSString *const NGNControllerSegueUnwindToEditWithDone = @"UnwindToEditWithDone";
 static NSString *const NGNControllerSegueUnwindToEditWithCancel = @"UnwindToEditWithCancel";
@@ -85,6 +94,9 @@ static NSString *const NGNNotificationNameTaskAdd = @"TaskAddNotification";
 static NSString *const NGNNotificationNameTaskListChange = @"TaskListChangeNotification";
 static NSString *const NGNNotificationNameTaskListAdd = @"TaskListAddNotification";
 static NSString *const NGNNotificationNameGlobalModelChange = @"GlobalModelChangeNotification";
+
+#pragma mark - notification names
+static NSString *const NGNNotificationRequestIDTaskTime = @"TaskTimeHasCome";
 
 @interface NGNConstants : NSObject
 

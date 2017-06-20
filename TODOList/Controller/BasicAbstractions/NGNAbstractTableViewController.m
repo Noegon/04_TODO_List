@@ -54,22 +54,11 @@
     UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NGNControllerDeleteButtonTitle
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
-        NGNTaskList *currentTaskList;
         if ([storeableItem isKindOfClass:[NGNTask class]]) {
-            currentTaskList = [[NGNTaskService sharedInstance] taskListByTaskId:storeableItem.entityId];
             [[NGNTaskService sharedInstance] removeTask:storeableItem];
         } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
-            currentTaskList = storeableItem;
             [[NGNTaskService sharedInstance] removeEntity:storeableItem];
         }
-        
-//        if (currentTaskList.entityCollection.count == 0) {
-//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-//                     withRowAnimation:UITableViewRowAnimationFade];
-//        } else {
-//            [tableView deleteRowsAtIndexPaths:@[indexPath]
-//                             withRowAnimation:UITableViewRowAnimationFade];
-//        }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
                                                             object:nil
                                                           userInfo:nil];
