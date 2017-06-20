@@ -7,17 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NGNCommonEntityContainer.h"
 
 @class NGNTask;
-@interface NGNTaskService : NSObject
+@class NGNTaskList;
 
-@property (strong, nonatomic, readonly) NSArray *taskList;
+@interface NGNTaskService : NGNCommonEntityContainer
 
-- (NGNTask *)taskById:(NSString *)taskId;
-- (void)addTask:(NGNTask *)task;
-- (void)removeTask:(NGNTask *)task;
-- (void)updateTask:(NGNTask *)task;
-- (void)removeTaskById:(NSString *)taskId;
-- (NSArray *)activeTasksList;
++ (instancetype)sharedInstance;
+
+- (NSArray *)allTasks;
+- (NSArray *)allActiveTasks;
+- (NSArray *)allCompletedTasks;
+- (NSArray *)allActiveTasksGroupedByStartDate;
+- (NSArray *)allActiveTaskLists;
+- (void)removeTask:(NGNTask *)taskToRemove;
+- (void)updateTask:(NGNTask *)taskToUpdate;
 
 @end

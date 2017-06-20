@@ -7,9 +7,10 @@
 //
 
 #import "NGNTaskDetailsViewController.h"
-#import "NGNEditViewController.h"
-#import "NGNDateFormatHelper.h"
+#import "NSDate+NGNDateToStringConverter.h"
+#import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
+#import "NGNTaskList.h"
 #import "NGNConstants.h"
 
 @interface NGNTaskDetailsViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -20,9 +21,9 @@
 @property (strong, nonatomic) IBOutlet UILabel *finishDateLabel;
 @property (strong, nonatomic) IBOutlet UILabel *notesLabel;
 @property (strong, nonatomic) IBOutlet UIButton *doneButton;
+@property (strong, nonatomic) IBOutlet UILabel *priorityLabel;
 
 - (IBAction)doneButtonTapped:(UIButton *)sender;
-- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
 
 
 @end
@@ -43,18 +44,18 @@
      usingBlock:^(NSNotification *notification) {
          NSDictionary *userInfo = notification.userInfo;
          NGNTask *task = userInfo[@"task"];
-         if ([task isEqual:self.entringTask]) {
-             self.entringTask = task;
-             [self renewInformation];
-         }
+         NGNTaskList *taskList = userInfo[@"taskList"];
+         [taskList updateEntity:task];
+         [self renewInformation];
      }];
 }
 
 - (IBAction)doneButtonTapped:(UIButton *)sender {
-    self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:[NSDate date]];
+    self.finishDateLabel.text = [NSDate ngn_formattedStringFromDate:[NSDate date]];
     self.entringTask.finishedAt = [NSDate date];
     self.entringTask.completed = YES;
-    NSDictionary *userInfo = @{@"task": self.entringTask};
+    NSDictionary *userInfo = @{@"task": self.entringTask,
+                               @"taskList": self.entringTaskList};
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
                                                         object:nil
                                                       userInfo:userInfo];
@@ -63,89 +64,39 @@
     self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
-- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
-    NGNEditViewController *editViewController = [[NGNEditViewController alloc] init];
-    editViewController.entringTask = self.entringTask;
-    [self showViewController:editViewController sender:sender];
-}
-
 - (void)renewInformation {
-    self.taskIdLabel.text = self.entringTask.taskId;
+    self.taskIdLabel.text = [NSString stringWithFormat:@"%ld", self.entringTask.entityId];
     self.taskNameLabel.text = self.entringTask.name;
-    self.startDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.startedAt];
+    self.startDateLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
     self.notesLabel.text = self.entringTask.notes;
+    self.priorityLabel.text = !self.entringTask.priority ?
+                                                 @"None" :
+                                                 [NSString stringWithFormat:@"%ld", self.entringTask.priority];
     if (self.entringTask.isCompleted) {
-        self.finishDateLabel.text = [NGNDateFormatHelper formattedStringFromDate:self.entringTask.finishedAt];
+        self.finishDateLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.finishedAt];
         self.doneButton.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
 }
 
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
+        NGNEditTaskViewController *editTaskViewController = [segue destinationViewController];
+        editTaskViewController.entringTask = self.entringTask;
+        editTaskViewController.entringTaskList = self.entringTaskList;
+    }
+}
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//#warning Incomplete implementation, return the number of sections
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//#warning Incomplete implementation, return the number of rows
-    return 6;
+    return 7;
 }
-
-/*
- - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
- UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
- 
- // Configure the cell...
- 
- return cell;
- }
- */
-
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- } else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

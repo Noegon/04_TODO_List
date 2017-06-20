@@ -1,8 +1,8 @@
 //
-//  NGNTaskDetailsViewController.h
+//  NGNEditTaskViewController.h
 //  TODOList
 //
-//  Created by Alex on 04.06.17.
+//  Created by Alex on 11.06.17.
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
@@ -11,7 +11,7 @@
 @class NGNTask;
 @class NGNTaskList;
 
-@interface NGNTaskDetailsViewController : UITableViewController
+@interface NGNEditTaskViewController : UITableViewController
 
 @property (strong, nonatomic) NGNTask *entringTask;
 @property (strong, nonatomic) NGNTaskList *entringTaskList;
