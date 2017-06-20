@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NGNAbstractTableViewController.h"
 
-@interface NGNInboxViewController : UITableViewController
+@interface NGNInboxViewController : NGNAbstractTableViewController
 
 @end

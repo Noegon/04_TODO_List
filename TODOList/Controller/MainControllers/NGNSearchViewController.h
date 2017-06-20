@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NGNAbstractTableViewController.h"
 
-@interface NGNSearchViewController : UITableViewController
+@interface NGNSearchViewController : NGNAbstractTableViewController
 
 @end

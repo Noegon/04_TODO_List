@@ -8,58 +8,109 @@
 
 #import "NGNTaskService.h"
 #import "NGNTask.h"
+#import "NGNTaskList.h"
+#import "NSDate+NGNDateToStringConverter.h"
+#import "NGNConstants.h"
 
 @interface NGNTaskService ()
-
-@property (strong, nonatomic, readwrite) NSMutableArray<NGNTask *> *privateTaskList;
 
 @end
 
 @implementation NGNTaskService
 
-- (instancetype)init {
-    if (self = [super init]) {
-        _privateTaskList = [[NSMutableArray alloc]init];
-    }
-    return self;
++ (instancetype)sharedInstance {
+    static NGNTaskService *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+#warning hardcoded test datasource
+        sharedInstance = [[NGNTaskService alloc] init];
+        NGNTask *task1 = [NGNTask taskWithId:1 name:@"Make calculator 3.0"];
+        NGNTask *task2 = [NGNTask taskWithId:2
+                                        name:@"Make TODO List 0.1"
+                                   startDate:[NSDate ngn_dateFromString:@"Jul 17, 2009, 00:00 PM"]
+                                       notes:@""];
+        NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
+        NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
+        NGNTask *task4 = [NGNTask taskWithId:4
+                                        name:@"Buy milk"
+                                   startDate:[NSDate ngn_dateFromString:@"Jul 09, 2017, 00:00 PM"]
+                                       notes:@""];
+        NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"
+                                          startDate:[NSDate ngn_dateFromString:@"Jul 10, 2017, 00:00 PM"]
+                                              notes:@""];
+        NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
+                                                           name:@"Commodities"
+                                                   creationDate:[NSDate dateWithTimeIntervalSinceNow:150000000]];
+        NGNTaskList *taskList3 = [[NGNTaskList alloc]initWithId:999 name:@"Inbox"];
+        [taskList addEntity:task1];
+        [taskList addEntity:task2];
+        [taskList addEntity:task3];
+        [taskList2 addEntity:task4];
+        [taskList2 addEntity:task5];
+        [sharedInstance addEntity:taskList];
+        [sharedInstance addEntity:taskList2];
+        [sharedInstance addEntity:taskList3];
+        
+    });
+    return sharedInstance;
 }
 
-- (NSMutableArray *)taskList {
-    return [self.privateTaskList mutableCopy];
+- (NSArray *)allTasks {
+    NSArray *unitedArray = [self.entityCollection valueForKeyPath:@"@unionOfArrays.self.entityCollection"];
+    return unitedArray;
 }
 
-- (NGNTask *)taskById:(NSString *)taskId {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.taskId contains[cd] %@", taskId];
-    return [[self.taskList filteredArrayUsingPredicate:predicate]firstObject];
-}
-
-- (void)addTask:(NGNTask *)task {
-    [self.privateTaskList addObject:task];
-}
-
-- (void)removeTask:(NGNTask *)task {
-    [self.privateTaskList removeObject:task];
-}
-
-- (void)updateTask:(NGNTask *)task {
-    NGNTask *oldTask = [self taskById:task.taskId];
-    if (oldTask) {
-        self.privateTaskList[[self.taskList indexOfObject:oldTask]] = task;
-    }
-    else {
-        [self addTask:task];
-    }
-}
-
-- (void)removeTaskById:(NSString *)taskId {
-    NGNTask *taskToRemove = [self taskById:taskId];
-    [self removeTask:taskToRemove];
-}
-
-- (NSArray *)activeTasksList {
-    NSArray *activeTasks = [self.taskList filteredArrayUsingPredicate:
+- (NSArray *)allActiveTasks {
+    NSArray *activeTasks = [[self allTasks] filteredArrayUsingPredicate:
                             [NSPredicate predicateWithFormat:@"SELF.isCompleted == NO"]];
     return activeTasks;
+}
+
+- (NSArray *)allCompletedTasks {
+    NSArray *completedTasks = [[self allTasks] filteredArrayUsingPredicate:
+                               [NSPredicate predicateWithFormat:@"SELF.isCompleted == YES"]];
+    return completedTasks;
+}
+
+- (NSArray *)allActiveTasksGroupedByStartDate {
+    NSMutableArray *groupedByStartDateTasks = [[NSMutableArray alloc] init];
+    NSMutableArray *stringfiedDatesArray = [[NSMutableArray alloc] init];
+    for (NGNTask *task in [self allActiveTasks]) {
+        [stringfiedDatesArray addObject:[NSDate ngn_formattedStringFromDate:task.startedAt
+                                                                 withFormat:NGNModelDateFormatForComparison]];
+    }
+    stringfiedDatesArray = [stringfiedDatesArray valueForKeyPath:@"@distinctUnionOfObjects.self"];
+    for (int i = 0; i < stringfiedDatesArray.count; i++) {
+        NSPredicate *predicate =
+            [NSPredicate predicateWithFormat:@"SELF.startedAt.description contains[cd] %@", stringfiedDatesArray[i]];
+        NSArray<id<NGNStoreable>> *currentStartDateTasks =
+            [[self allActiveTasks] filteredArrayUsingPredicate:predicate];
+        [groupedByStartDateTasks addObject:[currentStartDateTasks mutableCopy]];
+    }
+    return groupedByStartDateTasks;
+}
+
+- (NSArray *)allActiveTaskLists {
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NGNTaskList *taskList, NSDictionary *bind) {
+        return taskList.entityCollection.count != 0;
+    }];
+    return [self.entityCollection filteredArrayUsingPredicate:predicate];
+}
+
+- (void)removeTask:(NGNTask *)taskToRemove {
+    for (NGNTaskList *list in self.entityCollection) {
+        if ([list entityById:taskToRemove.entityId]) {
+            [list removeEntity:taskToRemove];
+        }
+    }
+}
+
+- (void)updateTask:(NGNTask *)taskToUpdate {
+    for (NGNTaskList *list in self.entityCollection) {
+        if ([list entityById:taskToUpdate.entityId]) {
+            [list updateEntity:taskToUpdate];
+        }
+    }
 }
 
 @end

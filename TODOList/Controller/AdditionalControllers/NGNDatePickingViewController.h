@@ -8,10 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class NGNTask;
-
 @interface NGNDatePickingViewController : UIViewController
 
-@property (strong, nonatomic) NGNTask *entringTask;
+@property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
 
 @end

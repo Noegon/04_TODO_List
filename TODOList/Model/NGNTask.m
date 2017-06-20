@@ -10,22 +10,20 @@
 
 @implementation NGNTask
 
-+ (instancetype)taskWithId:(NSString *)taskId name:(NSString *)name {
++ (instancetype)taskWithId:(NSInteger)taskId name:(NSString *)name {
     return [[self alloc] initWithId:taskId name:name];
 }
 
-+ (instancetype)taskWithId:(NSString *)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
++ (instancetype)taskWithId:(NSInteger)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
     return [[self alloc] initWithId:taskId name:name startDate:startDate notes:notes];
 }
 
-- (instancetype)initWithId:(NSString *)taskId name:(NSString *)name {
+- (instancetype)initWithId:(NSInteger)taskId name:(NSString *)name {
     return [self initWithId:taskId name:name startDate:[NSDate date] notes:@""];
 }
 
-- (instancetype)initWithId:(NSString *)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
-    if (self = [super init]) {
-        _taskId = taskId;
-        _name = name;
+- (instancetype)initWithId:(NSInteger)taskId name:(NSString *)name startDate:(NSDate *)startDate notes:(NSString *)notes {
+    if (self = [super initWithId:taskId name:name]) {
         _startedAt = startDate;
         _notes = notes;
     }
@@ -39,12 +37,15 @@
     } else if (![super isEqual:other]) {
         return NO;
     } else {
-        return [self.taskId isEqualToString:tmpOther.taskId];
+        return (self.entityId == tmpOther.entityId);
     }
 }
 
 - (NSUInteger)hash {
-    return [self.taskId hash];
+    NSUInteger prime = 31;
+    NSUInteger result = 1;
+    result = prime * result + (int) (self.entityId ^ (self.entityId >> 32));
+    return result;
 }
 
 @end
