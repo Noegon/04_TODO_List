@@ -7,7 +7,6 @@
 //
 
 #import "NGNTaskListDetailsViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
@@ -16,6 +15,9 @@
 #import "NGNConstants.h"
 
 @interface NGNTaskListDetailsViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+
+@property (strong, nonatomic) id<NSObject> taskChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskAddNotification;
 
 @end
 
@@ -26,23 +28,24 @@
     
     srand((unsigned int)time(NULL));
     
+    self.taskChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
+    self.taskAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                      [[NSNotificationCenter defaultCenter]
-                                                       postNotificationName:NGNNotificationNameTaskListChange
-                                                                     object:nil
-                                                                   userInfo:@{@"taskList": self.entringTaskList}];
-                                                  }];
+        [self.tableView reloadData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
+                                                            object:nil
+                                                          userInfo:@{@"taskList": self.entringTaskList}];
+    }];
     
     [self.tableView setEditing:NO animated:YES];
 }
@@ -155,6 +158,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     } else {
         self.tableView.editing = YES;
     }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
 }
 
 @end

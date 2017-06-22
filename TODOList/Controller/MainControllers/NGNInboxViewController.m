@@ -7,7 +7,6 @@
 //
 
 #import "NGNInboxViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
@@ -22,6 +21,11 @@
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) NSMutableArray *dateSortedTaskListsArray;
 @property (assign, nonatomic, getter=isAscendingSortDirection) BOOL ascendingSortDirection;
+@property (strong, nonatomic) id<NSObject> taskChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskAddNotification;
+@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskListAddNotification;
+@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
 
 #pragma mark - additional handling methods
 
@@ -38,38 +42,43 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.taskChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
 
+    self.taskAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
     
+    self.taskListChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
     
+    self.taskListAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
         
     }];
     
+    self.globalModelChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
@@ -342,6 +351,14 @@
              return comparisonResult;
          }];
     }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end
