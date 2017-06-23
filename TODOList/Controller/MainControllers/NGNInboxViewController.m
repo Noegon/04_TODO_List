@@ -21,11 +21,6 @@
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) NSMutableArray *dateSortedTaskListsArray;
 @property (assign, nonatomic, getter=isAscendingSortDirection) BOOL ascendingSortDirection;
-@property (strong, nonatomic) id<NSObject> taskChangeNotification;
-@property (strong, nonatomic) id<NSObject> taskAddNotification;
-@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
-@property (strong, nonatomic) id<NSObject> taskListAddNotification;
-@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
 
 #pragma mark - additional handling methods
 
@@ -351,14 +346,6 @@
              return comparisonResult;
          }];
     }
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskListAddNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end

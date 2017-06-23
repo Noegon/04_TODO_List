@@ -11,6 +11,12 @@
 
 @interface NGNAbstractTableViewController : UITableViewController
 
+@property (strong, nonatomic) id<NSObject> taskChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskAddNotification;
+@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskListAddNotification;
+@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
+
 #pragma mark - additional handling methods
 
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;

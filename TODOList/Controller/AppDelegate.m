@@ -30,15 +30,28 @@
         NSLog(@"Notifications allowed");
         center.delegate = self;
     }];
+    // Set the tab bar number badge
+    UITabBarController *tabBarController = (UITabBarController*)self.window.rootViewController;
+    UITabBarItem *tab_bar = [[tabBarController.viewControllers objectAtIndex:4] tabBarItem];
+    // Show the badge if the count is
+    // greater than 0 otherwise hide it.
+    if (UIApplication.sharedApplication.applicationIconBadgeNumber > 0) {
+        [tab_bar setBadgeValue:[NSString stringWithFormat:@"%ld",
+                                UIApplication.sharedApplication.applicationIconBadgeNumber]]; // set your badge value
+    } else {
+        [tab_bar setBadgeValue:nil];
+    }
     return YES;
 }
 
 //This method will be invoked even if the application was launched or resumed because of the remote notification. The respective delegate methods will be invoked first. Note that this behavior is in contrast to application:didReceiveRemoteNotification:, which is not called in those cases, and which will not be invoked if this method is implemented. !
-
 - (void)application:(UIApplication *)application
         didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     application.applicationIconBadgeNumber += 1;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
+                                                        object:nil
+                                                      userInfo:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -50,6 +63,10 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    //for debug
+//    [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
+//    [[UNUserNotificationCenter currentNotificationCenter] removeAllPendingNotificationRequests];
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
 
@@ -60,6 +77,9 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
+                                                        object:nil
+                                                      userInfo:nil];
 }
 
 
@@ -76,6 +96,9 @@
     completionHandler(UNNotificationPresentationOptionAlert +
                       UNNotificationPresentationOptionSound);
     [UIApplication sharedApplication].applicationIconBadgeNumber += 1;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
+                                                        object:nil
+                                                      userInfo:nil];
 }
 
 //method calling when user tap on pop-up window with notification alert
@@ -94,7 +117,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     //get target controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     NGNEditTaskViewController *editTaskViewController =
-    [storyboard instantiateViewControllerWithIdentifier:NGNControllerIdentifierEditTask];
+        [storyboard instantiateViewControllerWithIdentifier:NGNControllerIdentifierEditTask];
     //set initial parameters for target view controller
     editTaskViewController.entringTaskList = currentTaskList;
     editTaskViewController.entringTask = currentTask;

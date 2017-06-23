@@ -16,9 +16,6 @@
 
 @interface NGNTaskListDetailsViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) id<NSObject> taskChangeNotification;
-@property (strong, nonatomic) id<NSObject> taskAddNotification;
-
 @end
 
 @implementation NGNTaskListDetailsViewController
@@ -51,10 +48,6 @@
 }
 
 #pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[section];
@@ -158,11 +151,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     } else {
         self.tableView.editing = YES;
     }
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
 }
 
 @end
