@@ -119,7 +119,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
                                                         object:nil
                                                       userInfo:userInfo];
-    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

@@ -68,7 +68,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
-    NGNTask *currentTask = self.entringTaskList.entityCollection[indexPath.row];
+    NGNTask *currentTask = (NGNTask *)self.entringTaskList.entityCollection[indexPath.row];
     
     taskCell.textLabel.text = currentTask.name;
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
@@ -85,7 +85,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NGNTask *currentTask = self.entringTaskList.entityCollection[indexPath.row];
+        NGNTask *currentTask = (NGNTask *)self.entringTaskList.entityCollection[indexPath.row];
         [self.entringTaskList removeEntity:currentTask];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         NSDictionary *userInfo = @{@"taskList": self.entringTaskList};
@@ -124,7 +124,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
     if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTask *task = self.entringTaskList.entityCollection[indexPath.row];
+        NGNTask *task = (NGNTask *)self.entringTaskList.entityCollection[indexPath.row];
         editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {

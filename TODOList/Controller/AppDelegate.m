@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "NGNTaskList.h"
+#import "NGNTask.h"
+#import "NSDate+NGNDateToStringConverter.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +20,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [NSNotificationCenter defaultCenter];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *filePath = [documentsPath stringByAppendingPathComponent:@"myTasks.txt"];
+    if (![fileManager fileExistsAtPath:filePath]) {
+        [fileManager createFileAtPath:filePath
+                             contents:[NSData new]
+                           attributes:nil];
+    }
+//#warning removing file for debug!!!
+//    if ([fileManager removeItemAtPath:filePath error:NULL]) {
+//        NSLog (@"Remove successful");
+//    } else {
+//        NSLog (@"Remove failed");
+//    }
     return YES;
 }
 
@@ -46,6 +63,5 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
-
 
 @end

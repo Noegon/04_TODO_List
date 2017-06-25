@@ -7,12 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NGNCommonEntityContainer.h"
+#import "NGNContainable.h"
 
 @class NGNTask;
 @class NGNTaskList;
 
-@interface NGNTaskService : NGNCommonEntityContainer
+@interface NGNTaskService: NSObject <NGNContainable>
+
+@property (strong, nonatomic, readwrite) NSMutableArray<id<NGNStoreable>> *entityCollection;
 
 + (instancetype)sharedInstance;
 
@@ -23,5 +25,12 @@
 - (NSArray *)allActiveTaskLists;
 - (void)removeTask:(NGNTask *)taskToRemove;
 - (void)updateTask:(NGNTask *)taskToUpdate;
+
+@end
+
+@interface NGNTaskService (NGNSerializableContainer)
+
+- (void)saveCollection;
+- (void)loadCollection;
 
 @end

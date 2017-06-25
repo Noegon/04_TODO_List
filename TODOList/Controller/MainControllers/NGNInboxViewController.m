@@ -279,7 +279,7 @@
         NGNEditTaskViewController *addTaskViewController = segue.destinationViewController;
         NSInteger addingTaskId = foo4random();
         NGNTask *addingTask = [[NGNTask alloc] initWithId:addingTaskId name:NGNControllerNoneTitle];
-        NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
+        NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
         addTaskViewController.navigationItem.title = NGNControllerAddTaskNavigationItemTitle;
         addTaskViewController.entringTask = addingTask;
         addTaskViewController.entringTaskList = commonTaskList;
@@ -309,7 +309,7 @@
     NGNTaskList *actualTaskList;
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         NGNTask *actualTask = self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
-        actualTaskList = [[NGNTaskService sharedInstance] entityById:actualTask.entityId];
+        actualTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:actualTask.entityId];
     } else {
         actualTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][indexPath.section];
     }

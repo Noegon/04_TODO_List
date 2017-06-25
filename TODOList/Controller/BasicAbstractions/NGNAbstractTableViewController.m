@@ -55,9 +55,9 @@
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
         if ([storeableItem isKindOfClass:[NGNTask class]]) {
-            [[NGNTaskService sharedInstance] removeTask:storeableItem];
+            [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
         } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
-            [[NGNTaskService sharedInstance] removeEntity:storeableItem];
+            [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
                                                             object:nil
