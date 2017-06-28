@@ -14,6 +14,7 @@
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNToDoListViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -127,27 +128,30 @@
     //edit row action (edit project name)
     UITableViewRowAction *editAction =
     [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                       title:NGNControllerEditButtonTitle
+                                       title:NSLocalizedString(NGNLocalizationKeyControllerEditButtonTitle, nil)
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
-                                         
+
         UIAlertController *alertViewController =
-            [UIAlertController alertControllerWithTitle:NGNControllerEditProjectAlertTitle
+            [UIAlertController alertControllerWithTitle:
+             NSLocalizedString(NGNLocalizationKeyControllerChangeProjectNameAlertTitle, nil)
                                                 message:nil
                                          preferredStyle:UIAlertControllerStyleAlert];
         [alertViewController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"name";
+            textField.placeholder = NSLocalizedString(NGNLocalizationKeyControllerPlaceholderName, nil);
             textField.textColor = [UIColor blackColor];
             textField.clearButtonMode = UITextFieldViewModeWhileEditing;
             textField.borderStyle = UITextBorderStyleRoundedRect;
             textField.text = currentTaskList.name;
         }];
                                          
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NGNControllerCancelButtonTitle
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:
+                                       NSLocalizedString(NGNLocalizationKeyControllerCancelButtonTitle, nil)
                                                                style:UIAlertActionStyleCancel handler:nil];
         [alertViewController addAction:cancelAction];
                                          
-        UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:NGNControllerConfirmButtonTitle
+        UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:
+                                        NSLocalizedString(NGNLocalizationKeyControllerConfirmButtonTitle, nil)
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * _Nonnull action) {
             currentTaskList.name = alertViewController.textFields[0].text;
@@ -168,7 +172,8 @@
     
     //delete row action
     UITableViewRowAction *deleteAction =
-    [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:NGNControllerDeleteButtonTitle
+    [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+                                       title:NSLocalizedString(NGNLocalizationKeyControllerDeleteButtonTitle, nil)
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete
                                         forRowAtIndexPath:indexPath];
@@ -220,7 +225,8 @@
 }
 
 - (void)addTaskList {
-    NGNTaskList *addingTaskList = [[NGNTaskList alloc] initWithId:foo4random() name:@"None"];
+    NGNTaskList *addingTaskList = [[NGNTaskList alloc] initWithId:foo4random()
+                                                             name:NSLocalizedString(NGNLocalizationKeyControllerNoneTitle, nil)];
     [[NGNTaskService sharedInstance] addEntity:addingTaskList];
     NSDictionary *userInfo = @{@"taskList": addingTaskList};
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd

@@ -11,10 +11,11 @@
 #import "NGNEditTaskViewController.h"
 #import "NGNDatePickingViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
-#import "NGNConstants.h"
 #import "NGNTask.h"
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
+#import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNEditTaskViewController ()
 
@@ -42,13 +43,14 @@
     [self.taskNameInsertTextField becomeFirstResponder];
     
     // navigation bar title is set
-    if (![self.navigationItem.title isEqualToString:@"Add task"]) {
-        self.navigationItem.title = @"Edit task";
+    if (![self.navigationItem.title isEqualToString:
+          NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil)]) {
+        self.navigationItem.title = NSLocalizedString(NGNLocalizationKeyControllerEditTaskNavigationItemTitle, nil);
     }
     
     // save bar button is set and configured
     UIBarButtonItem *saveBarButton =
-        [[UIBarButtonItem alloc] initWithTitle:NGNControllerSaveButtonTitle
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(NGNLocalizationKeyControllerSaveButtonTitle, nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(saveBarButtonTapped:)];
@@ -60,16 +62,15 @@
     
     if (!self.entringTask) {
         NSInteger newTaskId = foo4random();
-        self.entringTask = [[NGNTask alloc] initWithId:newTaskId name:@"None"];
+        self.entringTask = [[NGNTask alloc] initWithId:newTaskId
+                                                  name:NSLocalizedString(NGNLocalizationKeyControllerNoneTitle, nil)];
     }
     
     NSString *stringfiedTaskDate = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
     self.taskNameInsertTextField.text = self.entringTask.name;
     self.dateTableCell.textLabel.text = stringfiedTaskDate;
     self.notesInsertTextView.text = self.entringTask.notes;
-    self.priorityTableCell.detailTextLabel.text =
-        !self.entringTask.priority ? @"None" :
-        [NSString stringWithFormat:@"%ld", self.entringTask.priority];
+    self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:NGNNonePriority];
     self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
     
     [[NSNotificationCenter defaultCenter]
@@ -107,7 +108,8 @@
                                @"taskList": self.entringTaskList};
     NSString *notificationName;
     
-    if ([self.navigationItem.title containsString:@"Add"]) {
+    if ([self.navigationItem.title containsString:
+         NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil)]) {
         notificationName = NGNNotificationNameTaskAdd;
         [self.entringTaskList addEntity:self.entringTask];
     } else {
@@ -195,43 +197,55 @@
 }
 
 - (void)showPriorityPicker {
-    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:@"Select priority"
-                                                                                 message:nil
-                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *alertViewController =
+        [UIAlertController alertControllerWithTitle:
+         NSLocalizedString(NGNLocalizationKeyControllerSelectPriorityTitle, nil)
+                                            message:nil
+                                     preferredStyle:UIAlertControllerStyleActionSheet];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:
+                                   NSLocalizedString(NGNLocalizationKeyControllerCancelButtonTitle, nil)
+                                                           style:UIAlertActionStyleCancel handler:nil];
     [alertViewController addAction:cancelAction];
     
-    UIAlertAction *nonePriorityAction = [UIAlertAction actionWithTitle:@"None"
-                                                                 style:UIAlertActionStyleDefault
-                                                               handler:^(UIAlertAction * _Nonnull action) {
-        self.entringTask.priority = NGNNonePriority;
-        self.priorityTableCell.detailTextLabel.text = @"None";
-    }];
+    UIAlertAction *nonePriorityAction =
+        [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityNoneTitle, nil)
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+                                   self.entringTask.priority = NGNNonePriority;
+                                   self.priorityTableCell.detailTextLabel.text =
+                                    [self stringfiedPriority:self.entringTask.priority];
+                               }];
     [alertViewController addAction:nonePriorityAction];
     
-    UIAlertAction *lowPriorityAction = [UIAlertAction actionWithTitle:@"Low"
-                                                                 style:UIAlertActionStyleDefault
-                                                               handler:^(UIAlertAction * _Nonnull action) {
-        self.entringTask.priority = NGNLowPriority;
-        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNLowPriority];
-    }];
+    UIAlertAction *lowPriorityAction =
+        [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityLowTitle, nil)
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+                                   self.entringTask.priority = NGNLowPriority;
+                                   self.priorityTableCell.detailTextLabel.text =
+                                    [self stringfiedPriority:self.entringTask.priority];
+                               }];
     [alertViewController addAction:lowPriorityAction];
     
-    UIAlertAction *mediumPriorityAction = [UIAlertAction actionWithTitle:@"Medium"
-                                                                style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * _Nonnull action) {
-        self.entringTask.priority = NGNMediumPriority;
-        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNMediumPriority];
-    }];
+    UIAlertAction *mediumPriorityAction =
+        [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityMediumTitle, nil)
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+                                   self.entringTask.priority = NGNMediumPriority;
+                                   self.priorityTableCell.detailTextLabel.text =
+                                    [self stringfiedPriority:self.entringTask.priority];
+                               }];
     [alertViewController addAction:mediumPriorityAction];
     
-    UIAlertAction *highPriorityAction = [UIAlertAction actionWithTitle:@"Medium"
-                                                                   style:UIAlertActionStyleDefault
-                                                                 handler:^(UIAlertAction * _Nonnull action) {
-        self.entringTask.priority = NGNHighPriority;
-        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNHighPriority];
-    }];
+    UIAlertAction *highPriorityAction =
+        [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityHighTitle, nil)
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+                                   self.entringTask.priority = NGNHighPriority;
+                                   self.priorityTableCell.detailTextLabel.text =
+                                    [self stringfiedPriority:self.entringTask.priority];
+                               }];
     [alertViewController addAction:highPriorityAction];
     
     NSDictionary *userInfo = @{@"task": self.entringTask,
@@ -243,7 +257,6 @@
 }
 
 - (void)showDatePicker {
-//    NGNDatePickingViewController *datePickingViewController = [[NGNDatePickingViewController alloc] init];
     [self performSegueWithIdentifier:NGNControllerSegueShowDatePicking sender:self.dateTableCell];
 }
 
@@ -277,6 +290,26 @@
         return 1;
     }
     return 2;
+}
+
+#pragma mark - additional handling methods
+- (NSString *)stringfiedPriority:(NSInteger)priority {
+    NSString *result;
+    switch (priority) {
+        case NGNNonePriority:
+            result = NSLocalizedString(NGNLocalizationKeyControllerPriorityNoneTitle, nil);
+            break;
+        case NGNLowPriority:
+            result = NSLocalizedString(NGNLocalizationKeyControllerPriorityLowTitle, nil);
+            break;
+        case NGNMediumPriority:
+            result = NSLocalizedString(NGNLocalizationKeyControllerPriorityMediumTitle, nil);
+            break;
+        case NGNHighPriority:
+            result = NSLocalizedString(NGNLocalizationKeyControllerPriorityHighTitle, nil);
+            break;
+    }
+    return result;
 }
 
 @end

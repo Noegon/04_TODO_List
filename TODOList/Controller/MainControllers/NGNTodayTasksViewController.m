@@ -7,20 +7,17 @@
 //
 
 #import "NGNTodayTasksViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNTodayTasksViewController () <UITableViewDataSource,
                                            UITableViewDelegate,
                                            UIGestureRecognizerDelegate>
-
-- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
-- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;
 
 @end
 
@@ -28,8 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    srand((unsigned int)time(NULL));
     
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
@@ -82,9 +77,9 @@
     
     NSString *text;
     if (section == 0) {
-        text = NGNControllerActiveTasksSectionTitle;
+        text = NSLocalizedString(NGNLocalizationKeyControllerActiveTasksSectionTitle, nil);
     } else {
-        text = NGNControllerCompletedTasksSectionTitle;
+        text = NSLocalizedString(NGNLocalizationKeyControllerCompletedTasksSectionTitle, nil);
     }
     label.text = text;
     
@@ -136,7 +131,7 @@
     //edit row action (done - complete task)
     UITableViewRowAction *editAction =
     [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                       title:NGNControllerDoneButtonTitle
+                                       title:NSLocalizedString(NGNLocalizationKeyControllerDoneButtonTitle, nil)
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
         currentTask.finishedAt = [NSDate date];
@@ -152,7 +147,8 @@
     
     //delete row action
     UITableViewRowAction *deleteAction =
-    [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:NGNControllerDeleteButtonTitle
+    [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+                                       title:NSLocalizedString(NGNLocalizationKeyControllerDeleteButtonTitle, nil)
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){
         [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
     }];
@@ -174,34 +170,13 @@
         editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
-        editTaskViewController.navigationItem.title = NGNControllerAddTaskNavigationItemTitle;
+        editTaskViewController.navigationItem.title =
+            NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil);
     }
     editTaskViewController.entringTaskList = commonTaskList;
 }
 
 #pragma mark - additional handling methods
-
-- (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
-    UIBarButtonItem *doneBarButton =
-    [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
-                                     style:UIBarButtonItemStylePlain
-                                    target:self
-                                    action:@selector(doneBarButtonTapped:)];
-    self.navigationItem.leftBarButtonItem = doneBarButton;
-    [self.tableView setEditing:YES];
-    doneBarButton = nil;
-}
-
-- (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
-    UIBarButtonItem *editBarButton =
-    [[UIBarButtonItem alloc] initWithTitle:NGNControllerEditButtonTitle
-                                     style:UIBarButtonItemStylePlain
-                                    target:self
-                                    action:@selector(editBarButtonTapped:)];
-    self.navigationItem.leftBarButtonItem = editBarButton;
-    [self.tableView setEditing:NO];
-    editBarButton = nil;
-}
 
 - (NSArray *)todayTasksListForSection:(NSInteger)section {
     NSMutableArray *todayTasks = [[NSMutableArray alloc] init];

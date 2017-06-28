@@ -7,13 +7,13 @@
 //
 
 #import "NGNInboxViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNInboxViewController () <UITableViewDataSource,
                                       UITableViewDelegate,
@@ -77,8 +77,9 @@
     [self.tableView setEditing:NO animated:YES];
     
     //adding segment control into table header
-    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NGNControllerDateSegmentControlTitle,
-                                                                        NGNControllerGroupSegmentControlTitle]];
+    self.segmentedControl =
+        [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(NGNLocalizationKeyControllerDateSegmentControlTitle, nil),
+                                                    NSLocalizedString(NGNLocalizationKeyControllerGroupSegmentControlTitle, nil)]];
     [self.segmentedControl setWidth:(self.view.bounds.size.width-20)/2 forSegmentAtIndex:0];
     [self.segmentedControl setWidth:(self.view.bounds.size.width-20)/2 forSegmentAtIndex:1];
     [self.segmentedControl setSelectedSegmentIndex:1];
@@ -159,7 +160,7 @@
     //done row action (done - complete task)
     UITableViewRowAction *doneAction =
         [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                           title:NGNControllerDoneButtonTitle
+                                           title:NSLocalizedString(NGNLocalizationKeyControllerDoneButtonTitle, nil)
                                          handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         NGNTask *currentTask = [self actualTaskWithIndexPath:indexPath];
         currentTask.finishedAt = [NSDate date];
@@ -176,7 +177,7 @@
     //delete row action
     UITableViewRowAction *deleteAction =
         [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                           title:NGNControllerDeleteButtonTitle
+                                           title:NSLocalizedString(NGNLocalizationKeyControllerDeleteButtonTitle, nil)
                                          handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
             [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete
                                             forRowAtIndexPath:indexPath];
@@ -268,11 +269,9 @@
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
         NGNEditTaskViewController *addTaskViewController = segue.destinationViewController;
-        NSInteger addingTaskId = foo4random();
-        NGNTask *addingTask = [[NGNTask alloc] initWithId:addingTaskId name:NGNControllerNoneTitle];
         NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
-        addTaskViewController.navigationItem.title = NGNControllerAddTaskNavigationItemTitle;
-        addTaskViewController.entringTask = addingTask;
+        addTaskViewController.navigationItem.title =
+            NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil);
         addTaskViewController.entringTaskList = commonTaskList;
     }
 }
