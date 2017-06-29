@@ -19,21 +19,6 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [NSNotificationCenter defaultCenter];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *filePath = [documentsPath stringByAppendingPathComponent:@"myTasks.txt"];
-    if (![fileManager fileExistsAtPath:filePath]) {
-        [fileManager createFileAtPath:filePath
-                             contents:[NSData new]
-                           attributes:nil];
-    }
-//#warning removing file for debug!!!
-//    if ([fileManager removeItemAtPath:filePath error:NULL]) {
-//        NSLog (@"Remove successful");
-//    } else {
-//        NSLog (@"Remove failed");
-//    }
     return YES;
 }
 

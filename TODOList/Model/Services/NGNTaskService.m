@@ -26,6 +26,12 @@
     dispatch_once(&onceToken, ^{
         sharedInstance = [[NGNTaskService alloc] init];
         [sharedInstance loadCollection];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (![fileManager fileExistsAtPath:[sharedInstance filePath]]) {
+            [fileManager createFileAtPath:[sharedInstance filePath]
+                                 contents:[NSData new]
+                               attributes:nil];
+        }
         if (!sharedInstance.privateEntityCollection || sharedInstance.privateEntityCollection.count == 0) {
             sharedInstance.privateEntityCollection = [[NSMutableArray alloc] init];
             NGNTaskList *inboxTaskList = [[NGNTaskList alloc]initWithId:999 name:@"Inbox"];

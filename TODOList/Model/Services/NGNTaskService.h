@@ -32,5 +32,6 @@
 
 - (void)saveCollection;
 - (void)loadCollection;
+- (NSString *)filePath;
 
 @end
