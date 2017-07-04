@@ -13,6 +13,7 @@
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNTaskListDetailsViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
@@ -50,16 +51,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    NGNTaskList *currentTaskList = [NGNTaskService sharedInstance].entityCollection[section];
     return [self.entringTaskList entityCollection].count;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 22.;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 70.;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -125,32 +117,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
-        editTaskViewController.navigationItem.title = @"Add task";
+        editTaskViewController.navigationItem.title =
+            NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil);
     }
     editTaskViewController.entringTaskList = self.entringTaskList;
-}
-
-#pragma mark - gestures handling
-
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-    if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
-        return;
-    }
-    if (![gestureRecognizer.view isKindOfClass:[UITableViewCell class]]){
-        NSLog(@"view isn't tableViewCell");
-        return;
-    }
-    // get the cell at indexPath (the one you long pressed)
-    UITableViewCell* cell = (UITableViewCell *)gestureRecognizer.view;
-    // do stuff with the cell
-    NSLog(@"%@, editingStyle: %ld", cell.textLabel.text, (long)cell.editingStyle);
-    
-    if (self.tableView.isEditing) {
-        self.tableView.editing = NO;
-    } else {
-        self.tableView.editing = YES;
-    }
 }
 
 @end

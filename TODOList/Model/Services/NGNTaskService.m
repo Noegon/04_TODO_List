@@ -27,20 +27,20 @@
         NGNTask *task1 = [NGNTask taskWithId:1 name:@"Make calculator 3.0"];
         NGNTask *task2 = [NGNTask taskWithId:2
                                         name:@"Make TODO List 0.1"
-                                   startDate:[NSDate ngn_dateFromString:@"Jul 17, 2009, 00:00 PM"]
+                                   startDate:[NSDate dateWithTimeIntervalSinceNow:-100001989]
                                        notes:@""];
         NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
         NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
         NGNTask *task4 = [NGNTask taskWithId:4
                                         name:@"Buy milk"
-                                   startDate:[NSDate ngn_dateFromString:@"Jul 09, 2017, 00:00 PM"]
+                                   startDate:[NSDate dateWithTimeIntervalSinceNow:-1500000]
                                        notes:@""];
         NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"
-                                          startDate:[NSDate ngn_dateFromString:@"Jul 10, 2017, 00:00 PM"]
+                                          startDate:[NSDate dateWithTimeIntervalSinceNow:-2000000]
                                               notes:@""];
         NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
                                                            name:@"Commodities"
-                                                   creationDate:[NSDate dateWithTimeIntervalSinceNow:150000000]];
+                                                   creationDate:[NSDate date]];
         NGNTaskList *taskList3 = [[NGNTaskList alloc]initWithId:999 name:@"Inbox"];
         [taskList addEntity:task1];
         [taskList addEntity:task2];

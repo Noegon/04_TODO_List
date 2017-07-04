@@ -13,6 +13,7 @@
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNSearchViewController () <UITableViewDataSource,
                                        UITableViewDelegate,
@@ -36,8 +37,9 @@
     self.searchController.searchResultsUpdater = self;
     self.searchController.searchBar.delegate = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
-    self.searchController.searchBar.scopeButtonTitles = @[NGNControllerActiveTasksSearchBarScopeTitle,
-                                                          NGNControllerCompletedTasksSearchBarScopeTitle];
+    self.searchController.searchBar.scopeButtonTitles =
+        @[NSLocalizedString(NGNLocalizationKeyControllerActiveTasksSearchBarScopeTitle, nil),
+          NSLocalizedString(NGNLocalizationKeyControllerCompletedTasksSearchBarScopeTitle, nil)];
     [self.searchController.searchBar setBackgroundColor:[UIColor whiteColor]];
     self.searchController.searchBar.selectedScopeButtonIndex = 0;
     self.tableView.tableHeaderView = self.searchController.searchBar;
