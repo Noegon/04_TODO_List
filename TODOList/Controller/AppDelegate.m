@@ -6,17 +6,9 @@
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
-#import <UserNotifications/UserNotifications.h>
-
 #import "AppDelegate.h"
-#import "NGNEditTaskViewController.h"
-#import "NGNInboxViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
-#import "NGNTaskService.h"
-#import "NGNConstants.h"
 
-@interface AppDelegate () <UNUserNotificationCenterDelegate>
+@interface AppDelegate ()
 
 @end
 
