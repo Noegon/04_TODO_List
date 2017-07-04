@@ -17,10 +17,6 @@
 
 @interface NGNToDoListViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
-@property (strong, nonatomic) id<NSObject> taskListAddNotification;
-@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
-
 #pragma mark - additional handling methods
 - (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
 - (void)addTaskList;
@@ -232,12 +228,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd
                                                         object:nil
                                                       userInfo:userInfo];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskListAddNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end

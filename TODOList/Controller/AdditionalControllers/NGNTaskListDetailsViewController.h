@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NGNAbstractTableViewController.h"
 
 @class NGNTaskList;
 
-@interface NGNTaskListDetailsViewController : UITableViewController
+@interface NGNTaskListDetailsViewController: NGNAbstractTableViewController
 
 @property (strong, nonatomic) NGNTaskList *entringTaskList;
 

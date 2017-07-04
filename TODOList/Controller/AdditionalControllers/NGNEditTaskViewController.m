@@ -26,10 +26,12 @@
 
 - (IBAction)taskNameChanged:(UITextField *)sender;
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender;
-- (IBAction)reminderSwitchChangeValue:(UISwitch *)sender;
 
 #pragma mark - gestures handling
 - (void)dismissKeyboard;
+
+#pragma mark - additional handling methods
+- (NSString *)stringfiedPriority:(NSInteger)priority;
 
 @end
 
@@ -37,6 +39,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //removing notification if delivered
+    NSString *notificationID =
+        [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
+    [[UNUserNotificationCenter currentNotificationCenter]
+     removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
+                                                        object:nil
+                                                      userInfo:nil];
     
     // taskNameInsertTextField configured
     [self.taskNameInsertTextField becomeFirstResponder];
@@ -67,9 +79,7 @@
     self.taskNameInsertTextField.text = self.entringTask.name;
     self.dateTableCell.textLabel.text = stringfiedTaskDate;
     self.notesInsertTextView.text = self.entringTask.notes;
-    self.priorityTableCell.detailTextLabel.text =
-        !self.entringTask.priority ? @"None" :
-        [NSString stringWithFormat:@"%ld", self.entringTask.priority];
+    self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
     self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
     
     [[NSNotificationCenter defaultCenter]
@@ -103,6 +113,7 @@
     self.entringTask.name = self.taskNameInsertTextField.text;
     self.entringTask.startedAt = [NSDate ngn_dateFromString:self.dateTableCell.textLabel.text];
     self.entringTask.notes = self.notesInsertTextView.text;
+    self.entringTask.shouldRemindOnDay = self.remaindDaySwither.on;
     NSDictionary *userInfo = @{@"task": self.entringTask,
                                @"taskList": self.entringTaskList};
     NSString *notificationName;
@@ -120,15 +131,67 @@
                                                         object:nil
                                                       userInfo:userInfo];
     
+    //local notifications
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
+        NSString *notificationID =
+            [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
+        if (self.entringTask.shouldRemindOnDay) {
+            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            
+            [calendar setTimeZone:[NSTimeZone localTimeZone]];
+            
+            NSDateComponents *components =
+                [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour |
+                                     NSCalendarUnitMinute | NSCalendarUnitSecond|NSCalendarUnitTimeZone
+                            fromDate:[self.entringTask.startedAt dateByAddingTimeInterval:0]];
+            
+            UNMutableNotificationContent *objNotificationContent = [[UNMutableNotificationContent alloc] init];
+            objNotificationContent.title = [NSString localizedUserNotificationStringForKey:@"Task is started!" arguments:nil];
+            objNotificationContent.body = [NSString localizedUserNotificationStringForKey:self.entringTask.name
+                                                                                arguments:nil];
+            objNotificationContent.sound = [UNNotificationSound defaultSound];
+            // update application icon badge number
+            objNotificationContent.badge = @([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
+            objNotificationContent.userInfo = @{@"taskId": @(self.entringTask.entityId),
+                                                @"taskListId": @(self.entringTaskList.entityId)};
+            
+            UNCalendarNotificationTrigger *trigger =
+                [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:NO];
+            
+            
+            UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:notificationID
+                                                                                  content:objNotificationContent
+                                                                                  trigger:trigger];
+            UNUserNotificationCenter *userCenter = [UNUserNotificationCenter currentNotificationCenter];
+            [userCenter addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+                if (!error) {
+                    NSLog(@"Local Notification succeeded");
+                }
+                else {
+                    NSLog(@"Local Notification failed");
+                }
+            }];
+        } else {
+            [[UNUserNotificationCenter currentNotificationCenter]
+             removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
+        }
+//        [[UNUserNotificationCenter currentNotificationCenter]
+//            getPendingNotificationRequestsWithCompletionHandler:^(NSArray *requests){
+//                for (UNNotificationRequest *request in requests) {
+//                    NSNumber *tasklistId = request.content.userInfo[@"taskListId"];
+//                    NGNTaskList *list = [[NGNTaskService sharedInstance] entityById: tasklistId.integerValue];
+//                    NSNumber *taskId = request.content.userInfo[@"taskId"];
+//                    NGNTask *task = [list entityById: taskId.integerValue];
+//                    NSLog(@"%@", task);
+//                }
+//        }];
+    }
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
     self.navigationItem.rightBarButtonItem.enabled = [sender.text length] ? YES : NO;
-}
-
-- (IBAction)reminderSwitchChangeValue:(UISwitch *)sender {
-    self.entringTask.shouldRemindOnDay = sender.isOn;
 }
 
 #pragma mark - gestures handling
@@ -150,7 +213,7 @@
                                                                  style:UIAlertActionStyleDefault
                                                                handler:^(UIAlertAction * _Nonnull action) {
         self.entringTask.priority = NGNNonePriority;
-        self.priorityTableCell.detailTextLabel.text = @"None";
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
     }];
     [alertViewController addAction:nonePriorityAction];
     
@@ -158,7 +221,7 @@
                                                                  style:UIAlertActionStyleDefault
                                                                handler:^(UIAlertAction * _Nonnull action) {
         self.entringTask.priority = NGNLowPriority;
-        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNLowPriority];
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
     }];
     [alertViewController addAction:lowPriorityAction];
     
@@ -166,15 +229,15 @@
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * _Nonnull action) {
         self.entringTask.priority = NGNMediumPriority;
-        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNMediumPriority];
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
     }];
     [alertViewController addAction:mediumPriorityAction];
     
-    UIAlertAction *highPriorityAction = [UIAlertAction actionWithTitle:@"Medium"
+    UIAlertAction *highPriorityAction = [UIAlertAction actionWithTitle:@"Highs"
                                                                    style:UIAlertActionStyleDefault
                                                                  handler:^(UIAlertAction * _Nonnull action) {
         self.entringTask.priority = NGNHighPriority;
-        self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%d", NGNHighPriority];
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
     }];
     [alertViewController addAction:highPriorityAction];
     
@@ -221,6 +284,26 @@
         return 1;
     }
     return 2;
+}
+
+#pragma mark - additional handling methods
+- (NSString *)stringfiedPriority:(NSInteger)priority {
+    NSString *result;
+    switch (priority) {
+        case NGNNonePriority:
+            result = @"None";
+            break;
+        case NGNLowPriority:
+            result = @"Low";
+            break;
+        case NGNMediumPriority:
+            result = @"Medium";
+            break;
+        case NGNHighPriority:
+            result = @"High";
+            break;
+    }
+    return result;
 }
 
 @end
