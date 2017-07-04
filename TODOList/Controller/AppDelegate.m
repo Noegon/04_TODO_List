@@ -118,7 +118,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     //get target controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     NGNEditTaskViewController *editTaskViewController =
-    [storyboard instantiateViewControllerWithIdentifier:NGNControllerIdentifierEditTask];
+        [storyboard instantiateViewControllerWithIdentifier:NGNControllerIdentifierEditTask];
     //set initial parameters for target view controller
     editTaskViewController.entringTaskList = currentTaskList;
     editTaskViewController.entringTask = currentTask;
