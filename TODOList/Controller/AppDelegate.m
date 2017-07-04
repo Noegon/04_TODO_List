@@ -6,9 +6,17 @@
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import <UserNotifications/UserNotifications.h>
 
-@interface AppDelegate ()
+#import "AppDelegate.h"
+#import "NGNEditTaskViewController.h"
+#import "NGNInboxViewController.h"
+#import "NGNTask.h"
+#import "NGNTaskList.h"
+#import "NGNTaskService.h"
+#import "NGNConstants.h"
+
+@interface AppDelegate () <UNUserNotificationCenterDelegate>
 
 @end
 
@@ -16,16 +24,12 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [NSNotificationCenter defaultCenter];
-    return YES;
-}
-
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center requestAuthorizationWithOptions:UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert
                           completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        NSLog(@"Notifications allowed");
-        center.delegate = self;
-    }];
+                              NSLog(@"Notifications allowed");
+                              center.delegate = self;
+                          }];
     // Set the tab bar number badge
     UITabBarController *tabBarController = (UITabBarController*)self.window.rootViewController;
     UITabBarItem *tab_bar = [[tabBarController.viewControllers objectAtIndex:4] tabBarItem];
@@ -42,8 +46,8 @@
 
 //This method will be invoked even if the application was launched or resumed because of the remote notification. The respective delegate methods will be invoked first. Note that this behavior is in contrast to application:didReceiveRemoteNotification:, which is not called in those cases, and which will not be invoked if this method is implemented. !
 - (void)application:(UIApplication *)application
-        didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     application.applicationIconBadgeNumber += 1;
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
                                                         object:nil
@@ -60,9 +64,9 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     //for debug
-//    [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
-//    [[UNUserNotificationCenter currentNotificationCenter] removeAllPendingNotificationRequests];
-//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    //    [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
+    //    [[UNUserNotificationCenter currentNotificationCenter] removeAllPendingNotificationRequests];
+    //    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
 
@@ -113,7 +117,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     //get target controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     NGNEditTaskViewController *editTaskViewController =
-        [storyboard instantiateViewControllerWithIdentifier:NGNControllerIdentifierEditTask];
+    [storyboard instantiateViewControllerWithIdentifier:NGNControllerIdentifierEditTask];
     //set initial parameters for target view controller
     editTaskViewController.entringTaskList = currentTaskList;
     editTaskViewController.entringTask = currentTask;
