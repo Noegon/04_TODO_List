@@ -26,23 +26,24 @@
     
     srand((unsigned int)time(NULL));
     
+    self.taskChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
+    self.taskAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                      [[NSNotificationCenter defaultCenter]
-                                                       postNotificationName:NGNNotificationNameTaskListChange
-                                                                     object:nil
-                                                                   userInfo:@{@"taskList": self.entringTaskList}];
-                                                  }];
+        [self.tableView reloadData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
+                                                            object:nil
+                                                          userInfo:@{@"taskList": self.entringTaskList}];
+    }];
     
     [self.tableView setEditing:NO animated:YES];
 }

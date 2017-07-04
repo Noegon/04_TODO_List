@@ -27,10 +27,12 @@
 
 - (IBAction)taskNameChanged:(UITextField *)sender;
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender;
-- (IBAction)reminderSwitchChangeValue:(UISwitch *)sender;
 
 #pragma mark - gestures handling
 - (void)dismissKeyboard;
+
+#pragma mark - additional handling methods
+- (NSString *)stringfiedPriority:(NSInteger)priority;
 
 @end
 
@@ -38,6 +40,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //removing notification if delivered
+    NSString *notificationID =
+        [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
+    [[UNUserNotificationCenter currentNotificationCenter]
+     removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
+                                                        object:nil
+                                                      userInfo:nil];
     
     // taskNameInsertTextField configured
     [self.taskNameInsertTextField becomeFirstResponder];
@@ -104,6 +116,7 @@
     self.entringTask.name = self.taskNameInsertTextField.text;
     self.entringTask.startedAt = [NSDate ngn_dateFromString:self.dateTableCell.textLabel.text];
     self.entringTask.notes = self.notesInsertTextView.text;
+    self.entringTask.shouldRemindOnDay = self.remaindDaySwither.on;
     NSDictionary *userInfo = @{@"task": self.entringTask,
                                @"taskList": self.entringTaskList};
     NSString *notificationName;
@@ -166,27 +179,23 @@
             [[UNUserNotificationCenter currentNotificationCenter]
              removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
         }
-        [[UNUserNotificationCenter currentNotificationCenter]
-            getPendingNotificationRequestsWithCompletionHandler:^(NSArray *requests){
-                for (UNNotificationRequest *request in requests) {
-                    NSNumber *tasklistId = request.content.userInfo[@"taskListId"];
-                    NGNTaskList *list = [[NGNTaskService sharedInstance] entityById: tasklistId.integerValue];
-                    NSNumber *taskId = request.content.userInfo[@"taskId"];
-                    NGNTask *task = [list entityById: taskId.integerValue];
-                    NSLog(@"%@", task);
-                }
-        }];
+//        [[UNUserNotificationCenter currentNotificationCenter]
+//            getPendingNotificationRequestsWithCompletionHandler:^(NSArray *requests){
+//                for (UNNotificationRequest *request in requests) {
+//                    NSNumber *tasklistId = request.content.userInfo[@"taskListId"];
+//                    NGNTaskList *list = [[NGNTaskService sharedInstance] entityById: tasklistId.integerValue];
+//                    NSNumber *taskId = request.content.userInfo[@"taskId"];
+//                    NGNTask *task = [list entityById: taskId.integerValue];
+//                    NSLog(@"%@", task);
+//                }
+//        }];
     }
-    
+
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)taskNameChanged:(UITextField *)sender {
     self.navigationItem.rightBarButtonItem.enabled = [sender.text length] ? YES : NO;
-}
-
-- (IBAction)reminderSwitchChangeValue:(UISwitch *)sender {
-    self.entringTask.shouldRemindOnDay = sender.isOn;
 }
 
 #pragma mark - gestures handling

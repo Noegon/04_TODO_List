@@ -92,7 +92,9 @@
 
 - (NSArray *)allActiveTaskLists {
     NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NGNTaskList *taskList, NSDictionary *bind) {
-        return taskList.entityCollection.count != 0;
+        NSArray *activeTasksList = [taskList.entityCollection filteredArrayUsingPredicate:
+                                    [NSPredicate predicateWithFormat:@"SELF.isCompleted == NO"]];
+        return (taskList.entityCollection.count != 0) && (activeTasksList.count != 0);
     }];
     return [self.entityCollection filteredArrayUsingPredicate:predicate];
 }
