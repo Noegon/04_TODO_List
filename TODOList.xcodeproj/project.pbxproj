@@ -22,7 +22,6 @@
 		EF8930D01EF01F82001E49AC /* NGNTodayTasksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930CC1EF01F82001E49AC /* NGNTodayTasksViewController.m */; };
 		EF8930DB1EF01FA3001E49AC /* NGNAddProjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930D21EF01FA3001E49AC /* NGNAddProjectViewController.m */; };
 		EF8930DC1EF01FA3001E49AC /* NGNEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930D41EF01FA3001E49AC /* NGNEditTaskViewController.m */; };
-		EF8930DE1EF01FA3001E49AC /* NGNTaskDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930D81EF01FA3001E49AC /* NGNTaskDetailsViewController.m */; };
 		EF8930DF1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930DA1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m */; };
 		EF90BC2E1EF5BC3300108C73 /* NGNAbstractTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF90BC2D1EF5BC3300108C73 /* NGNAbstractTableViewController.m */; };
 		EF90BC331EF7143C00108C73 /* NGNAddProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EF90BC321EF7143C00108C73 /* NGNAddProjectTableViewCell.m */; };
@@ -62,8 +61,6 @@
 		EF8930D21EF01FA3001E49AC /* NGNAddProjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNAddProjectViewController.m; path = Controller/AdditionalControllers/NGNAddProjectViewController.m; sourceTree = "<group>"; };
 		EF8930D31EF01FA3001E49AC /* NGNEditTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNEditTaskViewController.h; path = Controller/AdditionalControllers/NGNEditTaskViewController.h; sourceTree = "<group>"; };
 		EF8930D41EF01FA3001E49AC /* NGNEditTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNEditTaskViewController.m; path = Controller/AdditionalControllers/NGNEditTaskViewController.m; sourceTree = "<group>"; };
-		EF8930D71EF01FA3001E49AC /* NGNTaskDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskDetailsViewController.h; path = Controller/AdditionalControllers/NGNTaskDetailsViewController.h; sourceTree = "<group>"; };
-		EF8930D81EF01FA3001E49AC /* NGNTaskDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskDetailsViewController.m; path = Controller/AdditionalControllers/NGNTaskDetailsViewController.m; sourceTree = "<group>"; };
 		EF8930D91EF01FA3001E49AC /* NGNTaskListDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskListDetailsViewController.h; path = Controller/AdditionalControllers/NGNTaskListDetailsViewController.h; sourceTree = "<group>"; };
 		EF8930DA1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskListDetailsViewController.m; path = Controller/AdditionalControllers/NGNTaskListDetailsViewController.m; sourceTree = "<group>"; };
 		EF90BC2C1EF5BC3300108C73 /* NGNAbstractTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNAbstractTableViewController.h; path = Controller/BasicAbstractions/NGNAbstractTableViewController.h; sourceTree = "<group>"; };
@@ -244,8 +241,6 @@
 				EF8930D21EF01FA3001E49AC /* NGNAddProjectViewController.m */,
 				EF8930D31EF01FA3001E49AC /* NGNEditTaskViewController.h */,
 				EF8930D41EF01FA3001E49AC /* NGNEditTaskViewController.m */,
-				EF8930D71EF01FA3001E49AC /* NGNTaskDetailsViewController.h */,
-				EF8930D81EF01FA3001E49AC /* NGNTaskDetailsViewController.m */,
 				EF8930D91EF01FA3001E49AC /* NGNTaskListDetailsViewController.h */,
 				EF8930DA1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m */,
 				EF97DDC81EE4B4B50007EBDB /* NGNDatePickingViewController.h */,
@@ -344,7 +339,6 @@
 				EF6B90771EE8897C006A825B /* NGNTaskList.m in Sources */,
 				EF8930DC1EF01FA3001E49AC /* NGNEditTaskViewController.m in Sources */,
 				EF8930AA1EE8ABB8001E49AC /* NGNStoredEntity.m in Sources */,
-				EF8930DE1EF01FA3001E49AC /* NGNTaskDetailsViewController.m in Sources */,
 				EF90BC2E1EF5BC3300108C73 /* NGNAbstractTableViewController.m in Sources */,
 				EF81E72F1EE05694007007EE /* main.m in Sources */,
 			);

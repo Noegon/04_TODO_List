@@ -7,7 +7,6 @@
 //
 
 #import "NGNTodayTasksViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
@@ -19,6 +18,11 @@
                                            UITableViewDelegate,
                                            UIGestureRecognizerDelegate>
 
+@property (strong, nonatomic) id<NSObject> taskChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskAddNotification;
+@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
+@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
+
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;
 
@@ -29,42 +33,42 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    srand((unsigned int)time(NULL));
-    
+    self.taskChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
+    self.taskAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      NGNTaskList *commonTaskList =
-                                                        [[NGNTaskService sharedInstance] entityById:999];
-                                                      NSDictionary *userInfo = @{@"taskList": commonTaskList};
-                                                      [[NSNotificationCenter defaultCenter]
-                                                       postNotificationName:NGNNotificationNameTaskListChange
-                                                       object:nil
-                                                       userInfo:userInfo];
-                                                      [self.tableView reloadData];
-                                                  }];
+        NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
+        NSDictionary *userInfo = @{@"taskList": commonTaskList};
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
+                                                            object:nil
+                                                          userInfo:userInfo];
+        [self.tableView reloadData];
+    }];
     
+    self.globalModelChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
+    self.taskListChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
     [self.tableView setEditing:NO animated:YES];
 }
@@ -221,6 +225,13 @@
         }
     }
     return [todayTasks copy];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end

@@ -17,6 +17,9 @@
 
 @interface NGNToDoListViewController () <UITableViewDataSource, UITableViewDelegate>
 
+@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
+@property (strong, nonatomic) id<NSObject> taskListAddNotification;
+@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
 
 #pragma mark - additional handling methods
 - (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
@@ -29,23 +32,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.taskListChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
     
+    self.taskListAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
     
+    self.globalModelChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
@@ -226,6 +232,12 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd
                                                         object:nil
                                                       userInfo:userInfo];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end
