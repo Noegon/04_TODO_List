@@ -75,6 +75,9 @@
                 [[NGNTaskService sharedInstance] removeTask:storeableItem];
             }
             [[NGNTaskService sharedInstance] removeEntity:storeableItem];
+            [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
+        } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
+            [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
                                                             object:nil
