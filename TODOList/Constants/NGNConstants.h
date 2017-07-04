@@ -74,7 +74,7 @@ static NSString *const NGNControllerCompletedTasksSectionTitle = @"Completed";
 static NSString *const NGNControllerNoneTitle = @"None";
 
 #pragma mark - segues identifiers
-static NSString *const NGNControllerSegueShowTaskDetail = @"ShowTaskDetail";
+//static NSString *const NGNControllerSegueShowTaskDetail = @"ShowTaskDetail";
 static NSString *const NGNControllerSegueShowTaskListDetail = @"ShowTaskListDetail";
 static NSString *const NGNControllerSegueShowEditTask = @"ShowEditTask";
 static NSString *const NGNControllerSegueShowDatePicking = @"ShowDatePicking";
@@ -94,6 +94,7 @@ static NSString *const NGNNotificationNameTaskAdd = @"TaskAddNotification";
 static NSString *const NGNNotificationNameTaskListChange = @"TaskListChangeNotification";
 static NSString *const NGNNotificationNameTaskListAdd = @"TaskListAddNotification";
 static NSString *const NGNNotificationNameGlobalModelChange = @"GlobalModelChangeNotification";
+static NSString *const NGNNotificationNameLocalNotificationListChanged = @"LocalNotificationListChanged";
 
 #pragma mark - notification names
 static NSString *const NGNNotificationRequestIDTaskTime = @"TaskTimeHasCome";

@@ -6,6 +6,8 @@
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
+#import <UserNotifications/UserNotifications.h>
+
 #import "NGNAbstractTableViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNTask.h"
@@ -55,8 +57,23 @@
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
         if ([storeableItem isKindOfClass:[NGNTask class]]) {
+            NSString *notificationID =
+                [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, storeableItem.entityId];
+            [[UNUserNotificationCenter currentNotificationCenter]
+                removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
+            [[UNUserNotificationCenter currentNotificationCenter]
+                removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
             [[NGNTaskService sharedInstance] removeTask:storeableItem];
         } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
+            for (NGNTask *task in ((NGNTaskList *)storeableItem).entityCollection) {
+                NSString *notificationID =
+                    [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, task.entityId];
+                [[UNUserNotificationCenter currentNotificationCenter]
+                    removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
+                [[UNUserNotificationCenter currentNotificationCenter]
+                    removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
+                [[NGNTaskService sharedInstance] removeTask:storeableItem];
+            }
             [[NGNTaskService sharedInstance] removeEntity:storeableItem];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
@@ -103,6 +120,14 @@
     } else {
         [self editBarButtonTapped:nil];
     }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListAddNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end

@@ -18,11 +18,6 @@
                                            UITableViewDelegate,
                                            UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) id<NSObject> taskChangeNotification;
-@property (strong, nonatomic) id<NSObject> taskAddNotification;
-@property (strong, nonatomic) id<NSObject> taskListChangeNotification;
-@property (strong, nonatomic) id<NSObject> globalModelChangeNotification;
-
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender;
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;
 
@@ -225,13 +220,6 @@
         }
     }
     return [todayTasks copy];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskAddNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskChangeNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_taskListChangeNotification];
-    [[NSNotificationCenter defaultCenter] removeObserver:_globalModelChangeNotification];
 }
 
 @end
