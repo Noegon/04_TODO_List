@@ -274,12 +274,7 @@
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
         NGNEditTaskViewController *addTaskViewController = segue.destinationViewController;
-        NSInteger addingTaskId = foo4random();
-        NGNTask *addingTask = [[NGNTask alloc] initWithId:addingTaskId name:NGNControllerNoneTitle];
         NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
-        addTaskViewController.navigationItem.title = NGNControllerAddTaskNavigationItemTitle;
-        addTaskViewController.entringTask = addingTask;
-        NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
         addTaskViewController.navigationItem.title =
             NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil);
         addTaskViewController.entringTaskList = commonTaskList;

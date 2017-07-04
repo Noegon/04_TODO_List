@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF1FF5BF1F0C5D950005331F /* NGNStoredEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = EF1FF5BE1F0C5D950005331F /* NGNStoredEntity.m */; };
 		EF6B90771EE8897C006A825B /* NGNTaskList.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6B90761EE8897C006A825B /* NGNTaskList.m */; };
 		EF6B907B1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6B907A1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m */; };
 		EF81E72F1EE05694007007EE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E72E1EE05694007007EE /* main.m */; };
@@ -17,7 +18,6 @@
 		EF8398961F02DDC0004E56C9 /* NGNLocalizationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8398951F02DDC0004E56C9 /* NGNLocalizationConstants.m */; };
 		EF83989C1F02F653004E56C9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EF83989A1F02F653004E56C9 /* Localizable.strings */; };
 		EF8398A11F02F834004E56C9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EF83989F1F02F834004E56C9 /* Localizable.strings */; };
-		EF8930A71EE8A6F2001E49AC /* NGNCommonEntityContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930A61EE8A6F2001E49AC /* NGNCommonEntityContainer.m */; };
 		EF8930AA1EE8ABB8001E49AC /* NGNStoredEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930A91EE8ABB8001E49AC /* NGNStoredEntity.m */; };
 		EF8930CD1EF01F82001E49AC /* NGNInboxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930C61EF01F81001E49AC /* NGNInboxViewController.m */; };
 		EF8930CE1EF01F82001E49AC /* NGNToDoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930C81EF01F81001E49AC /* NGNToDoListViewController.m */; };
@@ -25,18 +25,19 @@
 		EF8930D01EF01F82001E49AC /* NGNTodayTasksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930CC1EF01F82001E49AC /* NGNTodayTasksViewController.m */; };
 		EF8930DB1EF01FA3001E49AC /* NGNAddProjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930D21EF01FA3001E49AC /* NGNAddProjectViewController.m */; };
 		EF8930DC1EF01FA3001E49AC /* NGNEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930D41EF01FA3001E49AC /* NGNEditTaskViewController.m */; };
-		EF8930DF1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8930DA1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m */; };
 		EF90BC2E1EF5BC3300108C73 /* NGNAbstractTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF90BC2D1EF5BC3300108C73 /* NGNAbstractTableViewController.m */; };
 		EF90BC331EF7143C00108C73 /* NGNAddProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EF90BC321EF7143C00108C73 /* NGNAddProjectTableViewCell.m */; };
 		EF97DDCB1EE4B4B50007EBDB /* NGNDatePickingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF97DDC91EE4B4B50007EBDB /* NGNDatePickingViewController.m */; };
 		EFCD46821EE058C300606FAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD467D1EE058C300606FAB /* AppDelegate.m */; };
 		EFCD46941EE0C2C800606FAB /* NGNTaskService.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD46931EE0C2C800606FAB /* NGNTaskService.m */; };
 		EFCD46971EE0C37300606FAB /* NGNTask.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD46961EE0C37300606FAB /* NGNTask.m */; };
-		EFED03AE1EFD568300B40C64 /* NGNNotificationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFED03AD1EFD568300B40C64 /* NGNNotificationListViewController.m */; };
 		EFD6C4A51EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD6C4A41EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m */; };
+		EFED03AE1EFD568300B40C64 /* NGNNotificationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFED03AD1EFD568300B40C64 /* NGNNotificationListViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF1FF5BD1F0C5D950005331F /* NGNStoredEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNStoredEntity.h; path = Model/NGNStoredEntity.h; sourceTree = "<group>"; };
+		EF1FF5BE1F0C5D950005331F /* NGNStoredEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNStoredEntity.m; path = Model/NGNStoredEntity.m; sourceTree = "<group>"; };
 		EF6B90751EE8897C006A825B /* NGNTaskList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskList.h; path = Model/NGNTaskList.h; sourceTree = "<group>"; };
 		EF6B90761EE8897C006A825B /* NGNTaskList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskList.m; path = Model/NGNTaskList.m; sourceTree = "<group>"; };
 		EF6B90791EE88E79006A825B /* NSDate+NGNDateToStringConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+NGNDateToStringConverter.h"; path = "ExistingClassesExtensions/NSDate+NGNDateToStringConverter.h"; sourceTree = "<group>"; };
@@ -56,9 +57,6 @@
 		EF8398951F02DDC0004E56C9 /* NGNLocalizationConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNLocalizationConstants.m; path = Constants/NGNLocalizationConstants.m; sourceTree = "<group>"; };
 		EF83989B1F02F653004E56C9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EF8398A01F02F834004E56C9 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EF8930A51EE8A6F2001E49AC /* NGNCommonEntityContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNCommonEntityContainer.h; path = Model/NGNCommonEntityContainer.h; sourceTree = "<group>"; };
-		EF8930A61EE8A6F2001E49AC /* NGNCommonEntityContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNCommonEntityContainer.m; path = Model/NGNCommonEntityContainer.m; sourceTree = "<group>"; };
-		EF8930A81EE8ABB8001E49AC /* NGNStoredEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNStoredEntity.h; path = Model/NGNStoredEntity.h; sourceTree = "<group>"; };
 		EF8930A91EE8ABB8001E49AC /* NGNStoredEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNStoredEntity.m; path = Model/NGNStoredEntity.m; sourceTree = "<group>"; };
 		EF8930AB1EE8BC63001E49AC /* NGNStoreable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNStoreable.h; path = Model/NGNStoreable.h; sourceTree = "<group>"; };
 		EF8930C51EF01F81001E49AC /* NGNInboxViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNInboxViewController.h; path = Controller/MainControllers/NGNInboxViewController.h; sourceTree = "<group>"; };
@@ -73,8 +71,6 @@
 		EF8930D21EF01FA3001E49AC /* NGNAddProjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNAddProjectViewController.m; path = Controller/AdditionalControllers/NGNAddProjectViewController.m; sourceTree = "<group>"; };
 		EF8930D31EF01FA3001E49AC /* NGNEditTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNEditTaskViewController.h; path = Controller/AdditionalControllers/NGNEditTaskViewController.h; sourceTree = "<group>"; };
 		EF8930D41EF01FA3001E49AC /* NGNEditTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNEditTaskViewController.m; path = Controller/AdditionalControllers/NGNEditTaskViewController.m; sourceTree = "<group>"; };
-		EF8930D91EF01FA3001E49AC /* NGNTaskListDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskListDetailsViewController.h; path = Controller/AdditionalControllers/NGNTaskListDetailsViewController.h; sourceTree = "<group>"; };
-		EF8930DA1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskListDetailsViewController.m; path = Controller/AdditionalControllers/NGNTaskListDetailsViewController.m; sourceTree = "<group>"; };
 		EF90BC2C1EF5BC3300108C73 /* NGNAbstractTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNAbstractTableViewController.h; path = Controller/BasicAbstractions/NGNAbstractTableViewController.h; sourceTree = "<group>"; };
 		EF90BC2D1EF5BC3300108C73 /* NGNAbstractTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNAbstractTableViewController.m; path = Controller/BasicAbstractions/NGNAbstractTableViewController.m; sourceTree = "<group>"; };
 		EF90BC311EF7143C00108C73 /* NGNAddProjectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNAddProjectTableViewCell.h; path = View/CustomCells/NGNAddProjectTableViewCell.h; sourceTree = "<group>"; };
@@ -87,11 +83,11 @@
 		EFCD46931EE0C2C800606FAB /* NGNTaskService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskService.m; path = Model/Services/NGNTaskService.m; sourceTree = "<group>"; };
 		EFCD46951EE0C37300606FAB /* NGNTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTask.h; path = Model/NGNTask.h; sourceTree = "<group>"; };
 		EFCD46961EE0C37300606FAB /* NGNTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTask.m; path = Model/NGNTask.m; sourceTree = "<group>"; };
-		EFED03AC1EFD568300B40C64 /* NGNNotificationListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNNotificationListViewController.h; path = Controller/MainControllers/NGNNotificationListViewController.h; sourceTree = "<group>"; };
-		EFED03AD1EFD568300B40C64 /* NGNNotificationListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNNotificationListViewController.m; path = Controller/MainControllers/NGNNotificationListViewController.m; sourceTree = "<group>"; };
 		EFD6C4A31EFFEF8000E18E87 /* NGNTaskListDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskListDetailsViewController.h; path = Controller/MainControllers/NGNTaskListDetailsViewController.h; sourceTree = "<group>"; };
 		EFD6C4A41EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskListDetailsViewController.m; path = Controller/MainControllers/NGNTaskListDetailsViewController.m; sourceTree = "<group>"; };
 		EFD6C4A61F00080D00E18E87 /* NGNContainable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNContainable.h; path = Model/NGNContainable.h; sourceTree = "<group>"; };
+		EFED03AC1EFD568300B40C64 /* NGNNotificationListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNNotificationListViewController.h; path = Controller/MainControllers/NGNNotificationListViewController.h; sourceTree = "<group>"; };
+		EFED03AD1EFD568300B40C64 /* NGNNotificationListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNNotificationListViewController.m; path = Controller/MainControllers/NGNNotificationListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +163,8 @@
 				EF6B90761EE8897C006A825B /* NGNTaskList.m */,
 				EF8930AB1EE8BC63001E49AC /* NGNStoreable.h */,
 				EFD6C4A61F00080D00E18E87 /* NGNContainable.h */,
+				EF1FF5BD1F0C5D950005331F /* NGNStoredEntity.h */,
+				EF1FF5BE1F0C5D950005331F /* NGNStoredEntity.m */,
 				EFCD46911EE0C25D00606FAB /* Services */,
 			);
 			name = Model;
@@ -279,8 +277,6 @@
 				EF8930D21EF01FA3001E49AC /* NGNAddProjectViewController.m */,
 				EF8930D31EF01FA3001E49AC /* NGNEditTaskViewController.h */,
 				EF8930D41EF01FA3001E49AC /* NGNEditTaskViewController.m */,
-				EF8930D91EF01FA3001E49AC /* NGNTaskListDetailsViewController.h */,
-				EF8930DA1EF01FA3001E49AC /* NGNTaskListDetailsViewController.m */,
 				EF97DDC81EE4B4B50007EBDB /* NGNDatePickingViewController.h */,
 				EF97DDC91EE4B4B50007EBDB /* NGNDatePickingViewController.m */,
 			);
@@ -379,6 +375,7 @@
 				EF6B90771EE8897C006A825B /* NGNTaskList.m in Sources */,
 				EF8930DC1EF01FA3001E49AC /* NGNEditTaskViewController.m in Sources */,
 				EF8930AA1EE8ABB8001E49AC /* NGNStoredEntity.m in Sources */,
+				EF1FF5BF1F0C5D950005331F /* NGNStoredEntity.m in Sources */,
 				EF8398961F02DDC0004E56C9 /* NGNLocalizationConstants.m in Sources */,
 				EF90BC2E1EF5BC3300108C73 /* NGNAbstractTableViewController.m in Sources */,
 				EF81E72F1EE05694007007EE /* main.m in Sources */,
