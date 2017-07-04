@@ -1,20 +1,17 @@
 //
-//  NGNGenericEntityContainer.h
+//  NGNContainable.h
 //  TODOList
 //
-//  Created by Alex on 08.06.17.
+//  Created by Alex on 25.06.17.
 //  Copyright © 2017 Alex. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "NGNStoreable.h"
 
-@class NGNStoredEntity;
+@protocol NGNContainable <NSObject>
 
-@interface NGNCommonEntityContainer : NSObject
-
-@property (strong, nonatomic, readonly) NSArray<id<NGNStoreable>> *entityCollection;
-
+@required
 - (id<NGNStoreable>)entityById:(NSInteger)entityId;
 - (void)addEntity:(id<NGNStoreable>)entity;
 - (void)pushEntity:(id<NGNStoreable>)entity;

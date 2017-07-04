@@ -209,7 +209,7 @@
 - (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath {
     NGNTaskList *currentTaskList;
     if (indexPath.section == 0) {
-        currentTaskList = [[NGNTaskService sharedInstance] entityById:999];
+        currentTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
     } else {
         if (indexPath.row != 0) {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self.entityId != 999"];

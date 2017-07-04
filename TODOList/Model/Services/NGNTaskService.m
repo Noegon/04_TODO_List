@@ -14,6 +14,8 @@
 
 @interface NGNTaskService ()
 
+@property (strong, nonatomic, readwrite) NSMutableArray<id<NGNStoreable>> *privateEntityCollection;
+
 @end
 
 @implementation NGNTaskService
@@ -22,35 +24,20 @@
     static NGNTaskService *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-#warning hardcoded test datasource
         sharedInstance = [[NGNTaskService alloc] init];
-        NGNTask *task1 = [NGNTask taskWithId:1 name:@"Make calculator 3.0"];
-        NGNTask *task2 = [NGNTask taskWithId:2
-                                        name:@"Make TODO List 0.1"
-                                   startDate:[NSDate ngn_dateFromString:@"Jul 17, 2009, 00:00 PM"]
-                                       notes:@""];
-        NGNTask *task3 = [NGNTask taskWithId:3 name:@"Make somthing useful"];
-        NGNTaskList *taskList = [[NGNTaskList alloc]initWithId:1 name:@"Test list"];
-        NGNTask *task4 = [NGNTask taskWithId:4
-                                        name:@"Buy milk"
-                                   startDate:[NSDate ngn_dateFromString:@"Jul 09, 2017, 00:00 PM"]
-                                       notes:@""];
-        NGNTask *task5 = [NGNTask taskWithId:5 name:@"Buy bread"
-                                          startDate:[NSDate ngn_dateFromString:@"Jul 10, 2017, 00:00 PM"]
-                                              notes:@""];
-        NGNTaskList *taskList2 = [[NGNTaskList alloc]initWithId:2
-                                                           name:@"Commodities"
-                                                   creationDate:[NSDate dateWithTimeIntervalSinceNow:150000000]];
-        NGNTaskList *taskList3 = [[NGNTaskList alloc]initWithId:999 name:@"Inbox"];
-        [taskList addEntity:task1];
-        [taskList addEntity:task2];
-        [taskList addEntity:task3];
-        [taskList2 addEntity:task4];
-        [taskList2 addEntity:task5];
-        [sharedInstance addEntity:taskList];
-        [sharedInstance addEntity:taskList2];
-        [sharedInstance addEntity:taskList3];
-        
+        [sharedInstance loadCollection];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (![fileManager fileExistsAtPath:[sharedInstance filePath]]) {
+            [fileManager createFileAtPath:[sharedInstance filePath]
+                                 contents:[NSData new]
+                               attributes:nil];
+        }
+        if (!sharedInstance.privateEntityCollection || sharedInstance.privateEntityCollection.count == 0) {
+            sharedInstance.privateEntityCollection = [[NSMutableArray alloc] init];
+            NGNTaskList *inboxTaskList = [[NGNTaskList alloc]initWithId:999 name:@"Inbox"];
+            [sharedInstance addEntity:inboxTaskList];
+            [sharedInstance loadCollection];
+        }
     });
     return sharedInstance;
 }
@@ -76,8 +63,9 @@
     NSMutableArray *groupedByStartDateTasks = [[NSMutableArray alloc] init];
     NSMutableArray *stringfiedDatesArray = [[NSMutableArray alloc] init];
     for (NGNTask *task in [self allActiveTasks]) {
-        [stringfiedDatesArray addObject:[NSDate ngn_formattedStringFromDate:task.startedAt
-                                                                 withFormat:NGNModelDateFormatForComparison]];
+        NSString *stringfiedDate = [NSDate ngn_formattedStringFromDate:task.startedAt
+                                                            withFormat:NGNModelDateFormatForComparison];
+        [stringfiedDatesArray addObject:stringfiedDate];
     }
     stringfiedDatesArray = [stringfiedDatesArray valueForKeyPath:@"@distinctUnionOfObjects.self"];
     for (int i = 0; i < stringfiedDatesArray.count; i++) {
@@ -105,6 +93,7 @@
             [list removeEntity:taskToRemove];
         }
     }
+    [self saveCollection];
 }
 
 - (void)updateTask:(NGNTask *)taskToUpdate {
@@ -113,6 +102,86 @@
             [list updateEntity:taskToUpdate];
         }
     }
+    [self saveCollection];
+}
+
+#pragma mark - NGNContainable protocol
+
+- (NSMutableArray *)entityCollection {
+    return [self.privateEntityCollection mutableCopy];
+}
+
+- (id<NGNStoreable>)entityById:(NSInteger)entityId {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.entityId == %dl", entityId];
+    return [[self.entityCollection filteredArrayUsingPredicate:predicate]firstObject];
+}
+
+- (void)addEntity:(NGNTaskList *)entity {
+    [self.privateEntityCollection addObject:entity];
+    [self saveCollection];
+}
+
+- (void)pushEntity:(NGNTaskList *)entity {
+    [self.privateEntityCollection insertObject:entity atIndex:0];
+    [self saveCollection];
+}
+
+- (void)removeEntity:(NGNTaskList *)entity {
+    [self.privateEntityCollection removeObject:entity];
+    [self saveCollection];
+}
+
+- (void)updateEntity:(NGNTaskList *)entity {
+    id oldEntity = [self entityById:entity.entityId];
+    if (oldEntity) {
+        self.privateEntityCollection[[self.entityCollection indexOfObject:oldEntity]] = entity;
+    }
+    [self saveCollection];
+}
+
+- (void)removeEntityById:(NSInteger)entityId {
+    NGNTaskList *taskToRemove = (NGNTaskList *)[self entityById:entityId];
+    [self removeEntity:taskToRemove];
+    [self saveCollection];
+}
+
+- (void)relocateEntityAtIndex:(NSInteger)fromIndex withEntityAtIndex:(NSInteger)toIndex {
+    NSMutableArray *testArray = [self.privateEntityCollection mutableCopy];
+    [testArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
+    self.privateEntityCollection = testArray;
+    [self saveCollection];
+}
+
+- (void)insertEntity:(NGNTaskList *)entity atIndex:(NSUInteger)index {
+    [self.privateEntityCollection insertObject:entity atIndex:index];
+    [self saveCollection];
+}
+
+- (void)sortEntityCollectionUsingComparator:(NSComparator NS_NOESCAPE)cmptr {
+    [_privateEntityCollection sortUsingComparator:cmptr];
+    [self saveCollection];
+}
+
+@end
+
+
+@implementation NGNTaskService (NGNSerializableContainer)
+
+- (void)saveCollection {
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.privateEntityCollection];
+    [[NSFileManager defaultManager] createFileAtPath:[self filePath]
+                                            contents:data
+                                          attributes:nil];
+}
+
+- (void)loadCollection {
+    NSData *data = [[NSFileManager defaultManager] contentsAtPath:[self filePath]];
+    self.privateEntityCollection = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+}
+
+- (NSString *)filePath {
+    NSString *destinationDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    return [destinationDir stringByAppendingPathComponent:@"myTasks.txt"];
 }
 
 @end

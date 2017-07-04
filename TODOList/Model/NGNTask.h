@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NGNStoredEntity.h"
+#import "NGNStoreable.h"
 
-@interface NGNTask : NGNStoredEntity <NGNStoreable>
+@interface NGNTask: NSObject <NGNStoreable, NSCoding>
 
+@property (assign, nonatomic) NSInteger entityId;
+@property (copy, nonatomic) NSString *name;
 @property (strong, nonatomic) NSDate *startedAt;
 @property (strong, nonatomic) NSDate *finishedAt;
 @property (copy, nonatomic) NSString *notes;

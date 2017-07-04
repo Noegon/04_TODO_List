@@ -41,7 +41,7 @@
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-        NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
+        NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
         NSDictionary *userInfo = @{@"taskList": commonTaskList};
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
                                                             object:nil
@@ -165,7 +165,7 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
+    NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
     NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
     if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];

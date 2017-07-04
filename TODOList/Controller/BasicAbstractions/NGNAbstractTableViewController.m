@@ -57,6 +57,7 @@
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
         if ([storeableItem isKindOfClass:[NGNTask class]]) {
+<<<<<<< HEAD
             NSString *notificationID =
                 [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, storeableItem.entityId];
             [[UNUserNotificationCenter currentNotificationCenter]
@@ -75,6 +76,11 @@
                 [[NGNTaskService sharedInstance] removeTask:storeableItem];
             }
             [[NGNTaskService sharedInstance] removeEntity:storeableItem];
+=======
+            [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
+        } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
+            [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
+>>>>>>> second_task_file_manager
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
                                                             object:nil
