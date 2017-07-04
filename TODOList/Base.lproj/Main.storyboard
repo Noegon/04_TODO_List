@@ -316,9 +316,6 @@
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="50" id="ud5-Mg-qWq"/>
                                                     </constraints>
-                                                    <connections>
-                                                        <action selector="reminderSwitchChangeValue:" destination="4i5-1h-4eC" eventType="valueChanged" id="nnk-kq-AGO"/>
-                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -605,6 +602,7 @@
                         <segue destination="VSJ-yC-BXs" kind="relationship" relationship="viewControllers" id="tzg-Rl-noh"/>
                         <segue destination="pwf-04-koe" kind="relationship" relationship="viewControllers" id="p4R-Jy-XAb"/>
                         <segue destination="Imp-su-Nz0" kind="relationship" relationship="viewControllers" id="L3W-sR-1b1"/>
+                        <segue destination="r43-py-gwY" kind="relationship" relationship="viewControllers" id="3WC-Zi-ffC"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XFL-ZB-DR9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -685,6 +683,47 @@
             </objects>
             <point key="canvasLocation" x="1384" y="2326"/>
         </scene>
+        <!--Notifications-->
+        <scene sceneID="9Sh-yk-Aw7">
+            <objects>
+                <tableViewController title="Notifications" id="dDC-2S-u4O" customClass="NGNNotificationListViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="4Gu-ca-qGP">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NGNTaskCell" textLabel="3fE-kc-9t7" style="IBUITableViewCellStyleDefault" id="VS7-nh-7TR">
+                                <rect key="frame" x="0.0" y="55" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VS7-nh-7TR" id="Ldx-up-Va9">
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3fE-kc-9t7">
+                                            <rect key="frame" x="15" y="0.0" width="364" height="43.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="4i5-1h-4eC" kind="show" identifier="ShowEditTask" id="jfm-Mb-LHc"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="dDC-2S-u4O" id="Wis-MF-SV5"/>
+                            <outlet property="delegate" destination="dDC-2S-u4O" id="4cO-YN-kzH"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Notifications" id="ule-ga-1bA"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Jv-Th-GSu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1384" y="3058"/>
+        </scene>
         <!--Today-->
         <scene sceneID="S2n-aF-0TW">
             <objects>
@@ -704,16 +743,36 @@
             </objects>
             <point key="canvasLocation" x="445" y="2326"/>
         </scene>
+        <!--Notifications-->
+        <scene sceneID="rnt-hK-Qr0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="r43-py-gwY" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Notifications" image="iconmonstr-info-10-32" selectedImage="iconmonstr-info-10-32" id="5fb-Rm-hyA"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="M6J-Jx-mrW">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="dDC-2S-u4O" kind="relationship" relationship="rootViewController" id="PYP-50-eNu"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="npX-sW-xth" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="22" y="3058"/>
+        </scene>
     </scenes>
     <resources>
         <image name="clock-32" width="32" height="32"/>
         <image name="first" width="30" height="30"/>
         <image name="folder-32" width="32" height="32"/>
+        <image name="iconmonstr-info-10-32" width="32" height="32"/>
         <image name="iconmonstr-plus-5-24_green" width="24" height="24"/>
         <image name="iconmonstr-sort-27-32" width="32" height="32"/>
         <image name="my_files-32" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="uxv-gA-ATG"/>
+        <segue reference="jfm-Mb-LHc"/>
     </inferredMetricsTieBreakers>
 </document>

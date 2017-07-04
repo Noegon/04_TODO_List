@@ -7,7 +7,6 @@
 //
 
 #import "NGNInboxViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
@@ -38,38 +37,43 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.taskChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
 
+    self.taskAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
     
+    self.taskListChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];
     
+    self.taskListAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
         
     }];
     
+    self.globalModelChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
         [self refreshData];
     }];

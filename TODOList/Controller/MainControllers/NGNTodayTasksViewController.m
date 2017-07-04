@@ -7,7 +7,6 @@
 //
 
 #import "NGNTodayTasksViewController.h"
-#import "NGNTaskDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNTask.h"
@@ -29,42 +28,42 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    srand((unsigned int)time(NULL));
-    
+    self.taskChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
+    self.taskAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      NGNTaskList *commonTaskList =
-                                                        [[NGNTaskService sharedInstance] entityById:999];
-                                                      NSDictionary *userInfo = @{@"taskList": commonTaskList};
-                                                      [[NSNotificationCenter defaultCenter]
-                                                       postNotificationName:NGNNotificationNameTaskListChange
-                                                       object:nil
-                                                       userInfo:userInfo];
-                                                      [self.tableView reloadData];
-                                                  }];
+        NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
+        NSDictionary *userInfo = @{@"taskList": commonTaskList};
+        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
+                                                            object:nil
+                                                          userInfo:userInfo];
+        [self.tableView reloadData];
+    }];
     
+    self.globalModelChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
+    self.taskListChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [self.tableView reloadData];
-                                                  }];
+        [self.tableView reloadData];
+    }];
     
     [self.tableView setEditing:NO animated:YES];
 }

@@ -17,7 +17,6 @@
 
 @interface NGNToDoListViewController () <UITableViewDataSource, UITableViewDelegate>
 
-
 #pragma mark - additional handling methods
 - (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
 - (void)addTaskList;
@@ -29,23 +28,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.taskListChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
     
+    self.taskListAddNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
     
+    self.globalModelChangeNotification =
     [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
-                                                       queue:[NSOperationQueue mainQueue]
+                                                       queue:nil
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.tableView reloadData];
                                                   }];
