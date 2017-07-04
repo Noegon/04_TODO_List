@@ -32,8 +32,6 @@
 		EFCD46821EE058C300606FAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD467D1EE058C300606FAB /* AppDelegate.m */; };
 		EFCD46941EE0C2C800606FAB /* NGNTaskService.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD46931EE0C2C800606FAB /* NGNTaskService.m */; };
 		EFCD46971EE0C37300606FAB /* NGNTask.m in Sources */ = {isa = PBXBuildFile; fileRef = EFCD46961EE0C37300606FAB /* NGNTask.m */; };
-		EFED03AE1EFD568300B40C64 /* NGNNotificationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFED03AD1EFD568300B40C64 /* NGNNotificationListViewController.m */; };
-		EFD6C4A51EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD6C4A41EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,11 +85,6 @@
 		EFCD46931EE0C2C800606FAB /* NGNTaskService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskService.m; path = Model/Services/NGNTaskService.m; sourceTree = "<group>"; };
 		EFCD46951EE0C37300606FAB /* NGNTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTask.h; path = Model/NGNTask.h; sourceTree = "<group>"; };
 		EFCD46961EE0C37300606FAB /* NGNTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTask.m; path = Model/NGNTask.m; sourceTree = "<group>"; };
-		EFED03AC1EFD568300B40C64 /* NGNNotificationListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNNotificationListViewController.h; path = Controller/MainControllers/NGNNotificationListViewController.h; sourceTree = "<group>"; };
-		EFED03AD1EFD568300B40C64 /* NGNNotificationListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNNotificationListViewController.m; path = Controller/MainControllers/NGNNotificationListViewController.m; sourceTree = "<group>"; };
-		EFD6C4A31EFFEF8000E18E87 /* NGNTaskListDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskListDetailsViewController.h; path = Controller/MainControllers/NGNTaskListDetailsViewController.h; sourceTree = "<group>"; };
-		EFD6C4A41EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskListDetailsViewController.m; path = Controller/MainControllers/NGNTaskListDetailsViewController.m; sourceTree = "<group>"; };
-		EFD6C4A61F00080D00E18E87 /* NGNContainable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNContainable.h; path = Model/NGNContainable.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,7 +163,6 @@
 				EF8930A51EE8A6F2001E49AC /* NGNCommonEntityContainer.h */,
 				EF8930A61EE8A6F2001E49AC /* NGNCommonEntityContainer.m */,
 				EF8930AB1EE8BC63001E49AC /* NGNStoreable.h */,
-				EFD6C4A61F00080D00E18E87 /* NGNContainable.h */,
 				EFCD46911EE0C25D00606FAB /* Services */,
 			);
 			name = Model;
