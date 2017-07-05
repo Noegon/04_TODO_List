@@ -41,38 +41,6 @@ static double const NGNControllerBlueColorRedPortion = 0.086;
 static double const NGNControllerBlueColorGreenPortion = 0.477;
 static double const NGNControllerBlueColorBluePortion = 1;
 
-#pragma mark - some view titles
-//button titles
-static NSString *const NGNControllerSaveButtonTitle = @"Save";
-static NSString *const NGNControllerEditButtonTitle = @"Edit";
-static NSString *const NGNControllerDoneButtonTitle = @"Done";
-static NSString *const NGNControllerCancelButtonTitle = @"Cancel";
-static NSString *const NGNControllerDeleteButtonTitle = @"Delete";
-static NSString *const NGNControllerConfirmButtonTitle = @"Confirm";
-
-//segment control titles
-static NSString *const NGNControllerDateSegmentControlTitle = @"Date";
-static NSString *const NGNControllerGroupSegmentControlTitle = @"Group";
-
-//navigation item titles
-static NSString *const NGNControllerAddTaskNavigationItemTitle = @"Add task";
-static NSString *const NGNControllerEditTaskNavigationItemTitle = @"Edit task";
-
-//search bar scope panel titles
-static NSString *const NGNControllerActiveTasksSearchBarScopeTitle = @"Active tasks";
-static NSString *const NGNControllerCompletedTasksSearchBarScopeTitle = @"Completed tasks";
-
-//alert dialogue titles
-static NSString *const NGNControllerDeleteAlertTitle = @"Do you want to remove item?";
-static NSString *const NGNControllerEditProjectAlertTitle = @"Change project name";
-
-//section headers titles
-static NSString *const NGNControllerActiveTasksSectionTitle = @"Active";
-static NSString *const NGNControllerCompletedTasksSectionTitle = @"Completed";
-
-//other titles
-static NSString *const NGNControllerNoneTitle = @"None";
-
 #pragma mark - segues identifiers
 //static NSString *const NGNControllerSegueShowTaskDetail = @"ShowTaskDetail";
 static NSString *const NGNControllerSegueShowTaskListDetail = @"ShowTaskListDetail";

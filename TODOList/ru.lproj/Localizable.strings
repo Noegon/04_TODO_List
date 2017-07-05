@@ -1,0 +1,61 @@
+/* 
+  Localizable.strings
+  TODOList
+
+  Created by Alex on 27.06.17.
+  Copyright © 2017 Alex. All rights reserved.
+*/
+
+/* Navigation item */
+"Controller-navigation-item-title-EditTask" = "Редактировать задание";
+
+"Controller-navigation-item-title-AddTask" = "Добавить задание";
+
+/* Button titles */
+"Controller-buttonTitle-Save" = "Сохранить";
+
+"Controller-buttonTitle-Edit" = "Изменить";
+
+"Controller-buttonTitle-Done" = "Завершить";
+
+"Controller-buttonTitle-Cancel" = "Закрыть";
+
+"Controller-buttonTitle-Confirm" = "Подтвердить";
+
+"Controller-buttonTitle-Delete" = "Удалить";
+
+/* Alert dialogue titles */
+"Controller-dialogueTitle-Delete" = "Желаете удалить объект?";
+
+"Controller-dialogueTitle-ChangeProjectName" = "Изменить имя проекта";
+
+/* Group names */
+"Controller-groupName-Active" = "Активные";
+
+"Controller-groupName-Completed" = "Завершенные";
+
+/* Segment group */
+"Controller-segmentName-Date" = "Дата";
+
+"Controller-segmentName-Group" = "Группа";
+
+/* Search bar scope panel titles */
+"Controller-searchBarScopeTitle-ActiveTasks" = "Активные задачи";
+
+"Controller-searchBarScopeTitle-CompletedTasks" = "Выполненные задачи";
+
+/* Priorities */
+"Controller-priority-High" = "Высокий";
+
+"Controller-priority-Medium" = "Средний";
+
+"Controller-priority-Low" = "Низкий";
+
+"Controller-priority-None" = "Нет";
+
+"Controller-select-priority-title" = "Выберите приоритет";
+
+/* Else */
+"Controller-defaultEntityName-None" = "Без имени";
+
+"Controller-placeholder-name" = "имя";
