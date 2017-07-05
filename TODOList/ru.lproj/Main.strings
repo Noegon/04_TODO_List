@@ -1,96 +1,105 @@
+
 /* Class = "UITabBarItem"; title = "Inbox"; ObjectID = "2Ap-W6-omJ"; */
-"2Ap-W6-omJ.title" = "Общие";
+"2Ap-W6-omJ.title" = "Inbox";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "3fE-kc-9t7"; */
+"3fE-kc-9t7.text" = "Title";
 
 /* Class = "UITextField"; placeholder = "Project name"; ObjectID = "3m9-EE-gBQ"; */
-"3m9-EE-gBQ.placeholder" = "Имя проекта";
+"3m9-EE-gBQ.placeholder" = "Project name";
 
 /* Class = "UITableViewSection"; headerTitle = "Priority"; ObjectID = "3uC-Zf-GGI"; */
-"3uC-Zf-GGI.headerTitle" = "Приоритет";
+"3uC-Zf-GGI.headerTitle" = "Priority";
 
 /* Class = "UINavigationItem"; title = "Project details"; ObjectID = "5Ur-xr-2Yh"; */
-"5Ur-xr-2Yh.title" = "Детали проекта";
+"5Ur-xr-2Yh.title" = "Project details";
+
+/* Class = "UITabBarItem"; title = "Notifications"; ObjectID = "5fb-Rm-hyA"; */
+"5fb-Rm-hyA.title" = "Notifications";
 
 /* Class = "UITableViewSection"; headerTitle = "Notes"; ObjectID = "9tl-oS-b84"; */
-"9tl-oS-b84.headerTitle" = "Заметки";
+"9tl-oS-b84.headerTitle" = "Notes";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "CTA-vK-naB"; */
-"CTA-vK-naB.text" = "Имя";
+"CTA-vK-naB.text" = "Name";
 
 /* Class = "UILabel"; text = "Date"; ObjectID = "DCT-oL-URM"; */
-"DCT-oL-URM.text" = "Дата";
+"DCT-oL-URM.text" = "Date";
 
 /* Class = "UITableViewSection"; headerTitle = "Name"; ObjectID = "EUK-QB-8Vy"; */
-"EUK-QB-8Vy.headerTitle" = "Имя";
+"EUK-QB-8Vy.headerTitle" = "Name";
 
 /* Class = "UITabBarItem"; title = "Today"; ObjectID = "I0a-Lw-GpJ"; */
-"I0a-Lw-GpJ.title" = "Сегодня";
+"I0a-Lw-GpJ.title" = "Today";
 
 /* Class = "UILabel"; text = "Add project"; ObjectID = "IOd-qr-rsi"; */
-"IOd-qr-rsi.text" = "Добавить проект";
+"IOd-qr-rsi.text" = "Add project";
 
 /* Class = "UITabBarItem"; title = "Projects"; ObjectID = "Icn-Ig-U9H"; */
-"Icn-Ig-U9H.title" = "Проекты";
+"Icn-Ig-U9H.title" = "Projects";
 
 /* Class = "UILabel"; text = "Priority"; ObjectID = "JZe-dW-Diq"; */
-"JZe-dW-Diq.text" = "Приоритет";
+"JZe-dW-Diq.text" = "Priority";
 
 /* Class = "UILabel"; text = "Remind me on day"; ObjectID = "K5Q-oD-CIE"; */
-"K5Q-oD-CIE.text" = "Напомнить мне";
+"K5Q-oD-CIE.text" = "Remind me on day";
 
 /* Class = "UITableViewSection"; headerTitle = "Reminder"; ObjectID = "Ouf-46-Zza"; */
-"Ouf-46-Zza.headerTitle" = "Напоминание";
+"Ouf-46-Zza.headerTitle" = "Reminder";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "PgS-Al-rSJ"; */
-"PgS-Al-rSJ.text" = "Имя";
+"PgS-Al-rSJ.text" = "Name";
 
 /* Class = "UITextField"; placeholder = "Task name"; ObjectID = "RVc-Ug-hsy"; */
-"RVc-Ug-hsy.placeholder" = "Имя задания";
+"RVc-Ug-hsy.placeholder" = "Task name";
 
 /* Class = "UINavigationItem"; title = "To Do List"; ObjectID = "UMm-XQ-pyO"; */
-"UMm-XQ-pyO.title" = "Проекты";
+"UMm-XQ-pyO.title" = "To Do List";
 
 /* Class = "UINavigationController"; title = "Projects"; ObjectID = "VSJ-yC-BXs"; */
-"VSJ-yC-BXs.title" = "Проекты";
+"VSJ-yC-BXs.title" = "Projects";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "W0u-29-vpK"; */
-"W0u-29-vpK.text" = "Заголовок";
+"W0u-29-vpK.text" = "Title";
 
 /* Class = "UILabel"; text = "Date"; ObjectID = "XfU-UG-cm5"; */
-"XfU-UG-cm5.text" = "Дата";
+"XfU-UG-cm5.text" = "Date";
 
 /* Class = "UINavigationItem"; title = "Today"; ObjectID = "aIz-WT-3m6"; */
-"aIz-WT-3m6.title" = "Сегодня";
+"aIz-WT-3m6.title" = "Today";
 
 /* Class = "UINavigationItem"; title = "Inbox"; ObjectID = "axE-GV-PuS"; */
-"axE-GV-PuS.title" = "Общие";
+"axE-GV-PuS.title" = "Inbox";
+
+/* Class = "UITableViewController"; title = "Notifications"; ObjectID = "dDC-2S-u4O"; */
+"dDC-2S-u4O.title" = "Notifications";
 
 /* Class = "UINavigationItem"; title = "Date picking"; ObjectID = "fEW-yv-lev"; */
-"fEW-yv-lev.title" = "Выбор даты";
+"fEW-yv-lev.title" = "Date picking";
 
 /* Class = "UINavigationItem"; title = "Add project"; ObjectID = "gre-yN-Yb1"; */
-"gre-yN-Yb1.title" = "Добавить проект";
+"gre-yN-Yb1.title" = "Add project";
 
 /* Class = "UINavigationController"; title = "Inbox"; ObjectID = "mDg-7M-1ho"; */
-"mDg-7M-1ho.title" = "Общие";
+"mDg-7M-1ho.title" = "Inbox";
 
 /* Class = "UILabel"; text = "None"; ObjectID = "rRa-aX-ZDW"; */
-"rRa-aX-ZDW.text" = "Нет";
+"rRa-aX-ZDW.text" = "None";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "sPM-YS-PdP"; */
-"sPM-YS-PdP.text" = "Имя";
+"sPM-YS-PdP.text" = "Name";
 
 /* Class = "UILabel"; text = "(0)"; ObjectID = "tyR-XC-27i"; */
 "tyR-XC-27i.text" = "(0)";
 
+/* Class = "UINavigationItem"; title = "Notifications"; ObjectID = "ule-ga-1bA"; */
+"ule-ga-1bA.title" = "Notifications";
+
 /* Class = "UINavigationItem"; title = "Search"; ObjectID = "v0U-Pb-7CJ"; */
-"v0U-Pb-7CJ.title" = "Поиск";
+"v0U-Pb-7CJ.title" = "Search";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "xke-5o-BwK"; */
-"xke-5o-BwK.text" = "Заголовок";
+"xke-5o-BwK.text" = "Title";
 
 /* Class = "UITableViewSection"; headerTitle = "Task"; ObjectID = "zis-aL-zBy"; */
-"zis-aL-zBy.headerTitle" = "Задание";
-
-/* EditTaskController-navigation-item-title */
-"Edit task" = "Редактировать проект";
-
+"zis-aL-zBy.headerTitle" = "Task";

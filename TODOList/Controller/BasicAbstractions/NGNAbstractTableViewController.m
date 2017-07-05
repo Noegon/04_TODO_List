@@ -60,30 +60,12 @@
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
         if ([storeableItem isKindOfClass:[NGNTask class]]) {
-<<<<<<< HEAD
             NSString *notificationID =
                 [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, storeableItem.entityId];
             [[UNUserNotificationCenter currentNotificationCenter]
                 removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
             [[UNUserNotificationCenter currentNotificationCenter]
                 removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
-            [[NGNTaskService sharedInstance] removeTask:storeableItem];
-        } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
-            for (NGNTask *task in ((NGNTaskList *)storeableItem).entityCollection) {
-                NSString *notificationID =
-                    [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, task.entityId];
-                [[UNUserNotificationCenter currentNotificationCenter]
-                    removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
-                [[UNUserNotificationCenter currentNotificationCenter]
-                    removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
-                [[NGNTaskService sharedInstance] removeTask:storeableItem];
-            }
-            [[NGNTaskService sharedInstance] removeEntity:storeableItem];
-=======
-            [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
-        } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
-            [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
->>>>>>> second_task_file_manager
             [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
         } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
             [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
