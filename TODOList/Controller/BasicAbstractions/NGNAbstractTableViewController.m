@@ -14,6 +14,7 @@
 #import "NGNTaskList.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
+#import "NGNLocalizationConstants.h"
 
 @interface NGNAbstractTableViewController () <UITableViewDataSource,
                                               UITableViewDelegate,
@@ -46,14 +47,16 @@
                                              atIndexPath:(NSIndexPath *)indexPath
                                        withStoreableItem:(id<NGNStoreable>)storeableItem {
     UIAlertController *alertViewController =
-    [UIAlertController alertControllerWithTitle:NGNControllerDeleteAlertTitle
-                                        message:nil
-                                 preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NGNControllerCancelButtonTitle
+        [UIAlertController alertControllerWithTitle:NSLocalizedString(NGNLocalizationKeyControllerDeleteAlertTitle, nil)
+                                            message:nil
+                                     preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:
+                                   NSLocalizedString(NGNLocalizationKeyControllerCancelButtonTitle, nil)
                                                            style:UIAlertActionStyleCancel handler:nil];
     [alertViewController addAction:cancelAction];
-    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NGNControllerDeleteButtonTitle
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:
+                                   NSLocalizedString(NGNLocalizationKeyControllerDeleteButtonTitle, nil)
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
         if ([storeableItem isKindOfClass:[NGNTask class]]) {
@@ -95,7 +98,7 @@
 
 - (IBAction)editBarButtonTapped:(UIBarButtonItem *)sender {
     UIBarButtonItem *doneBarButton =
-    [[UIBarButtonItem alloc] initWithTitle:NGNControllerDoneButtonTitle
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(NGNLocalizationKeyControllerDoneButtonTitle, nil)
                                      style:UIBarButtonItemStylePlain
                                     target:self
                                     action:@selector(doneBarButtonTapped:)];
@@ -106,7 +109,7 @@
 
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender {
     UIBarButtonItem *editBarButton =
-    [[UIBarButtonItem alloc] initWithTitle:NGNControllerEditButtonTitle
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(NGNLocalizationKeyControllerEditButtonTitle, nil)
                                      style:UIBarButtonItemStylePlain
                                     target:self
                                     action:@selector(editBarButtonTapped:)];
