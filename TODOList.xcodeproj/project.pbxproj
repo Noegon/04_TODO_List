@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF1FF5C81F0C69A10005331F /* NGNLocalizationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = EF1FF5C71F0C69A10005331F /* NGNLocalizationConstants.m */; };
+		EF1FF5D11F0C6C790005331F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EF1FF5CF1F0C6C790005331F /* Localizable.strings */; };
+		EF1FF5D71F0C6C900005331F /* LaunchScreen.strings in Resources */ = {isa = PBXBuildFile; fileRef = EF1FF5D31F0C6C900005331F /* LaunchScreen.strings */; };
+		EF1FF5D81F0C6C900005331F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EF1FF5D51F0C6C900005331F /* Localizable.strings */; };
 		EF6B90771EE8897C006A825B /* NGNTaskList.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6B90761EE8897C006A825B /* NGNTaskList.m */; };
 		EF6B907B1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6B907A1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m */; };
 		EF81E72F1EE05694007007EE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E72E1EE05694007007EE /* main.m */; };
@@ -35,6 +39,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		EF1FF5C61F0C69A10005331F /* NGNLocalizationConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNLocalizationConstants.h; path = Constants/NGNLocalizationConstants.h; sourceTree = "<group>"; };
+		EF1FF5C71F0C69A10005331F /* NGNLocalizationConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNLocalizationConstants.m; path = Constants/NGNLocalizationConstants.m; sourceTree = "<group>"; };
+		EF1FF5C91F0C6AD80005331F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		EF1FF5D01F0C6C790005331F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EF1FF5D41F0C6C900005331F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		EF1FF5D61F0C6C900005331F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EF1FF5DA1F0C6C9F0005331F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		EF1FF5DB1F0C6CA10005331F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		EF1FF5DD1F0C6ECC0005331F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		EF6B90751EE8897C006A825B /* NGNTaskList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskList.h; path = Model/NGNTaskList.h; sourceTree = "<group>"; };
 		EF6B90761EE8897C006A825B /* NGNTaskList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskList.m; path = Model/NGNTaskList.m; sourceTree = "<group>"; };
 		EF6B90791EE88E79006A825B /* NSDate+NGNDateToStringConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+NGNDateToStringConverter.h"; path = "ExistingClassesExtensions/NSDate+NGNDateToStringConverter.h"; sourceTree = "<group>"; };
@@ -98,6 +114,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EF1FF5CE1F0C6C5F0005331F /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				EF1FF5CF1F0C6C790005331F /* Localizable.strings */,
+			);
+			name = en.lproj;
+			sourceTree = "<group>";
+		};
+		EF1FF5D21F0C6C7F0005331F /* ru.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				EF1FF5D31F0C6C900005331F /* LaunchScreen.strings */,
+				EF1FF5D51F0C6C900005331F /* Localizable.strings */,
+			);
+			name = ru.lproj;
+			sourceTree = "<group>";
+		};
 		EF6B90781EE88DF1006A825B /* ExistingClassesExtensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +175,8 @@
 			children = (
 				EF83989E1F02F7EA004E56C9 /* ru.lproj */,
 				EF83989D1F02F7DC004E56C9 /* en.lproj */,
+				EF1FF5D21F0C6C7F0005331F /* ru.lproj */,
+				EF1FF5CE1F0C6C5F0005331F /* en.lproj */,
 				EF81E7391EE05694007007EE /* Main.storyboard */,
 				EF81E73C1EE05694007007EE /* Assets.xcassets */,
 				EF81E73E1EE05694007007EE /* LaunchScreen.storyboard */,
@@ -195,6 +230,8 @@
 		EF81E74B1EE05728007007EE /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				EF1FF5C61F0C69A10005331F /* NGNLocalizationConstants.h */,
+				EF1FF5C71F0C69A10005331F /* NGNLocalizationConstants.m */,
 				EF81E74C1EE05767007007EE /* NGNConstants.h */,
 				EF81E74D1EE05767007007EE /* NGNConstants.m */,
 				EF8398941F02DDC0004E56C9 /* NGNLocalizationConstants.h */,
@@ -342,7 +379,10 @@
 				EF8398A11F02F834004E56C9 /* Localizable.strings in Resources */,
 				EF81E7401EE05694007007EE /* LaunchScreen.storyboard in Resources */,
 				EF83989C1F02F653004E56C9 /* Localizable.strings in Resources */,
+				EF1FF5D81F0C6C900005331F /* Localizable.strings in Resources */,
+				EF1FF5D11F0C6C790005331F /* Localizable.strings in Resources */,
 				EF81E73D1EE05694007007EE /* Assets.xcassets in Resources */,
+				EF1FF5D71F0C6C900005331F /* LaunchScreen.strings in Resources */,
 				EF81E73B1EE05694007007EE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF1FF5C81F0C69A10005331F /* NGNLocalizationConstants.m in Sources */,
 				EF8930CD1EF01F82001E49AC /* NGNInboxViewController.m in Sources */,
 				EFD6C4A51EFFEF8000E18E87 /* NGNTaskListDetailsViewController.m in Sources */,
 				EF6B907B1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m in Sources */,
@@ -380,12 +421,38 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		EF1FF5CF1F0C6C790005331F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EF1FF5D01F0C6C790005331F /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		EF1FF5D31F0C6C900005331F /* LaunchScreen.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EF1FF5D41F0C6C900005331F /* ru */,
+			);
+			name = LaunchScreen.strings;
+			sourceTree = "<group>";
+		};
+		EF1FF5D51F0C6C900005331F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EF1FF5D61F0C6C900005331F /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		EF81E7391EE05694007007EE /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				EF81E73A1EE05694007007EE /* Base */,
 				EF8398901F02BB13004E56C9 /* ru */,
 				EF8398931F02BB89004E56C9 /* en */,
+				EF1FF5C91F0C6AD80005331F /* ru */,
+				EF1FF5DD1F0C6ECC0005331F /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -395,6 +462,8 @@
 			children = (
 				EF81E73F1EE05694007007EE /* Base */,
 				EF8398911F02BB14004E56C9 /* ru */,
+				EF1FF5DA1F0C6C9F0005331F /* en */,
+				EF1FF5DB1F0C6CA10005331F /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
