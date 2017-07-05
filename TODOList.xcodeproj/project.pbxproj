@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EF1FF5BF1F0C5D950005331F /* NGNStoredEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = EF1FF5BE1F0C5D950005331F /* NGNStoredEntity.m */; };
 		EF6B90771EE8897C006A825B /* NGNTaskList.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6B90761EE8897C006A825B /* NGNTaskList.m */; };
 		EF6B907B1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6B907A1EE88E79006A825B /* NSDate+NGNDateToStringConverter.m */; };
 		EF81E72F1EE05694007007EE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EF81E72E1EE05694007007EE /* main.m */; };
@@ -36,8 +35,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EF1FF5BD1F0C5D950005331F /* NGNStoredEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNStoredEntity.h; path = Model/NGNStoredEntity.h; sourceTree = "<group>"; };
-		EF1FF5BE1F0C5D950005331F /* NGNStoredEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNStoredEntity.m; path = Model/NGNStoredEntity.m; sourceTree = "<group>"; };
 		EF6B90751EE8897C006A825B /* NGNTaskList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NGNTaskList.h; path = Model/NGNTaskList.h; sourceTree = "<group>"; };
 		EF6B90761EE8897C006A825B /* NGNTaskList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NGNTaskList.m; path = Model/NGNTaskList.m; sourceTree = "<group>"; };
 		EF6B90791EE88E79006A825B /* NSDate+NGNDateToStringConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+NGNDateToStringConverter.h"; path = "ExistingClassesExtensions/NSDate+NGNDateToStringConverter.h"; sourceTree = "<group>"; };
@@ -163,8 +160,6 @@
 				EF6B90761EE8897C006A825B /* NGNTaskList.m */,
 				EF8930AB1EE8BC63001E49AC /* NGNStoreable.h */,
 				EFD6C4A61F00080D00E18E87 /* NGNContainable.h */,
-				EF1FF5BD1F0C5D950005331F /* NGNStoredEntity.h */,
-				EF1FF5BE1F0C5D950005331F /* NGNStoredEntity.m */,
 				EFCD46911EE0C25D00606FAB /* Services */,
 			);
 			name = Model;
@@ -375,7 +370,6 @@
 				EF6B90771EE8897C006A825B /* NGNTaskList.m in Sources */,
 				EF8930DC1EF01FA3001E49AC /* NGNEditTaskViewController.m in Sources */,
 				EF8930AA1EE8ABB8001E49AC /* NGNStoredEntity.m in Sources */,
-				EF1FF5BF1F0C5D950005331F /* NGNStoredEntity.m in Sources */,
 				EF8398961F02DDC0004E56C9 /* NGNLocalizationConstants.m in Sources */,
 				EF90BC2E1EF5BC3300108C73 /* NGNAbstractTableViewController.m in Sources */,
 				EF81E72F1EE05694007007EE /* main.m in Sources */,
