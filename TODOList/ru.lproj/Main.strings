@@ -1,3 +1,6 @@
+/* Class = "UILabel"; text = "Title"; ObjectID = "3fE-kc-9t7"; */
+"3fE-kc-9t7.text" = "Заголовок";
+
 /* Class = "UITabBarItem"; title = "Inbox"; ObjectID = "2Ap-W6-omJ"; */
 "2Ap-W6-omJ.title" = "Общие";
 
@@ -94,3 +97,11 @@
 /* EditTaskController-navigation-item-title */
 "Edit task" = "Редактировать проект";
 
+/* Class = "UITabBarItem"; title = "Notifications"; ObjectID = "5fb-Rm-hyA"; */
+"5fb-Rm-hyA.title" = "Уведомления";
+
+/* Class = "UITableViewController"; title = "Notifications"; ObjectID = "dDC-2S-u4O"; */
+"dDC-2S-u4O.title" = "Уведомления";
+
+/* Class = "UINavigationItem"; title = "Notifications"; ObjectID = "ule-ga-1bA"; */
+"ule-ga-1bA.title" = "Уведомления";

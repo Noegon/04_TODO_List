@@ -2,6 +2,9 @@
 /* Class = "UITabBarItem"; title = "Inbox"; ObjectID = "2Ap-W6-omJ"; */
 "2Ap-W6-omJ.title" = "Inbox";
 
+/* Class = "UILabel"; text = "Title"; ObjectID = "3fE-kc-9t7"; */
+"3fE-kc-9t7.text" = "Title";
+
 /* Class = "UITextField"; placeholder = "Project name"; ObjectID = "3m9-EE-gBQ"; */
 "3m9-EE-gBQ.placeholder" = "Project name";
 
@@ -10,6 +13,9 @@
 
 /* Class = "UINavigationItem"; title = "Project details"; ObjectID = "5Ur-xr-2Yh"; */
 "5Ur-xr-2Yh.title" = "Project details";
+
+/* Class = "UITabBarItem"; title = "Notifications"; ObjectID = "5fb-Rm-hyA"; */
+"5fb-Rm-hyA.title" = "Notifications";
 
 /* Class = "UITableViewSection"; headerTitle = "Notes"; ObjectID = "9tl-oS-b84"; */
 "9tl-oS-b84.headerTitle" = "Notes";
@@ -65,6 +71,9 @@
 /* Class = "UINavigationItem"; title = "Inbox"; ObjectID = "axE-GV-PuS"; */
 "axE-GV-PuS.title" = "Inbox";
 
+/* Class = "UITableViewController"; title = "Notifications"; ObjectID = "dDC-2S-u4O"; */
+"dDC-2S-u4O.title" = "Notifications";
+
 /* Class = "UINavigationItem"; title = "Date picking"; ObjectID = "fEW-yv-lev"; */
 "fEW-yv-lev.title" = "Date picking";
 
@@ -82,6 +91,9 @@
 
 /* Class = "UILabel"; text = "(0)"; ObjectID = "tyR-XC-27i"; */
 "tyR-XC-27i.text" = "(0)";
+
+/* Class = "UINavigationItem"; title = "Notifications"; ObjectID = "ule-ga-1bA"; */
+"ule-ga-1bA.title" = "Notifications";
 
 /* Class = "UINavigationItem"; title = "Search"; ObjectID = "v0U-Pb-7CJ"; */
 "v0U-Pb-7CJ.title" = "Search";
