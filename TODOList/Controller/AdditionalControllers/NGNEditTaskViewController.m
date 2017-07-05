@@ -82,6 +82,7 @@
     self.taskNameInsertTextField.text = self.entringTask.name;
     self.dateTableCell.textLabel.text = stringfiedTaskDate;
     self.notesInsertTextView.text = self.entringTask.notes;
+    self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
     self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:NGNNonePriority];
     self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
     
@@ -217,6 +218,36 @@
                                                            style:UIAlertActionStyleCancel handler:nil];
     [alertViewController addAction:cancelAction];
     
+    UIAlertAction *nonePriorityAction = [UIAlertAction actionWithTitle:@"None"
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNNonePriority;
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
+    }];
+    [alertViewController addAction:nonePriorityAction];
+    
+    UIAlertAction *lowPriorityAction = [UIAlertAction actionWithTitle:@"Low"
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNLowPriority;
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
+    }];
+    [alertViewController addAction:lowPriorityAction];
+    
+    UIAlertAction *mediumPriorityAction = [UIAlertAction actionWithTitle:@"Medium"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNMediumPriority;
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
+    }];
+    [alertViewController addAction:mediumPriorityAction];
+    
+    UIAlertAction *highPriorityAction = [UIAlertAction actionWithTitle:@"Highs"
+                                                                   style:UIAlertActionStyleDefault
+                                                                 handler:^(UIAlertAction * _Nonnull action) {
+        self.entringTask.priority = NGNHighPriority;
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
+    }];
     UIAlertAction *nonePriorityAction =
         [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityNoneTitle, nil)
                                  style:UIAlertActionStyleDefault
@@ -306,6 +337,16 @@
     NSString *result;
     switch (priority) {
         case NGNNonePriority:
+            result = @"None";
+            break;
+        case NGNLowPriority:
+            result = @"Low";
+            break;
+        case NGNMediumPriority:
+            result = @"Medium";
+            break;
+        case NGNHighPriority:
+            result = @"High";
             result = NSLocalizedString(NGNLocalizationKeyControllerPriorityNoneTitle, nil);
             break;
         case NGNLowPriority:

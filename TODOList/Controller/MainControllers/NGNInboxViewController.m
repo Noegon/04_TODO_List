@@ -280,6 +280,7 @@
         addTaskViewController.navigationItem.title = NGNControllerAddTaskNavigationItemTitle;
         addTaskViewController.entringTask = addingTask;
         NGNTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
+        NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
         addTaskViewController.navigationItem.title =
             NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil);
         addTaskViewController.entringTaskList = commonTaskList;

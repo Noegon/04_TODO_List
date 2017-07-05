@@ -84,6 +84,9 @@
         } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
             [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
 >>>>>>> second_task_file_manager
+            [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
+        } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
+            [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
                                                             object:nil
