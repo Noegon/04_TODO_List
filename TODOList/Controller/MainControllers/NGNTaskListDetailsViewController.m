@@ -9,8 +9,8 @@
 #import "NGNTaskListDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
@@ -57,7 +57,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
-    NGNTask *currentTask = (NGNTask *)self.entringTaskList.entityCollection[indexPath.row];
+    NGNManagedTask *currentTask = self.entringTaskList.entityCollection[indexPath.row];
     
     taskCell.textLabel.text = currentTask.name;
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
@@ -74,8 +74,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NGNTask *currentTask = (NGNTask *)self.entringTaskList.entityCollection[indexPath.row];
-        [self.entringTaskList removeEntity:currentTask];
+        NGNManagedTask *currentTask = self.entringTaskList.entityCollection[indexPath.row];
+        [self.entringTaskList removeEntityCollectionObject:currentTask];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         NSDictionary *userInfo = @{@"taskList": self.entringTaskList};
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
@@ -113,7 +113,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
     if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTask *task = (NGNTask *)self.entringTaskList.entityCollection[indexPath.row];
+        NGNManagedTask *task = self.entringTaskList.entityCollection[indexPath.row];
         editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {

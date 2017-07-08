@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class NGNTask;
-@class NGNTaskList;
+@class NGNManagedTask;
+@class NGNManagedTaskList;
 
 @interface NGNEditTaskViewController : UITableViewController
 
-@property (strong, nonatomic) NGNTask *entringTask;
-@property (strong, nonatomic) NGNTaskList *entringTaskList;
+@property (strong, nonatomic) NGNManagedTask *entringTask;
+@property (strong, nonatomic) NGNManagedTaskList *entringTaskList;
 
 @end

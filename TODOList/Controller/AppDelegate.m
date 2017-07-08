@@ -7,24 +7,34 @@
 //
 
 #import <UserNotifications/UserNotifications.h>
+#import <CoreData/CoreData.h>
 
 #import "AppDelegate.h"
 #import "NGNEditTaskViewController.h"
 #import "NGNInboxViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NSDate+NGNDateToStringConverter.h"
 
 @interface AppDelegate () <UNUserNotificationCenterDelegate>
 
+@property (readwrite, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readwrite, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (readwrite, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
 @end
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+#warning delete datasource for debug
+//    NSFileManager *manager = [NSFileManager defaultManager];
+//    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"TODOList.sqlite"];
+//    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"TODOList" withExtension:@"momd"];
+//    [manager removeItemAtURL:storeURL error:nil];
+    
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center requestAuthorizationWithOptions:UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert
                           completionHandler:^(BOOL granted, NSError * _Nullable error) {
@@ -47,8 +57,8 @@
 
 //This method will be invoked even if the application was launched or resumed because of the remote notification. The respective delegate methods will be invoked first. Note that this behavior is in contrast to application:didReceiveRemoteNotification:, which is not called in those cases, and which will not be invoked if this method is implemented. !
 - (void)application:(UIApplication *)application
-didReceiveRemoteNotification:(NSDictionary *)userInfo
-fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    didReceiveRemoteNotification:(NSDictionary *)userInfo
+          fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     application.applicationIconBadgeNumber += 1;
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameLocalNotificationListChanged
                                                         object:nil
@@ -86,6 +96,7 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandl
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [self saveContext];
 }
 
 #pragma mark - UNUserNotificationCenterDelegate methods
@@ -112,9 +123,9 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     UIApplication.sharedApplication.applicationIconBadgeNumber -= 1;
     //get initial parameters for target view controller
     NSNumber *taskListId = response.notification.request.content.userInfo[@"taskListId"];
-    NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:taskListId.integerValue];
+    NGNManagedTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:taskListId.integerValue];
     NSNumber *taskId = response.notification.request.content.userInfo[@"taskId"];
-    NGNTask *currentTask = [currentTaskList entityById:taskId.integerValue];
+    NGNManagedTask *currentTask = [currentTaskList entityById:taskId.integerValue];
     //get target controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     NGNEditTaskViewController *editTaskViewController =
@@ -128,6 +139,72 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     NGNInboxViewController *inboxController = (NGNInboxViewController *)tbc.selectedViewController;
     //push from opening to target view controller
     [(UINavigationController *)inboxController pushViewController:editTaskViewController animated:NO];
+}
+
+#pragma mark - core data handle helper methods
+
+- (NSManagedObjectModel *)managedObjectModel {
+    if (_managedObjectModel != nil) {
+        return _managedObjectModel;
+    }
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"TODOList" withExtension:@"momd"];
+    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return _managedObjectModel;
+}
+
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+    if(_persistentStoreCoordinator != nil) {
+        return _persistentStoreCoordinator;
+    }
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"TODOList.sqlite"];
+    NSError *error = nil;
+    _persistentStoreCoordinator =
+        [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+    if(![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                  configuration:nil
+                                                            URL:storeURL
+                                                        options:nil
+                                                          error:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+#warning do not use abort() in release!!! For debug only!!! Handle this error!!!
+        abort();
+    }
+    return _persistentStoreCoordinator;
+}
+
+- (NSManagedObjectContext *)managedObjectContext {
+    if(_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if(coordinator != nil) {
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+        [_managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
+    }
+    return _managedObjectContext;
+}
+
+#pragma mark - core data saving support methods
+
+- (void)saveContext {
+    NSError *error = nil;
+    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+    if([managedObjectContext hasChanges] &&
+       ![managedObjectContext save:&error]){
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+#warning do not use abort() in release!!! For debug only!!! Handle this error!!!
+        abort();
+    } else {
+        [managedObjectContext refreshAllObjects];
+    }
+}
+
+#pragma mark - additional helper methods
+
+- (NSURL *)applicationDocumentsDirectory {
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+                                                   inDomains:NSUserDomainMask] lastObject];
 }
 
 

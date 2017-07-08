@@ -11,8 +11,8 @@
 #import "NGNNotificationListViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 
@@ -100,8 +100,8 @@
         if (objNotificationContent) {
             NSInteger taskId = ((NSNumber *)[objNotificationContent.userInfo valueForKey:@"taskId"]).integerValue;
             NSInteger taskListId = ((NSNumber *)[objNotificationContent.userInfo valueForKey:@"taskListId"]).integerValue;
-            NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:taskListId];
-            NGNTask *currentTask = [currentTaskList entityById:taskId];
+            NGNManagedTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:taskListId];
+            NGNManagedTask *currentTask = [currentTaskList entityById:taskId];
             taskCell.textLabel.text = currentTask.name;
         }
     }
@@ -118,8 +118,8 @@
         NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
         NSInteger taskId = ((NSNumber *)[objNotificationContent.userInfo valueForKey:@"taskId"]).integerValue;
         NSInteger taskListId = ((NSNumber *)[objNotificationContent.userInfo valueForKey:@"taskListId"]).integerValue;
-        NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:taskListId];
-        NGNTask *currentTask = [currentTaskList entityById:taskId];
+        NGNManagedTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:taskListId];
+        NGNManagedTask *currentTask = [currentTaskList entityById:taskId];
         editTaskViewController.entringTask = currentTask;
         editTaskViewController.entringTaskList = currentTaskList;
     }

@@ -11,11 +11,12 @@
 #import "NGNEditTaskViewController.h"
 #import "NGNDatePickingViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTask+CoreDataProperties.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
+#import "AppDelegate.h"
 
 @interface NGNEditTaskViewController ()
 
@@ -24,6 +25,8 @@
 @property (strong, nonatomic) IBOutlet UITableViewCell *dateTableCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *priorityTableCell;
 @property (strong, nonatomic) IBOutlet UISwitch *remaindDaySwither;
+
+@property (assign, nonatomic) NSInteger currentTaskPriority;
 
 - (IBAction)taskNameChanged:(UITextField *)sender;
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender;
@@ -43,7 +46,7 @@
     
     //removing notification if delivered
     NSString *notificationID =
-        [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
+        [NSString stringWithFormat:@"%@%lld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
     [[UNUserNotificationCenter currentNotificationCenter]
      removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
     
@@ -73,18 +76,20 @@
     saveBarButton = nil;
     
     if (!self.entringTask) {
-        NSInteger newTaskId = foo4random();
-        self.entringTask = [[NGNTask alloc] initWithId:newTaskId
-                                                  name:NSLocalizedString(NGNLocalizationKeyControllerNoneTitle, nil)];
+        self.taskNameInsertTextField.text = NSLocalizedString(NGNLocalizationKeyControllerNoneTitle, nil);
+        self.dateTableCell.textLabel.text = [NSDate ngn_formattedStringFromDate:[NSDate date]];
+        self.notesInsertTextView.text = @"";
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:NGNNonePriority];
+        self.remaindDaySwither.on = NO;
+        self.currentTaskPriority = NGNNonePriority;
+    } else {
+        self.taskNameInsertTextField.text = self.entringTask.name;
+        self.dateTableCell.textLabel.text = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
+        self.notesInsertTextView.text = self.entringTask.notes;
+        self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
+        self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
+        self.currentTaskPriority = self.entringTask.priority;
     }
-    
-    NSString *stringfiedTaskDate = [NSDate ngn_formattedStringFromDate:self.entringTask.startedAt];
-    self.taskNameInsertTextField.text = self.entringTask.name;
-    self.dateTableCell.textLabel.text = stringfiedTaskDate;
-    self.notesInsertTextView.text = self.entringTask.notes;
-    self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:self.entringTask.priority];
-    self.priorityTableCell.detailTextLabel.text = [self stringfiedPriority:NGNNonePriority];
-    self.remaindDaySwither.on = self.entringTask.shouldRemindOnDay;
     
     [[NSNotificationCenter defaultCenter]
      addObserverForName:NGNNotificationNameTaskChange
@@ -92,10 +97,10 @@
      queue:[NSOperationQueue mainQueue]
      usingBlock:^(NSNotification *notification) {
          NSDictionary *userInfo = notification.userInfo;
-         NGNTask *task = userInfo[@"task"];
+         NGNManagedTask *task = userInfo[@"task"];
          self.dateTableCell.textLabel.text =
             [NSDate ngn_formattedStringFromDate:task.startedAt];
-         self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", task.priority];
+         self.priorityTableCell.detailTextLabel.text = [NSString stringWithFormat:@"%lld", task.priority];
      }];
     
     // adding gesture recognizer to hide keyboard by tapping out of text fields
@@ -114,24 +119,37 @@
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
+    
+    NSManagedObjectContext *managedContext = [NGNTaskService sharedInstance].managedObjectContext;
+    
+    NSString *notificationName;
+    
+    if (!self.entringTask) {
+        self.entringTask =
+            [NSEntityDescription insertNewObjectForEntityForName:@"NGNManagedTask"
+                                          inManagedObjectContext:managedContext];
+        self.entringTask.entityId = foo4random();
+    }
+    
     self.entringTask.name = self.taskNameInsertTextField.text;
     self.entringTask.startedAt = [NSDate ngn_dateFromString:self.dateTableCell.textLabel.text];
     self.entringTask.notes = self.notesInsertTextView.text;
     self.entringTask.shouldRemindOnDay = self.remaindDaySwither.on;
-    NSDictionary *userInfo = @{@"task": self.entringTask,
-                               @"taskList": self.entringTaskList};
-    NSString *notificationName;
+    self.entringTask.priority = self.currentTaskPriority;
     
     if ([self.navigationItem.title containsString:
          NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil)]) {
         notificationName = NGNNotificationNameTaskAdd;
-        [self.entringTaskList addEntity:self.entringTask];
+        [self.entringTaskList addEntityCollectionObject:self.entringTask];
     } else {
         notificationName = NGNNotificationNameTaskChange;
-        [self.entringTaskList updateEntity:self.entringTask];
+        [self.entringTask updateEntity];
     }
+    [[NGNTaskService sharedInstance] saveCollection];
     
     //notifications
+    NSDictionary *userInfo = @{@"task": self.entringTask,
+                               @"taskList": self.entringTaskList};
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
                                                         object:nil
                                                       userInfo:userInfo];
@@ -139,7 +157,7 @@
     //local notifications
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
         NSString *notificationID =
-            [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
+            [NSString stringWithFormat:@"%@%lld", NGNNotificationRequestIDTaskTime, self.entringTask.entityId];
         if (self.entringTask.shouldRemindOnDay) {
             NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
             
@@ -180,16 +198,6 @@
             [[UNUserNotificationCenter currentNotificationCenter]
              removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
         }
-//        [[UNUserNotificationCenter currentNotificationCenter]
-//            getPendingNotificationRequestsWithCompletionHandler:^(NSArray *requests){
-//                for (UNNotificationRequest *request in requests) {
-//                    NSNumber *tasklistId = request.content.userInfo[@"taskListId"];
-//                    NGNTaskList *list = [[NGNTaskService sharedInstance] entityById: tasklistId.integerValue];
-//                    NSNumber *taskId = request.content.userInfo[@"taskId"];
-//                    NGNTask *task = [list entityById: taskId.integerValue];
-//                    NSLog(@"%@", task);
-//                }
-//        }];
     }
 
     [self.navigationController popViewControllerAnimated:YES];
@@ -222,9 +230,9 @@
         [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityNoneTitle, nil)
                                  style:UIAlertActionStyleDefault
                                handler:^(UIAlertAction * _Nonnull action) {
-                                   self.entringTask.priority = NGNNonePriority;
+                                   self.currentTaskPriority = NGNNonePriority;
                                    self.priorityTableCell.detailTextLabel.text =
-                                    [self stringfiedPriority:self.entringTask.priority];
+                                    [self stringfiedPriority:NGNNonePriority];
                                }];
     [alertViewController addAction:nonePriorityAction];
     
@@ -232,9 +240,9 @@
         [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityLowTitle, nil)
                                  style:UIAlertActionStyleDefault
                                handler:^(UIAlertAction * _Nonnull action) {
-                                   self.entringTask.priority = NGNLowPriority;
+                                   self.currentTaskPriority = NGNLowPriority;
                                    self.priorityTableCell.detailTextLabel.text =
-                                    [self stringfiedPriority:self.entringTask.priority];
+                                    [self stringfiedPriority:NGNLowPriority];
                                }];
     [alertViewController addAction:lowPriorityAction];
     
@@ -242,9 +250,9 @@
         [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityMediumTitle, nil)
                                  style:UIAlertActionStyleDefault
                                handler:^(UIAlertAction * _Nonnull action) {
-                                   self.entringTask.priority = NGNMediumPriority;
+                                   self.currentTaskPriority = NGNMediumPriority;
                                    self.priorityTableCell.detailTextLabel.text =
-                                    [self stringfiedPriority:self.entringTask.priority];
+                                    [self stringfiedPriority:NGNMediumPriority];
                                }];
     [alertViewController addAction:mediumPriorityAction];
     
@@ -252,17 +260,17 @@
         [UIAlertAction actionWithTitle:NSLocalizedString(NGNLocalizationKeyControllerPriorityHighTitle, nil)
                                  style:UIAlertActionStyleDefault
                                handler:^(UIAlertAction * _Nonnull action) {
-                                   self.entringTask.priority = NGNHighPriority;
+                                   self.currentTaskPriority = NGNHighPriority;
                                    self.priorityTableCell.detailTextLabel.text =
-                                    [self stringfiedPriority:self.entringTask.priority];
+                                    [self stringfiedPriority:NGNHighPriority];
                                }];
     [alertViewController addAction:highPriorityAction];
     
-    NSDictionary *userInfo = @{@"task": self.entringTask,
-                               @"taskList": self.entringTaskList};
-    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
-                                                        object:nil
-                                                      userInfo:userInfo];
+//    NSDictionary *userInfo = @{@"task": self.entringTask,
+//                               @"taskList": self.entringTaskList};
+//    [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+//                                                        object:nil
+//                                                      userInfo:userInfo];
     [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
@@ -276,13 +284,12 @@
     NGNDatePickingViewController *datePickingViewController = unwindSegue.sourceViewController;
     if ([unwindSegue.identifier isEqualToString:NGNControllerSegueUnwindToEditWithDone]) {
         
-        self.entringTask.startedAt = datePickingViewController.datePicker.date;
         self.dateTableCell.textLabel.text = [NSDate ngn_formattedStringFromDate:datePickingViewController.datePicker.date];
-        NSDictionary *userInfo = @{@"task": self.entringTask,
-                                   @"taskList": self.entringTaskList};
-        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
-                                                            object:nil
-                                                          userInfo:userInfo];
+//        NSDictionary *userInfo = @{@"task": self.entringTask,
+//                                   @"taskList": self.entringTaskList};
+//        [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskChange
+//                                                            object:nil
+//                                                          userInfo:userInfo];
     }
     if ([unwindSegue.identifier isEqualToString:NGNControllerSegueUnwindToEditWithCancel]) {
         [datePickingViewController dismissViewControllerAnimated:YES completion:nil];
