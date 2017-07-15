@@ -10,16 +10,17 @@
 #import "NGNTaskListDetailsViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
+#import "AppDelegate.h"
 
 @interface NGNToDoListViewController () <UITableViewDataSource, UITableViewDelegate>
 
 #pragma mark - additional handling methods
-- (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
+- (NGNManagedTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
 - (void)addTaskList;
 
 @end
@@ -71,7 +72,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
+    NGNManagedTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
     UITableViewCell *taskCell;
     if (currentTaskList) {
          taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskListCellIdentifier
@@ -103,7 +104,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         if (indexPath.section != 0 && indexPath.row != 0) {
             
-            NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
+            NGNManagedTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
             
             [self performTaskDeleteConfirmationDialogueAtTableView:tableView
                                                        atIndexPath:indexPath
@@ -132,7 +133,7 @@
     [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
                                        title:NSLocalizedString(NGNLocalizationKeyControllerEditButtonTitle, nil)
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
+        NGNManagedTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
 
         UIAlertController *alertViewController =
             [UIAlertController alertControllerWithTitle:
@@ -204,17 +205,17 @@
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowTaskListDetail]) {
         NGNTaskListDetailsViewController *taskListDetailsViewController = segue.destinationViewController;
-        NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
+        NGNManagedTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
         taskListDetailsViewController.entringTaskList = currentTaskList;
     }
 }
 
 #pragma mark - additional handling methods
 
-- (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath {
-    NGNTaskList *currentTaskList;
+- (NGNManagedTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath {
+    NGNManagedTaskList *currentTaskList;
     if (indexPath.section == 0) {
-        currentTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
+        currentTaskList = [[NGNTaskService sharedInstance] entityById:999];
     } else {
         if (indexPath.row != 0) {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self.entityId != 999"];
@@ -227,8 +228,10 @@
 }
 
 - (void)addTaskList {
-    NGNTaskList *addingTaskList = [[NGNTaskList alloc] initWithId:foo4random()
-                                                             name:NSLocalizedString(NGNLocalizationKeyControllerNoneTitle, nil)];
+    NSManagedObjectContext *managedContext = [NGNTaskService sharedInstance].managedObjectContext;
+    NGNManagedTaskList *addingTaskList = [[NGNManagedTaskList alloc] initWithContext:managedContext];
+    addingTaskList.entityId = foo4random();
+    addingTaskList.name = NSLocalizedString(NGNLocalizationKeyControllerNoneTitle, nil);
     [[NGNTaskService sharedInstance] addEntity:addingTaskList];
     NSDictionary *userInfo = @{@"taskList": addingTaskList};
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListAdd

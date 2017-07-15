@@ -7,11 +7,12 @@
 //
 
 #import <UserNotifications/UserNotifications.h>
+#import <CoreData/CoreData.h>
 
 #import "NGNAbstractTableViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
@@ -45,7 +46,7 @@
 
 - (void)performTaskDeleteConfirmationDialogueAtTableView:(UITableView *)tableView
                                              atIndexPath:(NSIndexPath *)indexPath
-                                       withStoreableItem:(id<NGNStoreable>)storeableItem {
+                                       withStoreableItem:(NSManagedObject *)storeableItem {
     UIAlertController *alertViewController =
         [UIAlertController alertControllerWithTitle:NSLocalizedString(NGNLocalizationKeyControllerDeleteAlertTitle, nil)
                                             message:nil
@@ -59,16 +60,17 @@
                                    NSLocalizedString(NGNLocalizationKeyControllerDeleteButtonTitle, nil)
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
-        if ([storeableItem isKindOfClass:[NGNTask class]]) {
+        if ([storeableItem isKindOfClass:[NGNManagedTask class]]) {
             NSString *notificationID =
-                [NSString stringWithFormat:@"%@%ld", NGNNotificationRequestIDTaskTime, storeableItem.entityId];
+                [NSString stringWithFormat:@"%@%lld", NGNNotificationRequestIDTaskTime,
+                    ((NGNManagedTask *)storeableItem).entityId];
             [[UNUserNotificationCenter currentNotificationCenter]
                 removeDeliveredNotificationsWithIdentifiers:@[notificationID]];
             [[UNUserNotificationCenter currentNotificationCenter]
                 removePendingNotificationRequestsWithIdentifiers:@[notificationID]];
-            [[NGNTaskService sharedInstance] removeTask:(NGNTask *)storeableItem];
-        } else if ([storeableItem isKindOfClass:[NGNTaskList class]]) {
-            [[NGNTaskService sharedInstance] removeEntity:(NGNTaskList *)storeableItem];
+            [[NGNTaskService sharedInstance] removeTask:(NGNManagedTask *)storeableItem];
+        } else if ([storeableItem isKindOfClass:[NGNManagedTaskList class]]) {
+            [[NGNTaskService sharedInstance] removeEntity:(NGNManagedTaskList *)storeableItem];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
                                                             object:nil

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NGNStoreable.h"
+
+@class NSManagedObject;
 
 @interface NGNAbstractTableViewController : UITableViewController
 
@@ -23,7 +24,7 @@
 - (IBAction)doneBarButtonTapped:(UIBarButtonItem *)sender;
 - (void)performTaskDeleteConfirmationDialogueAtTableView:(UITableView *)tableView
                                              atIndexPath:(NSIndexPath *)indexPath
-                                       withStoreableItem:(id<NGNStoreable>)storeableItem;
+                                       withStoreableItem:(NSManagedObject *)storeableItem;
 #pragma mark - gestures handling
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer;
