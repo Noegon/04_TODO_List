@@ -9,14 +9,15 @@
 #import "NGNAddProjectViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNConstants.h"
 #import "NGNTaskService.h"
+#import "AppDelegate.h"
 
 @interface NGNAddProjectViewController ()
 
-@property (strong, nonatomic) NGNTaskList *entringTaskList;
+@property (strong, nonatomic) NGNManagedTaskList *entringTaskList;
 @property (strong, nonatomic) IBOutlet UITextField *projectNameTextField;
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender;
@@ -29,11 +30,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    srand((unsigned int)time(NULL));
-    NSInteger newTaskListId = (rand() % INT_MAX);
-    
-    self.entringTaskList = [[NGNTaskList alloc] initWithId:newTaskListId name:@""];
-    
     self.navigationItem.rightBarButtonItem.enabled = NO;
     [self.projectNameTextField becomeFirstResponder];
 }
@@ -45,6 +41,12 @@
 }
 
 - (IBAction)saveBarButtonTapped:(UIBarButtonItem *)sender {
+    NSManagedObjectContext *managedContext = [NGNTaskService sharedInstance].managedObjectContext;
+    self.entringTaskList =
+        [NSEntityDescription insertNewObjectForEntityForName:@"NGNManagedTaskList"
+                                      inManagedObjectContext:managedContext];
+    
+    self.entringTaskList.entityId = foo4random();
     self.entringTaskList.name = self.projectNameTextField.text;
     [[NGNTaskService sharedInstance] addEntity:self.entringTaskList];
     NSDictionary *userInfo = @{@"taskList": self.entringTaskList};

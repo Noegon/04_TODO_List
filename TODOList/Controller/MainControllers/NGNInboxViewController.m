@@ -9,8 +9,8 @@
 #import "NGNInboxViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
@@ -21,14 +21,15 @@
 
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) NSMutableArray *dateSortedTaskListsArray;
+@property (strong, nonatomic) NSMutableArray<NGNManagedTaskList *> *taskListsArray;
 @property (assign, nonatomic, getter=isAscendingSortDirection) BOOL ascendingSortDirection;
 
 #pragma mark - additional handling methods
 
 - (IBAction)sortDirectionBarButtonTapped:(UIBarButtonItem *)sender;
 - (void)segmentedControlSelectionChange;
-- (NGNTask *)actualTaskWithIndexPath:(NSIndexPath *)indexPath;
-- (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
+- (NGNManagedTask *)actualTaskWithIndexPath:(NSIndexPath *)indexPath;
+- (NGNManagedTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath;
 - (void)refreshData;
 
 @end
@@ -100,6 +101,9 @@
                     forControlEvents:UIControlEventValueChanged];
     self.dateSortedTaskListsArray = [[[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate] mutableCopy];
     self.ascendingSortDirection = YES;
+    
+    self.taskListsArray = [[[NGNTaskService sharedInstance] allActiveTaskLists] mutableCopy];
+    
     [self segmentedControlSelectionChange];
 }
 
@@ -110,7 +114,7 @@
         NSArray *datesArray = self.dateSortedTaskListsArray;
         return [datesArray count];
     }
-    return [[NGNTaskService sharedInstance] allActiveTaskLists].count;
+    return self.taskListsArray.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -118,7 +122,7 @@
         NSArray *datesArray = self.dateSortedTaskListsArray;
         return [datesArray[section] count];
     }
-    NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][section];
+    NGNManagedTaskList *currentTaskList = self.taskListsArray[section];
     return [currentTaskList activeTasksList].count;
 }
 
@@ -126,7 +130,7 @@
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
-    NGNTask *currentTask = [self actualTaskWithIndexPath:indexPath];
+    NGNManagedTask *currentTask = [self actualTaskWithIndexPath:indexPath];
     
     if (currentTask) {
         taskCell.textLabel.text = currentTask.name;
@@ -146,7 +150,7 @@
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        NGNTask *currentTask = [self actualTaskWithIndexPath:indexPath];
+        NGNManagedTask *currentTask = [self actualTaskWithIndexPath:indexPath];
         [self performTaskDeleteConfirmationDialogueAtTableView:tableView
                                                    atIndexPath:indexPath
                                              withStoreableItem:currentTask];
@@ -167,9 +171,10 @@
         [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
                                            title:NSLocalizedString(NGNLocalizationKeyControllerDoneButtonTitle, nil)
                                          handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        NGNTask *currentTask = [self actualTaskWithIndexPath:indexPath];
+        NGNManagedTask *currentTask = [self actualTaskWithIndexPath:indexPath];
         currentTask.finishedAt = [NSDate date];
         currentTask.completed = YES;
+        [currentTask updateEntity];
         [self.tableView reloadData];
         //notify everyone that task was changed
         NSDictionary *userInfo = @{@"task": currentTask};
@@ -202,21 +207,21 @@
         if ([currentTaskArray isEqual:destinationTaskArray]) {
             [currentTaskArray exchangeObjectAtIndex:fromIndexPath.row withObjectAtIndex:toIndexPath.row];
         } else {
-            NGNTask *fromTask = currentTaskArray[fromIndexPath.row];
-            NGNTask *toTask = (destinationTaskArray.count - 1 > toIndexPath.row) ?
+            NGNManagedTask *fromTask = currentTaskArray[fromIndexPath.row];
+            NGNManagedTask *toTask = (destinationTaskArray.count - 1 > toIndexPath.row) ?
             destinationTaskArray[toIndexPath.row] :
             destinationTaskArray[destinationTaskArray.count - 1];
             fromTask.startedAt = toTask.startedAt;
         }
     } else {
-        NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:fromIndexPath];
-        NGNTaskList *destinationTaskList = [self actualTaskListWithIndexPath:toIndexPath];
+        NGNManagedTaskList *currentTaskList = [self actualTaskListWithIndexPath:fromIndexPath];
+        NGNManagedTaskList *destinationTaskList = [self actualTaskListWithIndexPath:toIndexPath];
         if (currentTaskList == destinationTaskList) {
             [currentTaskList relocateEntityAtIndex:fromIndexPath.row withEntityAtIndex:toIndexPath.row];
         } else {
-            [destinationTaskList insertEntity:currentTaskList.entityCollection[fromIndexPath.row]
-                                      atIndex:toIndexPath.row];
-            [currentTaskList removeEntity:currentTaskList.entityCollection[fromIndexPath.row]];
+            [destinationTaskList insertObject:currentTaskList.entityCollection[fromIndexPath.row]
+                    inEntityCollectionAtIndex:toIndexPath.row];
+            [currentTaskList removeObjectFromEntityCollectionAtIndex:fromIndexPath.row];
         }
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameGlobalModelChange
@@ -243,13 +248,13 @@
     NSString *text;
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         NSArray *taskListsArray = self.dateSortedTaskListsArray[section];
-        NGNTask *currentTask;
+        NGNManagedTask *currentTask;
         if ([taskListsArray count] != 0) {
             currentTask = [taskListsArray firstObject];
         }
         text = [NSDate ngn_formattedStringFromDate:currentTask.startedAt withFormat:NGNControllerShowingDateFormat];
     } else {
-        NGNTaskList *list = [[NGNTaskService sharedInstance] allActiveTaskLists][section];
+        NGNManagedTaskList *list = self.taskListsArray[section];
         text = list.name;
     }
     label.text = text;
@@ -267,14 +272,14 @@
     if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTask *task = [self actualTaskWithIndexPath:indexPath];
-        NGNTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
+        NGNManagedTask *task = [self actualTaskWithIndexPath:indexPath];
+        NGNManagedTaskList *currentTaskList = [self actualTaskListWithIndexPath:indexPath];
         editTaskViewController.entringTask = task;
         editTaskViewController.entringTaskList = currentTaskList;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
         NGNEditTaskViewController *addTaskViewController = segue.destinationViewController;
-        NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
+        NGNManagedTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
         addTaskViewController.navigationItem.title =
             NSLocalizedString(NGNLocalizationKeyControllerAddTaskNavigationItemTitle, nil);
         addTaskViewController.entringTaskList = commonTaskList;
@@ -289,24 +294,25 @@
     [self.tableView reloadData];
 }
 
-- (NGNTask *)actualTaskWithIndexPath:(NSIndexPath *)indexPath {
-    NGNTask *actualTask;
+- (NGNManagedTask *)actualTaskWithIndexPath:(NSIndexPath *)indexPath {
+    NGNManagedTask *actualTask;
     if (self.segmentedControl.selectedSegmentIndex == 0) {
         actualTask = self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
     } else {
-        NGNTaskList *currentTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][indexPath.section];
+        NGNManagedTaskList *currentTaskList = self.taskListsArray[indexPath.section];
         actualTask = [currentTaskList activeTasksList][indexPath.row];
     }
     return actualTask;
 }
 
-- (NGNTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath {
-    NGNTaskList *actualTaskList;
+- (NGNManagedTaskList *)actualTaskListWithIndexPath:(NSIndexPath *)indexPath {
+    NGNManagedTaskList *actualTaskList;
     if (self.segmentedControl.selectedSegmentIndex == 0) {
-        NGNTask *actualTask = self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
-        actualTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:actualTask.entityId];
+        NGNManagedTask *actualTask =
+            self.dateSortedTaskListsArray[indexPath.section][indexPath.row];
+        actualTaskList = [[NGNTaskService sharedInstance] entityById:actualTask.entityId];
     } else {
-        actualTaskList = [[NGNTaskService sharedInstance] allActiveTaskLists][indexPath.section];
+        actualTaskList = self.taskListsArray[indexPath.section];
     }
     return actualTaskList;
 }
@@ -319,6 +325,7 @@
 // method helps to reload data on controller with renewed data from model
 - (void)refreshData {
     self.dateSortedTaskListsArray = [[[NGNTaskService sharedInstance] allActiveTasksGroupedByStartDate] mutableCopy];
+    self.taskListsArray = [[[NGNTaskService sharedInstance] allActiveTaskLists] mutableCopy];
     [self segmentedControlSelectionChange];
     [self.tableView reloadData];
 }
@@ -328,8 +335,8 @@
         [self.dateSortedTaskListsArray sortUsingComparator:
          ^(NSArray *list1, NSArray *list2) {
              if ((list1.count != 0) && (list2.count != 0)) {
-                 NGNTask *firstTask = [list1 firstObject];
-                 NGNTask *secondTask = [list2 firstObject];
+                 NGNManagedTask *firstTask = [list1 firstObject];
+                 NGNManagedTask *secondTask = [list2 firstObject];
                  NSInteger comparisonResult =
                     [NSDate ngn_compareDateWithoutTimePortion:firstTask.startedAt date:secondTask.startedAt];
                  comparisonResult = self.isAscendingSortDirection ? comparisonResult : comparisonResult * -1;
@@ -339,8 +346,8 @@
          }];
         
     } else if (self.segmentedControl.selectedSegmentIndex == 1) {
-        [[NGNTaskService sharedInstance] sortEntityCollectionUsingComparator:
-         ^(NGNTaskList *list1, NGNTaskList *list2) {
+        [self.taskListsArray sortUsingComparator:
+         ^(NGNManagedTaskList *list1, NGNManagedTaskList *list2) {
              NSInteger comparisonResult = [list1.name compare:list2.name];
              comparisonResult = self.isAscendingSortDirection ? comparisonResult : comparisonResult * -1;
              return comparisonResult;

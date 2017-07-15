@@ -7,31 +7,42 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NGNContainable.h"
 
-@class NGNTask;
-@class NGNTaskList;
+@class NGNManagedTask;
+@class NGNManagedTaskList;
+@class NSManagedObjectContext;
 
-@interface NGNTaskService: NSObject <NGNContainable>
+@interface NGNTaskService: NSObject
 
-@property (strong, nonatomic, readwrite) NSMutableArray<id<NGNStoreable>> *entityCollection;
+@property (strong, nonatomic, readwrite) NSMutableArray<NGNManagedTaskList *> *entityCollection;
+
+#pragma mark - core data maintanance
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 + (instancetype)sharedInstance;
+
+@end
+
+@interface NGNTaskService (NGNCollectionMaintenance)
 
 - (NSArray *)allTasks;
 - (NSArray *)allActiveTasks;
 - (NSArray *)allCompletedTasks;
 - (NSArray *)allActiveTasksGroupedByStartDate;
 - (NSArray *)allActiveTaskLists;
-- (void)removeTask:(NGNTask *)taskToRemove;
-- (void)updateTask:(NGNTask *)taskToUpdate;
+- (void)removeTask:(NGNManagedTask *)taskToRemove;
+- (void)saveCollection;
+- (void)loadCollection;
 
 @end
 
-@interface NGNTaskService (NGNSerializableContainer)
+@interface NGNTaskService (NGNContainable)
 
-- (void)saveCollection;
-- (void)loadCollection;
-- (NSString *)filePath;
+- (NGNManagedTaskList *)entityById:(NSInteger)entityId;
+- (void)addEntity:(NGNManagedTaskList *)entity;
+- (void)removeEntity:(NGNManagedTaskList *)entity;
+- (void)updateEntity:(NGNManagedTaskList *)entity;
+- (void)removeEntityById:(NSInteger)entityId;
+- (void)sortEntityCollectionUsingComparator:(NSComparator NS_NOESCAPE)cmptr;
 
 @end

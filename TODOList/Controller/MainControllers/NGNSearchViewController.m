@@ -9,8 +9,8 @@
 #import "NGNSearchViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
@@ -59,7 +59,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier];
-    NGNTask *currentTask = self.searchResultTasks[indexPath.row];
+    NGNManagedTask *currentTask = self.searchResultTasks[indexPath.row];
     taskCell.textLabel.text = currentTask.name;
     
     return taskCell;
@@ -72,8 +72,8 @@
     if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTask *task = self.searchResultTasks[indexPath.row];;
-        NGNTaskList *currentTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:task.entityId];
+        NGNManagedTask *task = self.searchResultTasks[indexPath.row];;
+        NGNManagedTaskList *currentTaskList = [[NGNTaskService sharedInstance] entityById:task.entityId];
         editTaskViewController.entringTask = task;
         editTaskViewController.entringTaskList = currentTaskList;
     }

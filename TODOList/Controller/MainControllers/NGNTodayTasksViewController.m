@@ -9,8 +9,8 @@
 #import "NGNTodayTasksViewController.h"
 #import "NSDate+NGNDateToStringConverter.h"
 #import "NGNEditTaskViewController.h"
-#import "NGNTask.h"
-#import "NGNTaskList.h"
+#import "NGNManagedTaskList+CoreDataProperties.h"
+#import "NGNManagedTask+CoreDataProperties.h"
 #import "NGNTaskService.h"
 #import "NGNConstants.h"
 #import "NGNLocalizationConstants.h"
@@ -39,7 +39,7 @@
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
-        NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
+        NGNManagedTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
         NSDictionary *userInfo = @{@"taskList": commonTaskList};
         [[NSNotificationCenter defaultCenter] postNotificationName:NGNNotificationNameTaskListChange
                                                             object:nil
@@ -104,7 +104,7 @@
     UITableViewCell *taskCell = [tableView dequeueReusableCellWithIdentifier:NGNControllerTaskCellIdentifier
                                                                 forIndexPath:indexPath];
     
-    NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
+    NGNManagedTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
     
     taskCell.textLabel.text = currentTask.name;
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
@@ -121,7 +121,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
+    NGNManagedTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
     [self performTaskDeleteConfirmationDialogueAtTableView:tableView
                                                atIndexPath:indexPath
                                          withStoreableItem:currentTask];
@@ -135,9 +135,10 @@
     [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
                                        title:NSLocalizedString(NGNLocalizationKeyControllerDoneButtonTitle, nil)
                                      handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        NGNTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
+        NGNManagedTask *currentTask = [self todayTasksListForSection:indexPath.section][indexPath.row];
         currentTask.finishedAt = [NSDate date];
         currentTask.completed = YES;
+        [currentTask updateEntity];
         [self.tableView reloadData];
         //notify everyone that task was changed
         NSDictionary *userInfo = @{@"task": currentTask};
@@ -164,11 +165,11 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    NGNTaskList *commonTaskList = (NGNTaskList *)[[NGNTaskService sharedInstance] entityById:999];
+    NGNManagedTaskList *commonTaskList = [[NGNTaskService sharedInstance] entityById:999];
     NGNEditTaskViewController *editTaskViewController = segue.destinationViewController;
     if ([segue.identifier isEqualToString:NGNControllerSegueShowEditTask]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        NGNTask *task = [self todayTasksListForSection:indexPath.section][indexPath.row];
+        NGNManagedTask *task = [self todayTasksListForSection:indexPath.section][indexPath.row];
         editTaskViewController.entringTask = task;
     }
     if ([segue.identifier isEqualToString:NGNControllerSegueShowAddTask]) {
@@ -185,13 +186,13 @@
     
     NSCalendar* calendar = [NSCalendar currentCalendar];
     if (section == 0) {
-        for (NGNTask *task in [[NGNTaskService sharedInstance] allActiveTasks]) {
+        for (NGNManagedTask *task in [[NGNTaskService sharedInstance] allActiveTasks]) {
             if ([calendar isDateInToday:task.startedAt]) {
                 [todayTasks addObject:task];
             }
         }
     } else {
-        for (NGNTask *task in [[NGNTaskService sharedInstance] allCompletedTasks]) {
+        for (NGNManagedTask *task in [[NGNTaskService sharedInstance] allCompletedTasks]) {
             if ([calendar isDateInToday:task.startedAt]) {
                 [todayTasks addObject:task];
             }
