@@ -21,6 +21,9 @@
 @property (strong, nonatomic) id<NSObject> localNotificationChangeNotification;
 @property (strong, nonatomic) __block NSArray<UNNotification *> *activeNotificationsList;
 
+@property (retain, nonatomic) dispatch_queue_t myQueue;
+@property (retain, nonatomic) dispatch_group_t myGroup;
+
 #pragma mark - additional handling methods
 //- (void)refreshData;
 //- (void)reloadActiveNotificationsList;
@@ -33,7 +36,7 @@
     [super viewDidLoad];
     
     self.taskChangeNotification =
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
+        [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskChange
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
@@ -41,7 +44,7 @@
     }];
     
     self.taskAddNotification =
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
+        [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskAdd
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
@@ -49,7 +52,7 @@
     }];
     
     self.taskListChangeNotification =
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
+        [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListChange
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
@@ -57,7 +60,7 @@
     }];
     
     self.taskListAddNotification =
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
+        [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameTaskListAdd
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
@@ -65,7 +68,7 @@
     }];
     
     self.globalModelChangeNotification =
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
+        [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameGlobalModelChange
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
@@ -73,7 +76,7 @@
     }];
     
     self.localNotificationChangeNotification =
-    [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameLocalNotificationListChanged
+        [[NSNotificationCenter defaultCenter] addObserverForName:NGNNotificationNameLocalNotificationListChanged
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *notification) {
@@ -83,6 +86,20 @@
     if (!self.activeNotificationsList) {
         [self refreshData];
     }
+}
+
+- (dispatch_queue_t)myQueue {
+    if (!_myQueue) {
+        return dispatch_queue_create("com.noegon.myqueue", DISPATCH_QUEUE_SERIAL);
+    }
+    return _myQueue;
+}
+
+- (dispatch_group_t)myGroup {
+    if (!_myGroup) {
+        return dispatch_group_create();
+    }
+    return _myGroup;
 }
 
 #pragma mark - Table view data source
@@ -129,27 +146,72 @@
 
 // method helps to reload data on controller with renewed data from model
 - (void)refreshData {
-    [self reloadActiveNotificationsList];
-    UIApplication.sharedApplication.applicationIconBadgeNumber = self.activeNotificationsList.count;
-    NSString *badgeValue = self.activeNotificationsList.count == 0 ? nil :
-                           [NSString stringWithFormat:@"%ld", self.activeNotificationsList.count];
-    [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:badgeValue];
-    [self.tableView reloadData];
-}
-
-- (void)reloadActiveNotificationsList {
-    self.activeNotificationsList = nil;
-    while (!self.activeNotificationsList) {
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_async(self.myQueue, ^{
+        
+        dispatch_group_enter(group);
+        self.activeNotificationsList = nil;
         [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:
          ^(NSArray<UNNotification *> *notifications) {
-             self.activeNotificationsList = notifications;
+             dispatch_group_async(group, self.myQueue, ^{
+                 self.activeNotificationsList = notifications;
+                 //             [self.tableView reloadData];
+                 dispatch_group_leave(group);
+             });
          }];
-    }
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:
-                              ^BOOL(UNNotification *notification, NSDictionary *bindings){
-                                  return [notification.request.identifier containsString:NGNNotificationRequestIDTaskTime];
-                              }];
-    self.activeNotificationsList = [self.activeNotificationsList filteredArrayUsingPredicate:predicate];
+        
+        dispatch_wait(group, DISPATCH_TIME_FOREVER);
+        
+        dispatch_group_enter(group);
+        dispatch_group_async(group, self.myQueue, ^{
+            NSPredicate *predicate = [NSPredicate predicateWithBlock:
+                                      ^BOOL(UNNotification *notification, NSDictionary *bindings){
+                                          return [notification.request.identifier containsString:NGNNotificationRequestIDTaskTime];
+                                      }];
+            self.activeNotificationsList = [self.activeNotificationsList filteredArrayUsingPredicate:predicate];
+            dispatch_group_leave(group);
+        });
+        
+        dispatch_wait(group, DISPATCH_TIME_FOREVER);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIApplication.sharedApplication.applicationIconBadgeNumber = self.activeNotificationsList.count;
+            NSString *badgeValue = self.activeNotificationsList.count == 0 ? nil :
+            [NSString stringWithFormat:@"%ld", (unsigned long)self.activeNotificationsList.count];
+            [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:badgeValue];
+            [self.tableView reloadData];
+        });
+    });
 }
+
+//- (void)reloadActiveNotificationsListWithGroup:(dispatch_group_t)group {
+//    dispatch_async(self.myQueue, ^{
+//        self.activeNotificationsList = nil;
+//        
+//        dispatch_group_enter(group);
+//        [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:
+//         ^(NSArray<UNNotification *> *notifications) {
+//             dispatch_group_async(group, self.myQueue, ^{
+//             self.activeNotificationsList = notifications;
+////             [self.tableView reloadData];
+//                 dispatch_group_leave(group);
+//             });
+//         }];
+//        
+//        dispatch_wait(group, DISPATCH_TIME_FOREVER);
+//        
+//        dispatch_group_enter(group);
+//        dispatch_group_async(group, self.myQueue, ^{
+//            NSPredicate *predicate = [NSPredicate predicateWithBlock:
+//                                      ^BOOL(UNNotification *notification, NSDictionary *bindings){
+//                                          return [notification.request.identifier containsString:NGNNotificationRequestIDTaskTime];
+//                                      }];
+//            self.activeNotificationsList = [self.activeNotificationsList filteredArrayUsingPredicate:predicate];
+//            dispatch_group_leave(group);
+//        });
+//        
+//        dispatch_wait(group, DISPATCH_TIME_FOREVER);
+//    });
+//}
 
 @end
