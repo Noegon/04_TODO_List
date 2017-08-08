@@ -150,33 +150,12 @@
     dispatch_async(self.myQueue, ^{
         
         dispatch_group_enter(group);
-        dispatch_group_async(group, self.myQueue, ^{
-            [self reloadActiveNotificationsListWithGroup:group];
-            dispatch_group_leave(group);
-        });
-        
-        dispatch_wait(group, DISPATCH_TIME_FOREVER);
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIApplication.sharedApplication.applicationIconBadgeNumber = self.activeNotificationsList.count;
-            NSString *badgeValue = self.activeNotificationsList.count == 0 ? nil :
-            [NSString stringWithFormat:@"%ld", (unsigned long)self.activeNotificationsList.count];
-            [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:badgeValue];
-            [self.tableView reloadData];
-        });
-    });
-}
-
-- (void)reloadActiveNotificationsListWithGroup:(dispatch_group_t)group {
-    dispatch_async(self.myQueue, ^{
         self.activeNotificationsList = nil;
-        
-        dispatch_group_enter(group);
         [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:
          ^(NSArray<UNNotification *> *notifications) {
              dispatch_group_async(group, self.myQueue, ^{
-             self.activeNotificationsList = notifications;
-//             [self.tableView reloadData];
+                 self.activeNotificationsList = notifications;
+                 //             [self.tableView reloadData];
                  dispatch_group_leave(group);
              });
          }];
@@ -194,7 +173,45 @@
         });
         
         dispatch_wait(group, DISPATCH_TIME_FOREVER);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIApplication.sharedApplication.applicationIconBadgeNumber = self.activeNotificationsList.count;
+            NSString *badgeValue = self.activeNotificationsList.count == 0 ? nil :
+            [NSString stringWithFormat:@"%ld", (unsigned long)self.activeNotificationsList.count];
+            [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:badgeValue];
+            [self.tableView reloadData];
+        });
     });
 }
+
+//- (void)reloadActiveNotificationsListWithGroup:(dispatch_group_t)group {
+//    dispatch_async(self.myQueue, ^{
+//        self.activeNotificationsList = nil;
+//        
+//        dispatch_group_enter(group);
+//        [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:
+//         ^(NSArray<UNNotification *> *notifications) {
+//             dispatch_group_async(group, self.myQueue, ^{
+//             self.activeNotificationsList = notifications;
+////             [self.tableView reloadData];
+//                 dispatch_group_leave(group);
+//             });
+//         }];
+//        
+//        dispatch_wait(group, DISPATCH_TIME_FOREVER);
+//        
+//        dispatch_group_enter(group);
+//        dispatch_group_async(group, self.myQueue, ^{
+//            NSPredicate *predicate = [NSPredicate predicateWithBlock:
+//                                      ^BOOL(UNNotification *notification, NSDictionary *bindings){
+//                                          return [notification.request.identifier containsString:NGNNotificationRequestIDTaskTime];
+//                                      }];
+//            self.activeNotificationsList = [self.activeNotificationsList filteredArrayUsingPredicate:predicate];
+//            dispatch_group_leave(group);
+//        });
+//        
+//        dispatch_wait(group, DISPATCH_TIME_FOREVER);
+//    });
+//}
 
 @end
