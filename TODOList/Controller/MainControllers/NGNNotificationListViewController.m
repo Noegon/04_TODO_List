@@ -132,19 +132,20 @@
     [self reloadActiveNotificationsList];
     UIApplication.sharedApplication.applicationIconBadgeNumber = self.activeNotificationsList.count;
     NSString *badgeValue = self.activeNotificationsList.count == 0 ? nil :
-                           [NSString stringWithFormat:@"%ld", self.activeNotificationsList.count];
+                           [NSString stringWithFormat:@"%ld", (unsigned long)self.activeNotificationsList.count];
     [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:badgeValue];
     [self.tableView reloadData];
 }
 
 - (void)reloadActiveNotificationsList {
     self.activeNotificationsList = nil;
-    while (!self.activeNotificationsList) {
+//    while (!self.activeNotificationsList) {
+#warning need to make some kind of callback or notification for renewing notification list
         [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:
          ^(NSArray<UNNotification *> *notifications) {
              self.activeNotificationsList = notifications;
          }];
-    }
+//    }
     NSPredicate *predicate = [NSPredicate predicateWithBlock:
                               ^BOOL(UNNotification *notification, NSDictionary *bindings){
                                   return [notification.request.identifier containsString:NGNNotificationRequestIDTaskTime];
